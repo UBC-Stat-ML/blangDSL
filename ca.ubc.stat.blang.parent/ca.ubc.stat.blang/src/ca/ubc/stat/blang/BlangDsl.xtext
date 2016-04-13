@@ -1,0 +1,31 @@
+grammar ca.ubc.stat.blang.BlangDsl with org.eclipse.xtext.xbase.Xbase
+
+generate blangDsl "http://www.ubc.ca/stat/blang/BlangDsl"
+
+BlangModel:
+	('package' name=QualifiedName)?
+	importSection=XImportSection?
+	vars=Vars?
+	params += Param*
+	;
+	
+Vars:
+	{Vars}
+	'variables' '{'
+	  (decl += VarDecl)*
+	'}'
+	;
+
+VarDecl:
+	type=JvmTypeReference? name=ValidID '=' right=XExpression
+;
+
+Param:
+	name=ValidID '~' distr=JvmTypeReference DistInit
+;
+
+DistInit:
+	'('
+	
+	')'
+;
