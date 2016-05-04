@@ -1,3 +1,5 @@
 *.class
 bin/
 target/
+*.java._trace
+*.xtendbin
