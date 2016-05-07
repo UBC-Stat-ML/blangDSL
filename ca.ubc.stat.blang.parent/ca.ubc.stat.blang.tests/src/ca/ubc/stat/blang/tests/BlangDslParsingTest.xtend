@@ -11,20 +11,46 @@ import org.eclipse.xtext.junit4.util.ParseHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.eclipse.xtext.junit4.validation.ValidationTestHelper
+import org.eclipse.emf.ecore.EcorePackage
+import org.eclipse.xtext.diagnostics.Diagnostic
 
 @RunWith(XtextRunner)
 @InjectWith(BlangDslInjectorProvider)
-class BlangDslParsingTest{
+class BlangDslParsingTest {
 
-	@Inject
-	ParseHelper<BlangModel> parseHelper;
+	@Inject extension ParseHelper<BlangModel>;
+	
+	@Inject extension ValidationTestHelper;
 
 	@Test 
-	def void loadModel() {
-		val result = parseHelper.parse('''
-			Hello Xtext!
-		''')
-		Assert.assertNotNull(result)
+	def void emptyModel() {
+		val model = '''
+			model {
+				
+			}
+		'''.parse
+		Assert.assertNotNull(model)
 	}
 
+	@Test
+	def void emptyFile() {
+		val model = '''
+		x
+		'''.parse;
+		Assert.assertNotNull(model);
+		assertError(model.eResource, EcorePackage.Literals.EOBJECT, Diagnostic.SYNTAX_DIAGNOSTIC);
+	}
+
+	@Test
+	def void randomParams() {
+		val model = '''
+			import blang.prototype.Real
+			model {
+				random Real mu
+				random Real y
+			}
+		'''.parse
+		model.assertNoErrors;
+	}
 }
