@@ -42,6 +42,15 @@ public interface BlangDslFactory extends EFactory
   Vars createVars();
 
   /**
+   * Returns a new object of class '<em>Random</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Random</em>'.
+   * @generated
+   */
+  Random createRandom();
+
+  /**
    * Returns a new object of class '<em>Var Decl</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -49,15 +58,6 @@ public interface BlangDslFactory extends EFactory
    * @generated
    */
   VarDecl createVarDecl();
-
-  /**
-   * Returns a new object of class '<em>Param</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Param</em>'.
-   * @generated
-   */
-  Param createParam();
 
   /**
    * Returns the package supported by this factory.

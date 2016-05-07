@@ -4,7 +4,7 @@
 package ca.ubc.stat.blang.blangDsl.impl;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
-import ca.ubc.stat.blang.blangDsl.VarDecl;
+import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.Vars;
 
 import java.util.Collection;
@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.VarsImpl#getDecl <em>Decl</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.VarsImpl#getRandomVars <em>Random Vars</em>}</li>
  * </ul>
  *
  * @generated
@@ -37,14 +37,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
 {
   /**
-   * The cached value of the '{@link #getDecl() <em>Decl</em>}' containment reference list.
+   * The cached value of the '{@link #getRandomVars() <em>Random Vars</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getDecl()
+   * @see #getRandomVars()
    * @generated
    * @ordered
    */
-  protected EList<VarDecl> decl;
+  protected EList<Random> randomVars;
 
   /**
    * <!-- begin-user-doc -->
@@ -72,13 +72,13 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<VarDecl> getDecl()
+  public EList<Random> getRandomVars()
   {
-    if (decl == null)
+    if (randomVars == null)
     {
-      decl = new EObjectContainmentEList<VarDecl>(VarDecl.class, this, BlangDslPackage.VARS__DECL);
+      randomVars = new EObjectContainmentEList<Random>(Random.class, this, BlangDslPackage.VARS__RANDOM_VARS);
     }
-    return decl;
+    return randomVars;
   }
 
   /**
@@ -91,8 +91,8 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
   {
     switch (featureID)
     {
-      case BlangDslPackage.VARS__DECL:
-        return ((InternalEList<?>)getDecl()).basicRemove(otherEnd, msgs);
+      case BlangDslPackage.VARS__RANDOM_VARS:
+        return ((InternalEList<?>)getRandomVars()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -107,8 +107,8 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
   {
     switch (featureID)
     {
-      case BlangDslPackage.VARS__DECL:
-        return getDecl();
+      case BlangDslPackage.VARS__RANDOM_VARS:
+        return getRandomVars();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -124,9 +124,9 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
   {
     switch (featureID)
     {
-      case BlangDslPackage.VARS__DECL:
-        getDecl().clear();
-        getDecl().addAll((Collection<? extends VarDecl>)newValue);
+      case BlangDslPackage.VARS__RANDOM_VARS:
+        getRandomVars().clear();
+        getRandomVars().addAll((Collection<? extends Random>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -142,8 +142,8 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
   {
     switch (featureID)
     {
-      case BlangDslPackage.VARS__DECL:
-        getDecl().clear();
+      case BlangDslPackage.VARS__RANDOM_VARS:
+        getRandomVars().clear();
         return;
     }
     super.eUnset(featureID);
@@ -159,8 +159,8 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
   {
     switch (featureID)
     {
-      case BlangDslPackage.VARS__DECL:
-        return decl != null && !decl.isEmpty();
+      case BlangDslPackage.VARS__RANDOM_VARS:
+        return randomVars != null && !randomVars.isEmpty();
     }
     return super.eIsSet(featureID);
   }

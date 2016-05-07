@@ -3,8 +3,6 @@
  */
 package ca.ubc.stat.blang.blangDsl;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.xtext.xtype.XImportSection;
@@ -21,7 +19,7 @@ import org.eclipse.xtext.xtype.XImportSection;
  *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getName <em>Name</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getImportSection <em>Import Section</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getVars <em>Vars</em>}</li>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getParams <em>Params</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getLaws <em>Laws</em>}</li>
  * </ul>
  *
  * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getBlangModel()
@@ -109,19 +107,29 @@ public interface BlangModel extends EObject
   void setVars(Vars value);
 
   /**
-   * Returns the value of the '<em><b>Params</b></em>' containment reference list.
-   * The list contents are of type {@link ca.ubc.stat.blang.blangDsl.Param}.
+   * Returns the value of the '<em><b>Laws</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Params</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Laws</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Params</em>' containment reference list.
-   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getBlangModel_Params()
-   * @model containment="true"
+   * @return the value of the '<em>Laws</em>' attribute.
+   * @see #setLaws(String)
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getBlangModel_Laws()
+   * @model
    * @generated
    */
-  EList<Param> getParams();
+  String getLaws();
+
+  /**
+   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.BlangModel#getLaws <em>Laws</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Laws</em>' attribute.
+   * @see #getLaws()
+   * @generated
+   */
+  void setLaws(String value);
 
 } // BlangModel

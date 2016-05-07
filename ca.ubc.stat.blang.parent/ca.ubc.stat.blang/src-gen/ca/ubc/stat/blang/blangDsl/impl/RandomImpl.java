@@ -4,7 +4,7 @@
 package ca.ubc.stat.blang.blangDsl.impl;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
-import ca.ubc.stat.blang.blangDsl.Param;
+import ca.ubc.stat.blang.blangDsl.Random;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -19,20 +19,30 @@ import org.eclipse.xtext.common.types.JvmTypeReference;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Param</b></em>'.
+ * An implementation of the model object '<em><b>Random</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ParamImpl#getName <em>Name</em>}</li>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ParamImpl#getDistr <em>Distr</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.RandomImpl#getType <em>Type</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.RandomImpl#getName <em>Name</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ParamImpl extends MinimalEObjectImpl.Container implements Param
+public class RandomImpl extends MinimalEObjectImpl.Container implements Random
 {
+  /**
+   * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getType()
+   * @generated
+   * @ordered
+   */
+  protected JvmTypeReference type;
+
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -54,21 +64,11 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getDistr() <em>Distr</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDistr()
-   * @generated
-   * @ordered
-   */
-  protected JvmTypeReference distr;
-
-  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ParamImpl()
+  protected RandomImpl()
   {
     super();
   }
@@ -81,7 +81,55 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
   @Override
   protected EClass eStaticClass()
   {
-    return BlangDslPackage.Literals.PARAM;
+    return BlangDslPackage.Literals.RANDOM;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JvmTypeReference getType()
+  {
+    return type;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetType(JvmTypeReference newType, NotificationChain msgs)
+  {
+    JvmTypeReference oldType = type;
+    type = newType;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BlangDslPackage.RANDOM__TYPE, oldType, newType);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setType(JvmTypeReference newType)
+  {
+    if (newType != type)
+    {
+      NotificationChain msgs = null;
+      if (type != null)
+        msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.RANDOM__TYPE, null, msgs);
+      if (newType != null)
+        msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.RANDOM__TYPE, null, msgs);
+      msgs = basicSetType(newType, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.RANDOM__TYPE, newType, newType));
   }
 
   /**
@@ -104,55 +152,7 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.PARAM__NAME, oldName, name));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public JvmTypeReference getDistr()
-  {
-    return distr;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetDistr(JvmTypeReference newDistr, NotificationChain msgs)
-  {
-    JvmTypeReference oldDistr = distr;
-    distr = newDistr;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BlangDslPackage.PARAM__DISTR, oldDistr, newDistr);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setDistr(JvmTypeReference newDistr)
-  {
-    if (newDistr != distr)
-    {
-      NotificationChain msgs = null;
-      if (distr != null)
-        msgs = ((InternalEObject)distr).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.PARAM__DISTR, null, msgs);
-      if (newDistr != null)
-        msgs = ((InternalEObject)newDistr).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.PARAM__DISTR, null, msgs);
-      msgs = basicSetDistr(newDistr, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.PARAM__DISTR, newDistr, newDistr));
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.RANDOM__NAME, oldName, name));
   }
 
   /**
@@ -165,8 +165,8 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM__DISTR:
-        return basicSetDistr(null, msgs);
+      case BlangDslPackage.RANDOM__TYPE:
+        return basicSetType(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -181,10 +181,10 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM__NAME:
+      case BlangDslPackage.RANDOM__TYPE:
+        return getType();
+      case BlangDslPackage.RANDOM__NAME:
         return getName();
-      case BlangDslPackage.PARAM__DISTR:
-        return getDistr();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -199,11 +199,11 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM__NAME:
-        setName((String)newValue);
+      case BlangDslPackage.RANDOM__TYPE:
+        setType((JvmTypeReference)newValue);
         return;
-      case BlangDslPackage.PARAM__DISTR:
-        setDistr((JvmTypeReference)newValue);
+      case BlangDslPackage.RANDOM__NAME:
+        setName((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -219,11 +219,11 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM__NAME:
-        setName(NAME_EDEFAULT);
+      case BlangDslPackage.RANDOM__TYPE:
+        setType((JvmTypeReference)null);
         return;
-      case BlangDslPackage.PARAM__DISTR:
-        setDistr((JvmTypeReference)null);
+      case BlangDslPackage.RANDOM__NAME:
+        setName(NAME_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -239,10 +239,10 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM__NAME:
+      case BlangDslPackage.RANDOM__TYPE:
+        return type != null;
+      case BlangDslPackage.RANDOM__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case BlangDslPackage.PARAM__DISTR:
-        return distr != null;
     }
     return super.eIsSet(featureID);
   }
@@ -264,4 +264,4 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param
     return result.toString();
   }
 
-} //ParamImpl
+} //RandomImpl

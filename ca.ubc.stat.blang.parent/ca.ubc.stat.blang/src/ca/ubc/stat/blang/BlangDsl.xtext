@@ -3,29 +3,29 @@ grammar ca.ubc.stat.blang.BlangDsl with org.eclipse.xtext.xbase.Xbase
 generate blangDsl "http://www.ubc.ca/stat/blang/BlangDsl"
 
 BlangModel:
+	{BlangModel}
 	('package' name=QualifiedName)?
 	importSection=XImportSection?
-	vars=Vars?
-	params += Param*
+	('model' '{'
+		vars=Vars
+		laws = Laws?
+	'}')?
 	;
 	
 Vars:
 	{Vars}
-	'variables' '{'
-	  (decl += VarDecl)*
-	'}'
+	(randomVars += Random)*
 	;
+
+Random:
+	'random' type=JvmTypeReference name=ValidID
+;
 
 VarDecl:
 	type=JvmTypeReference? name=ValidID '=' right=XExpression
 ;
 
-Param:
-	name=ValidID '~' distr=JvmTypeReference DistInit
-;
-
-DistInit:
-	'('
-	
-	')'
+Laws:
+	'laws' '{'
+	'}'
 ;

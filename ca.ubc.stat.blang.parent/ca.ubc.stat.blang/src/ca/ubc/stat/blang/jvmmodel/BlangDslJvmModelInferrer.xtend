@@ -12,6 +12,8 @@ import org.eclipse.xtext.common.types.JvmVisibility
 import java.util.Collection
 
 import ca.ubc.stat.blang.blangDsl.BlangModel
+import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
+import blang.core.ModelComponent
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -57,26 +59,31 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
    			if (model.name != null) {
    				it.packageName = model.name;
    			}
+   			
+   			// TODO: add "implements interface blang.core.Model
+   			
    			if (model.vars != null) {
-   				for (varDecl : model.vars.decl) {
-   					val type = varDecl.type ?: varDecl.right.inferredType;
-   					members += varDecl.toField(varDecl.name, type ) [
+   				for (varDecl : model.vars.randomVars) {
+   					members += varDecl.toField(varDecl.name, varDecl.type ) [
    						visibility = JvmVisibility.PUBLIC
    						it.final = true
-   						
-   						initializer = varDecl.right
    					]
    				}
    			}
    			
-   			for (param : model.params) {
-				// use ReflexionUtils.getAnnotatedDeclaredFields
-   			}
+   			// TODO: add constructor "Name(randomVar...) {(this.randomVar = randomVar)...}
    			
-   			members += model.toMethod("factors", typeRef(Collection, typeRef(String))) [
+   			it.members += model.toMethod("components", typeRef(Collection, typeRef(ModelComponent))) [
+   				visibility = JvmVisibility.PUBLIC
    				body = '''
-   				return new java.util.ArrayList();
-   				'''
+   					ArrayList<blang.core.ModelComponent> components = new ArrayList();
+   					
+   					«
+   					// TODO: iterate through components in the laws section
+   					»
+   					
+   					return components;
+	   			'''
    			]
    		]
 	}

@@ -87,17 +87,17 @@ public class BlangDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BlangDslPackage.RANDOM:
+      {
+        Random random = (Random)theEObject;
+        T result = caseRandom(random);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BlangDslPackage.VAR_DECL:
       {
         VarDecl varDecl = (VarDecl)theEObject;
         T result = caseVarDecl(varDecl);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BlangDslPackage.PARAM:
-      {
-        Param param = (Param)theEObject;
-        T result = caseParam(param);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -138,6 +138,22 @@ public class BlangDslSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Random</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Random</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRandom(Random object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Var Decl</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -149,22 +165,6 @@ public class BlangDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseVarDecl(VarDecl object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Param</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Param</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseParam(Param object)
   {
     return null;
   }

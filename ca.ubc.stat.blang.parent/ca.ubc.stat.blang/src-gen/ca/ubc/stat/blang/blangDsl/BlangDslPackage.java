@@ -95,13 +95,13 @@ public interface BlangDslPackage extends EPackage
   int BLANG_MODEL__VARS = 2;
 
   /**
-   * The feature id for the '<em><b>Params</b></em>' containment reference list.
+   * The feature id for the '<em><b>Laws</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BLANG_MODEL__PARAMS = 3;
+  int BLANG_MODEL__LAWS = 3;
 
   /**
    * The number of structural features of the '<em>Blang Model</em>' class.
@@ -123,13 +123,13 @@ public interface BlangDslPackage extends EPackage
   int VARS = 1;
 
   /**
-   * The feature id for the '<em><b>Decl</b></em>' containment reference list.
+   * The feature id for the '<em><b>Random Vars</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VARS__DECL = 0;
+  int VARS__RANDOM_VARS = 0;
 
   /**
    * The number of structural features of the '<em>Vars</em>' class.
@@ -141,6 +141,43 @@ public interface BlangDslPackage extends EPackage
   int VARS_FEATURE_COUNT = 1;
 
   /**
+   * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.RandomImpl <em>Random</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see ca.ubc.stat.blang.blangDsl.impl.RandomImpl
+   * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getRandom()
+   * @generated
+   */
+  int RANDOM = 2;
+
+  /**
+   * The feature id for the '<em><b>Type</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RANDOM__TYPE = 0;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RANDOM__NAME = 1;
+
+  /**
+   * The number of structural features of the '<em>Random</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RANDOM_FEATURE_COUNT = 2;
+
+  /**
    * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.VarDeclImpl <em>Var Decl</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -148,7 +185,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getVarDecl()
    * @generated
    */
-  int VAR_DECL = 2;
+  int VAR_DECL = 3;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -185,43 +222,6 @@ public interface BlangDslPackage extends EPackage
    * @ordered
    */
   int VAR_DECL_FEATURE_COUNT = 3;
-
-  /**
-   * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.ParamImpl <em>Param</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see ca.ubc.stat.blang.blangDsl.impl.ParamImpl
-   * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getParam()
-   * @generated
-   */
-  int PARAM = 3;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PARAM__NAME = 0;
-
-  /**
-   * The feature id for the '<em><b>Distr</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PARAM__DISTR = 1;
-
-  /**
-   * The number of structural features of the '<em>Param</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PARAM_FEATURE_COUNT = 2;
 
 
   /**
@@ -268,15 +268,15 @@ public interface BlangDslPackage extends EPackage
   EReference getBlangModel_Vars();
 
   /**
-   * Returns the meta object for the containment reference list '{@link ca.ubc.stat.blang.blangDsl.BlangModel#getParams <em>Params</em>}'.
+   * Returns the meta object for the attribute '{@link ca.ubc.stat.blang.blangDsl.BlangModel#getLaws <em>Laws</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Params</em>'.
-   * @see ca.ubc.stat.blang.blangDsl.BlangModel#getParams()
+   * @return the meta object for the attribute '<em>Laws</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.BlangModel#getLaws()
    * @see #getBlangModel()
    * @generated
    */
-  EReference getBlangModel_Params();
+  EAttribute getBlangModel_Laws();
 
   /**
    * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.Vars <em>Vars</em>}'.
@@ -289,15 +289,47 @@ public interface BlangDslPackage extends EPackage
   EClass getVars();
 
   /**
-   * Returns the meta object for the containment reference list '{@link ca.ubc.stat.blang.blangDsl.Vars#getDecl <em>Decl</em>}'.
+   * Returns the meta object for the containment reference list '{@link ca.ubc.stat.blang.blangDsl.Vars#getRandomVars <em>Random Vars</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Decl</em>'.
-   * @see ca.ubc.stat.blang.blangDsl.Vars#getDecl()
+   * @return the meta object for the containment reference list '<em>Random Vars</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Vars#getRandomVars()
    * @see #getVars()
    * @generated
    */
-  EReference getVars_Decl();
+  EReference getVars_RandomVars();
+
+  /**
+   * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.Random <em>Random</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Random</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Random
+   * @generated
+   */
+  EClass getRandom();
+
+  /**
+   * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.Random#getType <em>Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Type</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Random#getType()
+   * @see #getRandom()
+   * @generated
+   */
+  EReference getRandom_Type();
+
+  /**
+   * Returns the meta object for the attribute '{@link ca.ubc.stat.blang.blangDsl.Random#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Random#getName()
+   * @see #getRandom()
+   * @generated
+   */
+  EAttribute getRandom_Name();
 
   /**
    * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.VarDecl <em>Var Decl</em>}'.
@@ -341,38 +373,6 @@ public interface BlangDslPackage extends EPackage
    * @generated
    */
   EReference getVarDecl_Right();
-
-  /**
-   * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.Param <em>Param</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Param</em>'.
-   * @see ca.ubc.stat.blang.blangDsl.Param
-   * @generated
-   */
-  EClass getParam();
-
-  /**
-   * Returns the meta object for the attribute '{@link ca.ubc.stat.blang.blangDsl.Param#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see ca.ubc.stat.blang.blangDsl.Param#getName()
-   * @see #getParam()
-   * @generated
-   */
-  EAttribute getParam_Name();
-
-  /**
-   * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.Param#getDistr <em>Distr</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Distr</em>'.
-   * @see ca.ubc.stat.blang.blangDsl.Param#getDistr()
-   * @see #getParam()
-   * @generated
-   */
-  EReference getParam_Distr();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -432,12 +432,12 @@ public interface BlangDslPackage extends EPackage
     EReference BLANG_MODEL__VARS = eINSTANCE.getBlangModel_Vars();
 
     /**
-     * The meta object literal for the '<em><b>Params</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Laws</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference BLANG_MODEL__PARAMS = eINSTANCE.getBlangModel_Params();
+    EAttribute BLANG_MODEL__LAWS = eINSTANCE.getBlangModel_Laws();
 
     /**
      * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.VarsImpl <em>Vars</em>}' class.
@@ -450,12 +450,38 @@ public interface BlangDslPackage extends EPackage
     EClass VARS = eINSTANCE.getVars();
 
     /**
-     * The meta object literal for the '<em><b>Decl</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Random Vars</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference VARS__DECL = eINSTANCE.getVars_Decl();
+    EReference VARS__RANDOM_VARS = eINSTANCE.getVars_RandomVars();
+
+    /**
+     * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.RandomImpl <em>Random</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see ca.ubc.stat.blang.blangDsl.impl.RandomImpl
+     * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getRandom()
+     * @generated
+     */
+    EClass RANDOM = eINSTANCE.getRandom();
+
+    /**
+     * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference RANDOM__TYPE = eINSTANCE.getRandom_Type();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RANDOM__NAME = eINSTANCE.getRandom_Name();
 
     /**
      * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.VarDeclImpl <em>Var Decl</em>}' class.
@@ -490,32 +516,6 @@ public interface BlangDslPackage extends EPackage
      * @generated
      */
     EReference VAR_DECL__RIGHT = eINSTANCE.getVarDecl_Right();
-
-    /**
-     * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.ParamImpl <em>Param</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see ca.ubc.stat.blang.blangDsl.impl.ParamImpl
-     * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getParam()
-     * @generated
-     */
-    EClass PARAM = eINSTANCE.getParam();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute PARAM__NAME = eINSTANCE.getParam_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Distr</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference PARAM__DISTR = eINSTANCE.getParam_Distr();
 
   }
 

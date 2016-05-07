@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.Vars#getDecl <em>Decl</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.Vars#getRandomVars <em>Random Vars</em>}</li>
  * </ul>
  *
  * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getVars()
@@ -26,19 +26,19 @@ import org.eclipse.emf.ecore.EObject;
 public interface Vars extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Decl</b></em>' containment reference list.
-   * The list contents are of type {@link ca.ubc.stat.blang.blangDsl.VarDecl}.
+   * Returns the value of the '<em><b>Random Vars</b></em>' containment reference list.
+   * The list contents are of type {@link ca.ubc.stat.blang.blangDsl.Random}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Decl</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Random Vars</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Decl</em>' containment reference list.
-   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getVars_Decl()
+   * @return the value of the '<em>Random Vars</em>' containment reference list.
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getVars_RandomVars()
    * @model containment="true"
    * @generated
    */
-  EList<VarDecl> getDecl();
+  EList<Random> getRandomVars();
 
 } // Vars

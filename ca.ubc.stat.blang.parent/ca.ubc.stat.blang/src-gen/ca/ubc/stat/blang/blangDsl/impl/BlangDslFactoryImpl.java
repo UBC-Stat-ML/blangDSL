@@ -67,8 +67,8 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
     {
       case BlangDslPackage.BLANG_MODEL: return createBlangModel();
       case BlangDslPackage.VARS: return createVars();
+      case BlangDslPackage.RANDOM: return createRandom();
       case BlangDslPackage.VAR_DECL: return createVarDecl();
-      case BlangDslPackage.PARAM: return createParam();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -101,10 +101,10 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public VarDecl createVarDecl()
+  public Random createRandom()
   {
-    VarDeclImpl varDecl = new VarDeclImpl();
-    return varDecl;
+    RandomImpl random = new RandomImpl();
+    return random;
   }
 
   /**
@@ -112,10 +112,10 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Param createParam()
+  public VarDecl createVarDecl()
   {
-    ParamImpl param = new ParamImpl();
-    return param;
+    VarDeclImpl varDecl = new VarDeclImpl();
+    return varDecl;
   }
 
   /**

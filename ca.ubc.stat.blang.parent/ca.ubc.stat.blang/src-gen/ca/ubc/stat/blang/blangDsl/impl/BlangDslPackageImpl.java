@@ -6,7 +6,7 @@ package ca.ubc.stat.blang.blangDsl.impl;
 import ca.ubc.stat.blang.blangDsl.BlangDslFactory;
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
-import ca.ubc.stat.blang.blangDsl.Param;
+import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.VarDecl;
 import ca.ubc.stat.blang.blangDsl.Vars;
 
@@ -50,14 +50,14 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass varDeclEClass = null;
+  private EClass randomEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass paramEClass = null;
+  private EClass varDeclEClass = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -171,9 +171,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getBlangModel_Params()
+  public EAttribute getBlangModel_Laws()
   {
-    return (EReference)blangModelEClass.getEStructuralFeatures().get(3);
+    return (EAttribute)blangModelEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -191,9 +191,39 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getVars_Decl()
+  public EReference getVars_RandomVars()
   {
     return (EReference)varsEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRandom()
+  {
+    return randomEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getRandom_Type()
+  {
+    return (EReference)randomEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRandom_Name()
+  {
+    return (EAttribute)randomEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -241,36 +271,6 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getParam()
-  {
-    return paramEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getParam_Name()
-  {
-    return (EAttribute)paramEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getParam_Distr()
-  {
-    return (EReference)paramEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public BlangDslFactory getBlangDslFactory()
   {
     return (BlangDslFactory)getEFactoryInstance();
@@ -300,19 +300,19 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     createEAttribute(blangModelEClass, BLANG_MODEL__NAME);
     createEReference(blangModelEClass, BLANG_MODEL__IMPORT_SECTION);
     createEReference(blangModelEClass, BLANG_MODEL__VARS);
-    createEReference(blangModelEClass, BLANG_MODEL__PARAMS);
+    createEAttribute(blangModelEClass, BLANG_MODEL__LAWS);
 
     varsEClass = createEClass(VARS);
-    createEReference(varsEClass, VARS__DECL);
+    createEReference(varsEClass, VARS__RANDOM_VARS);
+
+    randomEClass = createEClass(RANDOM);
+    createEReference(randomEClass, RANDOM__TYPE);
+    createEAttribute(randomEClass, RANDOM__NAME);
 
     varDeclEClass = createEClass(VAR_DECL);
     createEReference(varDeclEClass, VAR_DECL__TYPE);
     createEAttribute(varDeclEClass, VAR_DECL__NAME);
     createEReference(varDeclEClass, VAR_DECL__RIGHT);
-
-    paramEClass = createEClass(PARAM);
-    createEAttribute(paramEClass, PARAM__NAME);
-    createEReference(paramEClass, PARAM__DISTR);
   }
 
   /**
@@ -355,19 +355,19 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     initEAttribute(getBlangModel_Name(), ecorePackage.getEString(), "name", null, 0, 1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBlangModel_ImportSection(), theXtypePackage.getXImportSection(), null, "importSection", null, 0, 1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBlangModel_Vars(), this.getVars(), null, "vars", null, 0, 1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBlangModel_Params(), this.getParam(), null, "params", null, 0, -1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBlangModel_Laws(), ecorePackage.getEString(), "laws", null, 0, 1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(varsEClass, Vars.class, "Vars", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getVars_Decl(), this.getVarDecl(), null, "decl", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getVars_RandomVars(), this.getRandom(), null, "randomVars", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(randomEClass, Random.class, "Random", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getRandom_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, Random.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRandom_Name(), ecorePackage.getEString(), "name", null, 0, 1, Random.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(varDeclEClass, VarDecl.class, "VarDecl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getVarDecl_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, VarDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVarDecl_Name(), ecorePackage.getEString(), "name", null, 0, 1, VarDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getVarDecl_Right(), theXbasePackage.getXExpression(), null, "right", null, 0, 1, VarDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(paramEClass, Param.class, "Param", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getParam_Name(), ecorePackage.getEString(), "name", null, 0, 1, Param.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getParam_Distr(), theTypesPackage.getJvmTypeReference(), null, "distr", null, 0, 1, Param.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

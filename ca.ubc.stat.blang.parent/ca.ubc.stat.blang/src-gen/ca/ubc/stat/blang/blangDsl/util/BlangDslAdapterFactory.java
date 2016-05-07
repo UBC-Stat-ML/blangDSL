@@ -86,14 +86,14 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
         return createVarsAdapter();
       }
       @Override
+      public Adapter caseRandom(Random object)
+      {
+        return createRandomAdapter();
+      }
+      @Override
       public Adapter caseVarDecl(VarDecl object)
       {
         return createVarDeclAdapter();
-      }
-      @Override
-      public Adapter caseParam(Param object)
-      {
-        return createParamAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -148,6 +148,21 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.Random <em>Random</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see ca.ubc.stat.blang.blangDsl.Random
+   * @generated
+   */
+  public Adapter createRandomAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.VarDecl <em>Var Decl</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -158,21 +173,6 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createVarDeclAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.Param <em>Param</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see ca.ubc.stat.blang.blangDsl.Param
-   * @generated
-   */
-  public Adapter createParamAdapter()
   {
     return null;
   }

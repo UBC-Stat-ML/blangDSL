@@ -5,24 +5,16 @@ package ca.ubc.stat.blang.blangDsl.impl;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
-import ca.ubc.stat.blang.blangDsl.Param;
 import ca.ubc.stat.blang.blangDsl.Vars;
-
-import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.xtext.xtype.XImportSection;
 
@@ -37,7 +29,7 @@ import org.eclipse.xtext.xtype.XImportSection;
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getImportSection <em>Import Section</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getVars <em>Vars</em>}</li>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getParams <em>Params</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getLaws <em>Laws</em>}</li>
  * </ul>
  *
  * @generated
@@ -85,14 +77,24 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
   protected Vars vars;
 
   /**
-   * The cached value of the '{@link #getParams() <em>Params</em>}' containment reference list.
+   * The default value of the '{@link #getLaws() <em>Laws</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getParams()
+   * @see #getLaws()
    * @generated
    * @ordered
    */
-  protected EList<Param> params;
+  protected static final String LAWS_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getLaws() <em>Laws</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getLaws()
+   * @generated
+   * @ordered
+   */
+  protected String laws = LAWS_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -239,13 +241,22 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Param> getParams()
+  public String getLaws()
   {
-    if (params == null)
-    {
-      params = new EObjectContainmentEList<Param>(Param.class, this, BlangDslPackage.BLANG_MODEL__PARAMS);
-    }
-    return params;
+    return laws;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setLaws(String newLaws)
+  {
+    String oldLaws = laws;
+    laws = newLaws;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.BLANG_MODEL__LAWS, oldLaws, laws));
   }
 
   /**
@@ -262,8 +273,6 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         return basicSetImportSection(null, msgs);
       case BlangDslPackage.BLANG_MODEL__VARS:
         return basicSetVars(null, msgs);
-      case BlangDslPackage.BLANG_MODEL__PARAMS:
-        return ((InternalEList<?>)getParams()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -284,8 +293,8 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         return getImportSection();
       case BlangDslPackage.BLANG_MODEL__VARS:
         return getVars();
-      case BlangDslPackage.BLANG_MODEL__PARAMS:
-        return getParams();
+      case BlangDslPackage.BLANG_MODEL__LAWS:
+        return getLaws();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -295,7 +304,6 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -310,9 +318,8 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
       case BlangDslPackage.BLANG_MODEL__VARS:
         setVars((Vars)newValue);
         return;
-      case BlangDslPackage.BLANG_MODEL__PARAMS:
-        getParams().clear();
-        getParams().addAll((Collection<? extends Param>)newValue);
+      case BlangDslPackage.BLANG_MODEL__LAWS:
+        setLaws((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -337,8 +344,8 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
       case BlangDslPackage.BLANG_MODEL__VARS:
         setVars((Vars)null);
         return;
-      case BlangDslPackage.BLANG_MODEL__PARAMS:
-        getParams().clear();
+      case BlangDslPackage.BLANG_MODEL__LAWS:
+        setLaws(LAWS_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -360,8 +367,8 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         return importSection != null;
       case BlangDslPackage.BLANG_MODEL__VARS:
         return vars != null;
-      case BlangDslPackage.BLANG_MODEL__PARAMS:
-        return params != null && !params.isEmpty();
+      case BlangDslPackage.BLANG_MODEL__LAWS:
+        return LAWS_EDEFAULT == null ? laws != null : !LAWS_EDEFAULT.equals(laws);
     }
     return super.eIsSet(featureID);
   }
@@ -379,6 +386,8 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
+    result.append(", laws: ");
+    result.append(laws);
     result.append(')');
     return result.toString();
   }

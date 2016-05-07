@@ -3,9 +3,9 @@
  */
 package ca.ubc.stat.blang.jvmmodel;
 
+import blang.core.ModelComponent;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
-import ca.ubc.stat.blang.blangDsl.Param;
-import ca.ubc.stat.blang.blangDsl.VarDecl;
+import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.Vars;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
@@ -22,7 +22,6 @@ import org.eclipse.xtext.common.types.JvmMember;
 import org.eclipse.xtext.common.types.JvmOperation;
 import org.eclipse.xtext.common.types.JvmTypeReference;
 import org.eclipse.xtext.common.types.JvmVisibility;
-import org.eclipse.xtext.xbase.XExpression;
 import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer;
 import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor;
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder;
@@ -86,50 +85,40 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
       boolean _notEquals_1 = (!Objects.equal(_vars, null));
       if (_notEquals_1) {
         Vars _vars_1 = model.getVars();
-        EList<VarDecl> _decl = _vars_1.getDecl();
-        for (final VarDecl varDecl : _decl) {
-          {
-            JvmTypeReference _elvis = null;
-            JvmTypeReference _type = varDecl.getType();
-            if (_type != null) {
-              _elvis = _type;
-            } else {
-              XExpression _right = varDecl.getRight();
-              JvmTypeReference _inferredType = this._jvmTypesBuilder.inferredType(_right);
-              _elvis = _inferredType;
-            }
-            final JvmTypeReference type = _elvis;
-            EList<JvmMember> _members = it.getMembers();
-            String _name_2 = varDecl.getName();
-            final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
-              it_1.setVisibility(JvmVisibility.PUBLIC);
-              it_1.setFinal(true);
-              XExpression _right_1 = varDecl.getRight();
-              this._jvmTypesBuilder.setInitializer(it_1, _right_1);
-            };
-            JvmField _field = this._jvmTypesBuilder.toField(varDecl, _name_2, type, _function_1);
-            this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
-          }
+        EList<Random> _randomVars = _vars_1.getRandomVars();
+        for (final Random varDecl : _randomVars) {
+          EList<JvmMember> _members = it.getMembers();
+          String _name_2 = varDecl.getName();
+          JvmTypeReference _type = varDecl.getType();
+          final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
+            it_1.setVisibility(JvmVisibility.PUBLIC);
+            it_1.setFinal(true);
+          };
+          JvmField _field = this._jvmTypesBuilder.toField(varDecl, _name_2, _type, _function_1);
+          this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
         }
       }
-      EList<Param> _params = model.getParams();
-      for (final Param param : _params) {
-      }
-      EList<JvmMember> _members = it.getMembers();
-      JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(String.class);
+      EList<JvmMember> _members_1 = it.getMembers();
+      JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(ModelComponent.class);
       JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Collection.class, _typeRef);
-      final Procedure1<JvmOperation> _function_1 = (JvmOperation it_1) -> {
+      final Procedure1<JvmOperation> _function_2 = (JvmOperation it_1) -> {
+        it_1.setVisibility(JvmVisibility.PUBLIC);
         StringConcatenationClient _client = new StringConcatenationClient() {
           @Override
           protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            _builder.append("return new java.util.ArrayList();");
+            _builder.append("ArrayList<blang.core.ModelComponent> components = new ArrayList();");
+            _builder.newLine();
+            _builder.newLine();
+            _builder.newLine();
+            _builder.newLine();
+            _builder.append("return components;");
             _builder.newLine();
           }
         };
         this._jvmTypesBuilder.setBody(it_1, _client);
       };
-      JvmOperation _method = this._jvmTypesBuilder.toMethod(model, "factors", _typeRef_1, _function_1);
-      this._jvmTypesBuilder.<JvmOperation>operator_add(_members, _method);
+      JvmOperation _method = this._jvmTypesBuilder.toMethod(model, "components", _typeRef_1, _function_2);
+      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_1, _method);
     };
     acceptor.<JvmGenericType>accept(_class, _function);
   }
