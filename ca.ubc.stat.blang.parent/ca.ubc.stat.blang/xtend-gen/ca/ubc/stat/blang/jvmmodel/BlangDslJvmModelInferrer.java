@@ -3,6 +3,7 @@
  */
 package ca.ubc.stat.blang.jvmmodel;
 
+import blang.core.Model;
 import blang.core.ModelComponent;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
 import ca.ubc.stat.blang.blangDsl.Random;
@@ -16,6 +17,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtend2.lib.StringConcatenationClient;
+import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.common.types.JvmField;
 import org.eclipse.xtext.common.types.JvmGenericType;
 import org.eclipse.xtext.common.types.JvmMember;
@@ -49,18 +51,18 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
    * 
    * @param element
    *            the model to create one or more
-   *            {@link org.eclipse.xtext.common.types.JvmDeclaredType declared
+   *            {@link JvmDeclaredType declared
    *            types} from.
    * @param acceptor
    *            each created
-   *            {@link org.eclipse.xtext.common.types.JvmDeclaredType type}
+   *            {@link JvmDeclaredType type}
    *            without a container should be passed to the acceptor in order
    *            get attached to the current resource. The acceptor's
    *            {@link IJvmDeclaredTypeAcceptor#accept(org.eclipse.xtext.common.types.JvmDeclaredType)
    *            accept(..)} method takes the constructed empty type for the
    *            pre-indexing phase. This one is further initialized in the
    *            indexing phase using the closure you pass to the returned
-   *            {@link org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor.IPostIndexingInitializing#initializeLater(org.eclipse.xtext.xbase.lib.Procedures.Procedure1)
+   *            {@link IPostIndexingInitializing#initializeLater(org.eclipse.xtext.xbase.lib.Procedures.Procedure1)
    *            initializeLater(..)}.
    * @param isPreIndexingPhase
    *            whether the method is called in a pre-indexing phase, i.e.
@@ -81,6 +83,9 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         String _name_1 = model.getName();
         it.setPackageName(_name_1);
       }
+      EList<JvmTypeReference> _superTypes = it.getSuperTypes();
+      JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(Model.class);
+      this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
       Vars _vars = model.getVars();
       boolean _notEquals_1 = (!Objects.equal(_vars, null));
       if (_notEquals_1) {
@@ -99,14 +104,14 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         }
       }
       EList<JvmMember> _members_1 = it.getMembers();
-      JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(ModelComponent.class);
-      JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Collection.class, _typeRef);
+      JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(ModelComponent.class);
+      JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Collection.class, _typeRef_1);
       final Procedure1<JvmOperation> _function_2 = (JvmOperation it_1) -> {
         it_1.setVisibility(JvmVisibility.PUBLIC);
         StringConcatenationClient _client = new StringConcatenationClient() {
           @Override
           protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            _builder.append("ArrayList<blang.core.ModelComponent> components = new ArrayList();");
+            _builder.append("java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();");
             _builder.newLine();
             _builder.newLine();
             _builder.newLine();
@@ -117,7 +122,7 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         };
         this._jvmTypesBuilder.setBody(it_1, _client);
       };
-      JvmOperation _method = this._jvmTypesBuilder.toMethod(model, "components", _typeRef_1, _function_2);
+      JvmOperation _method = this._jvmTypesBuilder.toMethod(model, "components", _typeRef_2, _function_2);
       this._jvmTypesBuilder.<JvmOperation>operator_add(_members_1, _method);
     };
     acceptor.<JvmGenericType>accept(_class, _function);

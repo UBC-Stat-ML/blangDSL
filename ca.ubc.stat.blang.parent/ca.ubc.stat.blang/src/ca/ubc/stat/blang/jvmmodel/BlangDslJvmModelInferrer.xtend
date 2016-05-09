@@ -3,16 +3,16 @@
  */
 package ca.ubc.stat.blang.jvmmodel
 
+import ca.ubc.stat.blang.blangDsl.BlangModel
 import com.google.inject.Inject
+import java.util.Collection
+import org.eclipse.xtext.common.types.JvmDeclaredType
+import org.eclipse.xtext.common.types.JvmVisibility
 import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer
 import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import org.eclipse.xtext.common.types.JvmVisibility
 
-import java.util.Collection
-
-import ca.ubc.stat.blang.blangDsl.BlangModel
-import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
+import blang.core.Model
 import blang.core.ModelComponent
 
 /**
@@ -34,18 +34,18 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
 	 * 
 	 * @param element
 	 *            the model to create one or more
-	 *            {@link org.eclipse.xtext.common.types.JvmDeclaredType declared
+	 *            {@link JvmDeclaredType declared
 	 *            types} from.
 	 * @param acceptor
 	 *            each created
-	 *            {@link org.eclipse.xtext.common.types.JvmDeclaredType type}
+	 *            {@link JvmDeclaredType type}
 	 *            without a container should be passed to the acceptor in order
 	 *            get attached to the current resource. The acceptor's
 	 *            {@link IJvmDeclaredTypeAcceptor#accept(org.eclipse.xtext.common.types.JvmDeclaredType)
 	 *            accept(..)} method takes the constructed empty type for the
 	 *            pre-indexing phase. This one is further initialized in the
 	 *            indexing phase using the closure you pass to the returned
-	 *            {@link org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor.IPostIndexingInitializing#initializeLater(org.eclipse.xtext.xbase.lib.Procedures.Procedure1)
+	 *            {@link IPostIndexingInitializing#initializeLater(org.eclipse.xtext.xbase.lib.Procedures.Procedure1)
 	 *            initializeLater(..)}.
 	 * @param isPreIndexingPhase
 	 *            whether the method is called in a pre-indexing phase, i.e.
@@ -60,7 +60,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
    				it.packageName = model.name;
    			}
    			
-   			// TODO: add "implements interface blang.core.Model
+   			it.superTypes += typeRef(Model)
    			
    			if (model.vars != null) {
    				for (varDecl : model.vars.randomVars) {
@@ -76,7 +76,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
    			it.members += model.toMethod("components", typeRef(Collection, typeRef(ModelComponent))) [
    				visibility = JvmVisibility.PUBLIC
    				body = '''
-   					ArrayList<blang.core.ModelComponent> components = new ArrayList();
+   					java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();
    					
    					«
    					// TODO: iterate through components in the laws section
