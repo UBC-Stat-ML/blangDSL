@@ -45,7 +45,6 @@ class BlangDslParsingTest {
 	@Test
 	def void randomParams() {
 		val model = '''
-			import blang.prototype.Real
 			model {
 				random Real mu
 				random Real y

@@ -68,8 +68,6 @@ public class BlangDslParsingTest {
   public void randomParams() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("import blang.prototype.Real");
-      _builder.newLine();
       _builder.append("model {");
       _builder.newLine();
       _builder.append("\t");

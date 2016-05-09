@@ -4,10 +4,25 @@
 package ca.ubc.stat.blang;
 
 import ca.ubc.stat.blang.AbstractBlangDslRuntimeModule;
+import ca.ubc.stat.blang.scoping.ImplicitImportsScopeProvider;
+import com.google.inject.Binder;
+import com.google.inject.binder.AnnotatedBindingBuilder;
+import com.google.inject.binder.LinkedBindingBuilder;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
+import org.eclipse.xtext.scoping.IScopeProvider;
+import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 @SuppressWarnings("all")
 public class BlangDslRuntimeModule extends AbstractBlangDslRuntimeModule {
+  @Override
+  public void configureIScopeProviderDelegate(final Binder binder) {
+    AnnotatedBindingBuilder<IScopeProvider> _bind = binder.<IScopeProvider>bind(IScopeProvider.class);
+    Named _named = Names.named(AbstractDeclarativeScopeProvider.NAMED_DELEGATE);
+    LinkedBindingBuilder<IScopeProvider> _annotatedWith = _bind.annotatedWith(_named);
+    _annotatedWith.to(ImplicitImportsScopeProvider.class);
+  }
 }
