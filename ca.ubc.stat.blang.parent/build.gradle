@@ -1,13 +1,9 @@
 buildscript {
 	repositories {
 		jcenter()
-		maven {
-			url "http://www.stat.ubc.ca/~bouchard/maven"
-		}
 	}
 	dependencies {
 		classpath 'org.xtext:xtext-gradle-plugin:1.0.1'
-		compile group: 'ca.ubc.stat', name: 'bayonet', version: '3.0.0'
 	}
 }
 
@@ -15,9 +11,6 @@ subprojects {
 	ext.xtextVersion = '2.9.1'
 	repositories {
 		jcenter()
-		maven {
-			url "http://www.stat.ubc.ca/~bouchard/maven"
-		}
 	}
 	
 	apply plugin: 'java'
@@ -35,9 +28,5 @@ subprojects {
 	
 	configurations.all {
 		exclude group: 'asm'
-	}
-	
-	dependencies {
-		compile group: 'ca.ubc.stat', name: 'bayonet', version: '3.0.0'
 	}
 }
