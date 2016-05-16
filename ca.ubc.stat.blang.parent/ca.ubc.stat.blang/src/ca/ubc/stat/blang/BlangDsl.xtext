@@ -26,6 +26,35 @@ VarDecl:
 ;
 
 Laws:
+	{Laws}
 	'laws' '{'
+	(modelComponents += ModelComponent)*
 	'}'
+;
+
+// y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
+ModelComponent:
+	(name = ValidID) '|' (deps += Dependency) + '~' (right = Distribution)
+;
+
+Dependency:
+	(type = JvmTypeReference) (name = ValidID) '=' (init = ValidID)
+;
+
+Distribution:
+	(clazz = JvmTypeReference) '('
+		(param += Param) ( ',' param += Param)*
+		')'
+;
+
+Param:
+	LazyParam | ConstParam
+;
+
+ConstParam:
+    id = ValidID
+;
+
+LazyParam:
+	expr = XClosure
 ;

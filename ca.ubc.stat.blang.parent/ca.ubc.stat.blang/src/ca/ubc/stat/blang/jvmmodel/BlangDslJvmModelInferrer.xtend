@@ -3,17 +3,21 @@
  */
 package ca.ubc.stat.blang.jvmmodel
 
+import blang.core.Model
 import ca.ubc.stat.blang.blangDsl.BlangModel
+import ca.ubc.stat.blang.blangDsl.ModelComponent
+import ca.ubc.stat.blang.blangDsl.Param
 import com.google.inject.Inject
+import java.lang.reflect.ParameterizedType
 import java.util.Collection
 import org.eclipse.xtext.common.types.JvmDeclaredType
 import org.eclipse.xtext.common.types.JvmVisibility
 import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer
 import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-
-import blang.core.Model
-import blang.core.ModelComponent
+import ca.ubc.stat.blang.blangDsl.ConstParam
+import ca.ubc.stat.blang.blangDsl.LazyParam
+import org.eclipse.xtend2.lib.StringConcatenationClient
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -26,53 +30,53 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     /**
      * convenience API to build and initialize JVM types and their members.
      */
-	@Inject extension JvmTypesBuilder
+    @Inject extension JvmTypesBuilder
 
-	/**
-	 * The dispatch method {@code infer} is called for each instance of the
-	 * given element's type that is contained in a resource.
-	 * 
-	 * @param element
-	 *            the model to create one or more
-	 *            {@link JvmDeclaredType declared
-	 *            types} from.
-	 * @param acceptor
-	 *            each created
-	 *            {@link JvmDeclaredType type}
-	 *            without a container should be passed to the acceptor in order
-	 *            get attached to the current resource. The acceptor's
-	 *            {@link IJvmDeclaredTypeAcceptor#accept(org.eclipse.xtext.common.types.JvmDeclaredType)
-	 *            accept(..)} method takes the constructed empty type for the
-	 *            pre-indexing phase. This one is further initialized in the
-	 *            indexing phase using the closure you pass to the returned
-	 *            {@link IPostIndexingInitializing#initializeLater(org.eclipse.xtext.xbase.lib.Procedures.Procedure1)
-	 *            initializeLater(..)}.
-	 * @param isPreIndexingPhase
-	 *            whether the method is called in a pre-indexing phase, i.e.
-	 *            when the global index is not yet fully updated. You must not
-	 *            rely on linking using the index if isPreIndexingPhase is
-	 *            <code>true</code>.
-	 */
-	def dispatch void infer(BlangModel model, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
-		val className = model.eResource.URI.trimFileExtension.lastSegment
-   		acceptor.accept(model.toClass(className)) [
-   			if (model.name != null) {
-   				it.packageName = model.name;
-   			}
-   			
-   			it.superTypes += typeRef(Model)
-   			
-   			if (model.vars != null) {
-   				for (varDecl : model.vars.randomVars) {
-   					members += varDecl.toField(varDecl.name, varDecl.type ) [
-   						visibility = JvmVisibility.PUBLIC
-   						it.final = true
-   					]
-   				}
-   			}
-   			
-   			if (model.vars?.randomVars != null && !model.vars.randomVars.empty) {
-	   			it.members += model.toConstructor [
+    /**
+     * The dispatch method {@code infer} is called for each instance of the
+     * given element's type that is contained in a resource.
+     * 
+     * @param element
+     *            the model to create one or more
+     *            {@link JvmDeclaredType declared
+     *            types} from.
+     * @param acceptor
+     *            each created
+     *            {@link JvmDeclaredType type}
+     *            without a container should be passed to the acceptor in order
+     *            get attached to the current resource. The acceptor's
+     *            {@link IJvmDeclaredTypeAcceptor#accept(org.eclipse.xtext.common.types.JvmDeclaredType)
+     *            accept(..)} method takes the constructed empty type for the
+     *            pre-indexing phase. This one is further initialized in the
+     *            indexing phase using the closure you pass to the returned
+     *            {@link org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor.IPostIndexingInitializing#initializeLater(org.eclipse.xtext.xbase.lib.Procedures.Procedure1)
+     *            initializeLater(..)}.
+     * @param isPreIndexingPhase
+     *            whether the method is called in a pre-indexing phase, i.e.
+     *            when the global index is not yet fully updated. You must not
+     *            rely on linking using the index if isPreIndexingPhase is
+     *            <code>true</code>.
+     */
+    def dispatch void infer(BlangModel model, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
+        val className = model.eResource.URI.trimFileExtension.lastSegment
+        acceptor.accept(model.toClass(className)) [
+            if (model.name != null) {
+                it.packageName = model.name;
+            }
+            
+            it.superTypes += typeRef(Model)
+            
+            if (model.vars != null) {
+                for (varDecl : model.vars.randomVars) {
+                    members += varDecl.toField(varDecl.name, varDecl.type ) [
+                        visibility = JvmVisibility.PUBLIC
+                        it.final = true
+                    ]
+                }
+            }
+            
+            if (model.vars?.randomVars != null && !model.vars.randomVars.empty) {
+                it.members += model.toConstructor [
                     visibility = JvmVisibility.PUBLIC
                     for (varDecl : model.vars?.randomVars) {
                         parameters += varDecl.toParameter(varDecl.name, varDecl.type)
@@ -83,20 +87,84 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                         «ENDFOR»
                     '''
                 ]
-   			}
-   			
-   			it.members += model.toMethod("components", typeRef(Collection, typeRef(ModelComponent))) [
-   				visibility = JvmVisibility.PUBLIC
-   				body = '''
-   					java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();
-   					
-   					«
-   					// TODO: iterate through components in the laws section
-   					»
-   					
-   					return components;
-	   			'''
-   			]
-   		]
-	}
+            }
+            
+            if (model.laws?.modelComponents != null && !model.laws.modelComponents.empty) {
+            it.members += model.toMethod("components", typeRef(Collection, typeRef(blang.core.ModelComponent))) [
+                visibility = JvmVisibility.PUBLIC
+                body = '''
+                    java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();
+                    
+                    «
+                    // TODO: iterate through components in the laws section
+                    FOR i : 0..model.laws.modelComponents.size - 1
+                    »
+                    components.add(«generateModelComponentInit(model.laws.modelComponents.get(i), i)»);
+                    «ENDFOR»
+                    
+                    return components;
+                '''
+            ]
+            
+            for (componentCounter : 0..<model.laws.modelComponents.size) {
+                var component = model.laws.modelComponents.get(componentCounter)
+                for (paramCounter : 0 ..< component.right.param.size) {
+                        it.members += generateModelComponentParamSupplier(component, componentCounter, paramCounter)
+                }
+            }
+            }
+        ]
+    }
+    
+    
+    def generateModelComponentInit(ModelComponent component, int modelCounter) {
+        '''
+            new «component.right.clazz.type.identifier»(«component.name»
+            «FOR i : 0..<component.right.param.size»,
+                $generated_setupSubModel«modelCounter»Param«i»(
+                    «FOR j : 0..<component.deps.size SEPARATOR ", "»
+                        «component.deps.get(j).init»
+                    «ENDFOR»
+                    )
+                «ENDFOR»
+                )
+            '''
+    }
+    
+    
+    def generateModelComponentParamSupplier(ModelComponent component,
+                                            int modelCounter,
+                                            int paramCounter) {
+        val dist = component.right.clazz.type
+        val distClass = Class.forName(dist.identifier)
+        val distCtors = distClass.constructors
+        val distCtor = distCtors?.get(0)
+        val paramType = distCtor.genericParameterTypes.get(paramCounter+1)
+        val paramTypeArgs = (paramType as ParameterizedType).actualTypeArguments
+        val Param param = component.right.param.get(paramCounter)
+        param.toMethod("$generated_setupSubModel" + modelCounter + "Param" + paramCounter,
+            typeRef(paramType.typeName)
+        ) [
+            parameters += param.toParameter("mean", typeRef(paramTypeArgs.get(0).typeName))
+            static = true
+            visibility = JvmVisibility.PRIVATE
+          body = '''
+          new «typeRef(paramType.typeName)»() {
+              @Override
+              public «paramTypeArgs.get(0)» get() {
+                  «generateParam(param)»
+              }
+          };'''
+        ]
+    }
+    
+    
+    def static dispatch StringConcatenationClient generateParam(ConstParam p) {
+        '''return «p.id»;'''
+    }
+    
+
+    def static dispatch StringConcatenationClient generateParam(LazyParam p) {
+        '''return «p.expr»;'''
+    }
 }

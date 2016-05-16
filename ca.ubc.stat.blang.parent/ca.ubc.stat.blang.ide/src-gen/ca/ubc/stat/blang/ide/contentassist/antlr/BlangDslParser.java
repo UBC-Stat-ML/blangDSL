@@ -35,6 +35,7 @@ public class BlangDslParser extends AbstractContentAssistParser {
 			nameMappings = new HashMap<AbstractElement, String>() {
 				private static final long serialVersionUID = 1L;
 				{
+					put(grammarAccess.getParamAccess().getAlternatives(), "rule__Param__Alternatives");
 					put(grammarAccess.getXAssignmentAccess().getAlternatives(), "rule__XAssignment__Alternatives");
 					put(grammarAccess.getOpMultiAssignAccess().getAlternatives(), "rule__OpMultiAssign__Alternatives");
 					put(grammarAccess.getOpEqualityAccess().getAlternatives(), "rule__OpEquality__Alternatives");
@@ -81,6 +82,10 @@ public class BlangDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getRandomAccess().getGroup(), "rule__Random__Group__0");
 					put(grammarAccess.getVarDeclAccess().getGroup(), "rule__VarDecl__Group__0");
 					put(grammarAccess.getLawsAccess().getGroup(), "rule__Laws__Group__0");
+					put(grammarAccess.getModelComponentAccess().getGroup(), "rule__ModelComponent__Group__0");
+					put(grammarAccess.getDependencyAccess().getGroup(), "rule__Dependency__Group__0");
+					put(grammarAccess.getDistributionAccess().getGroup(), "rule__Distribution__Group__0");
+					put(grammarAccess.getDistributionAccess().getGroup_3(), "rule__Distribution__Group_3__0");
 					put(grammarAccess.getXAssignmentAccess().getGroup_0(), "rule__XAssignment__Group_0__0");
 					put(grammarAccess.getXAssignmentAccess().getGroup_1(), "rule__XAssignment__Group_1__0");
 					put(grammarAccess.getXAssignmentAccess().getGroup_1_1(), "rule__XAssignment__Group_1_1__0");
@@ -270,6 +275,18 @@ public class BlangDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getVarDeclAccess().getTypeAssignment_0(), "rule__VarDecl__TypeAssignment_0");
 					put(grammarAccess.getVarDeclAccess().getNameAssignment_1(), "rule__VarDecl__NameAssignment_1");
 					put(grammarAccess.getVarDeclAccess().getRightAssignment_3(), "rule__VarDecl__RightAssignment_3");
+					put(grammarAccess.getLawsAccess().getModelComponentsAssignment_3(), "rule__Laws__ModelComponentsAssignment_3");
+					put(grammarAccess.getModelComponentAccess().getNameAssignment_0(), "rule__ModelComponent__NameAssignment_0");
+					put(grammarAccess.getModelComponentAccess().getDepsAssignment_2(), "rule__ModelComponent__DepsAssignment_2");
+					put(grammarAccess.getModelComponentAccess().getRightAssignment_4(), "rule__ModelComponent__RightAssignment_4");
+					put(grammarAccess.getDependencyAccess().getTypeAssignment_0(), "rule__Dependency__TypeAssignment_0");
+					put(grammarAccess.getDependencyAccess().getNameAssignment_1(), "rule__Dependency__NameAssignment_1");
+					put(grammarAccess.getDependencyAccess().getInitAssignment_3(), "rule__Dependency__InitAssignment_3");
+					put(grammarAccess.getDistributionAccess().getClazzAssignment_0(), "rule__Distribution__ClazzAssignment_0");
+					put(grammarAccess.getDistributionAccess().getParamAssignment_2(), "rule__Distribution__ParamAssignment_2");
+					put(grammarAccess.getDistributionAccess().getParamAssignment_3_1(), "rule__Distribution__ParamAssignment_3_1");
+					put(grammarAccess.getConstParamAccess().getIdAssignment(), "rule__ConstParam__IdAssignment");
+					put(grammarAccess.getLazyParamAccess().getExprAssignment(), "rule__LazyParam__ExprAssignment");
 					put(grammarAccess.getXAssignmentAccess().getFeatureAssignment_0_1(), "rule__XAssignment__FeatureAssignment_0_1");
 					put(grammarAccess.getXAssignmentAccess().getValueAssignment_0_3(), "rule__XAssignment__ValueAssignment_0_3");
 					put(grammarAccess.getXAssignmentAccess().getFeatureAssignment_1_1_0_0_1(), "rule__XAssignment__FeatureAssignment_1_1_0_0_1");

@@ -5,6 +5,7 @@ package ca.ubc.stat.blang.blangDsl.impl;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
+import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.Vars;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -77,24 +78,14 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
   protected Vars vars;
 
   /**
-   * The default value of the '{@link #getLaws() <em>Laws</em>}' attribute.
+   * The cached value of the '{@link #getLaws() <em>Laws</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getLaws()
    * @generated
    * @ordered
    */
-  protected static final String LAWS_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getLaws() <em>Laws</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getLaws()
-   * @generated
-   * @ordered
-   */
-  protected String laws = LAWS_EDEFAULT;
+  protected Laws laws;
 
   /**
    * <!-- begin-user-doc -->
@@ -241,7 +232,7 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getLaws()
+  public Laws getLaws()
   {
     return laws;
   }
@@ -251,12 +242,37 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setLaws(String newLaws)
+  public NotificationChain basicSetLaws(Laws newLaws, NotificationChain msgs)
   {
-    String oldLaws = laws;
+    Laws oldLaws = laws;
     laws = newLaws;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.BLANG_MODEL__LAWS, oldLaws, laws));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BlangDslPackage.BLANG_MODEL__LAWS, oldLaws, newLaws);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setLaws(Laws newLaws)
+  {
+    if (newLaws != laws)
+    {
+      NotificationChain msgs = null;
+      if (laws != null)
+        msgs = ((InternalEObject)laws).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.BLANG_MODEL__LAWS, null, msgs);
+      if (newLaws != null)
+        msgs = ((InternalEObject)newLaws).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.BLANG_MODEL__LAWS, null, msgs);
+      msgs = basicSetLaws(newLaws, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.BLANG_MODEL__LAWS, newLaws, newLaws));
   }
 
   /**
@@ -273,6 +289,8 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         return basicSetImportSection(null, msgs);
       case BlangDslPackage.BLANG_MODEL__VARS:
         return basicSetVars(null, msgs);
+      case BlangDslPackage.BLANG_MODEL__LAWS:
+        return basicSetLaws(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -319,7 +337,7 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         setVars((Vars)newValue);
         return;
       case BlangDslPackage.BLANG_MODEL__LAWS:
-        setLaws((String)newValue);
+        setLaws((Laws)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -345,7 +363,7 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         setVars((Vars)null);
         return;
       case BlangDslPackage.BLANG_MODEL__LAWS:
-        setLaws(LAWS_EDEFAULT);
+        setLaws((Laws)null);
         return;
     }
     super.eUnset(featureID);
@@ -368,7 +386,7 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
       case BlangDslPackage.BLANG_MODEL__VARS:
         return vars != null;
       case BlangDslPackage.BLANG_MODEL__LAWS:
-        return LAWS_EDEFAULT == null ? laws != null : !LAWS_EDEFAULT.equals(laws);
+        return laws != null;
     }
     return super.eIsSet(featureID);
   }
@@ -386,8 +404,6 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
-    result.append(", laws: ");
-    result.append(laws);
     result.append(')');
     return result.toString();
   }

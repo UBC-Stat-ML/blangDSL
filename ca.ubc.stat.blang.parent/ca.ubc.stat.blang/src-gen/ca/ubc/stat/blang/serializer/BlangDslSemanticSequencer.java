@@ -5,6 +5,12 @@ package ca.ubc.stat.blang.serializer;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
+import ca.ubc.stat.blang.blangDsl.ConstParam;
+import ca.ubc.stat.blang.blangDsl.Dependency;
+import ca.ubc.stat.blang.blangDsl.Distribution;
+import ca.ubc.stat.blang.blangDsl.Laws;
+import ca.ubc.stat.blang.blangDsl.LazyParam;
+import ca.ubc.stat.blang.blangDsl.ModelComponent;
 import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.VarDecl;
 import ca.ubc.stat.blang.blangDsl.Vars;
@@ -82,6 +88,24 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 			switch (semanticObject.eClass().getClassifierID()) {
 			case BlangDslPackage.BLANG_MODEL:
 				sequence_BlangModel(context, (BlangModel) semanticObject); 
+				return; 
+			case BlangDslPackage.CONST_PARAM:
+				sequence_ConstParam(context, (ConstParam) semanticObject); 
+				return; 
+			case BlangDslPackage.DEPENDENCY:
+				sequence_Dependency(context, (Dependency) semanticObject); 
+				return; 
+			case BlangDslPackage.DISTRIBUTION:
+				sequence_Distribution(context, (Distribution) semanticObject); 
+				return; 
+			case BlangDslPackage.LAWS:
+				sequence_Laws(context, (Laws) semanticObject); 
+				return; 
+			case BlangDslPackage.LAZY_PARAM:
+				sequence_LazyParam(context, (LazyParam) semanticObject); 
+				return; 
+			case BlangDslPackage.MODEL_COMPONENT:
+				sequence_ModelComponent(context, (ModelComponent) semanticObject); 
 				return; 
 			case BlangDslPackage.RANDOM:
 				sequence_Random(context, (Random) semanticObject); 
@@ -344,6 +368,104 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	 *     (name=QualifiedName? importSection=XImportSection? (vars=Vars laws=Laws?)?)
 	 */
 	protected void sequence_BlangModel(ISerializationContext context, BlangModel semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Param returns ConstParam
+	 *     ConstParam returns ConstParam
+	 *
+	 * Constraint:
+	 *     id=ValidID
+	 */
+	protected void sequence_ConstParam(ISerializationContext context, ConstParam semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.CONST_PARAM__ID) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.CONST_PARAM__ID));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getConstParamAccess().getIdValidIDParserRuleCall_0(), semanticObject.getId());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Dependency returns Dependency
+	 *
+	 * Constraint:
+	 *     (type=JvmTypeReference name=ValidID init=ValidID)
+	 */
+	protected void sequence_Dependency(ISerializationContext context, Dependency semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.DEPENDENCY__TYPE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.DEPENDENCY__TYPE));
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.DEPENDENCY__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.DEPENDENCY__NAME));
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.DEPENDENCY__INIT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.DEPENDENCY__INIT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getDependencyAccess().getTypeJvmTypeReferenceParserRuleCall_0_0(), semanticObject.getType());
+		feeder.accept(grammarAccess.getDependencyAccess().getNameValidIDParserRuleCall_1_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getDependencyAccess().getInitValidIDParserRuleCall_3_0(), semanticObject.getInit());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Distribution returns Distribution
+	 *
+	 * Constraint:
+	 *     (clazz=JvmTypeReference param+=Param param+=Param*)
+	 */
+	protected void sequence_Distribution(ISerializationContext context, Distribution semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Laws returns Laws
+	 *
+	 * Constraint:
+	 *     modelComponents+=ModelComponent*
+	 */
+	protected void sequence_Laws(ISerializationContext context, Laws semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Param returns LazyParam
+	 *     LazyParam returns LazyParam
+	 *
+	 * Constraint:
+	 *     expr=XClosure
+	 */
+	protected void sequence_LazyParam(ISerializationContext context, LazyParam semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.LAZY_PARAM__EXPR) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.LAZY_PARAM__EXPR));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getLazyParamAccess().getExprXClosureParserRuleCall_0(), semanticObject.getExpr());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ModelComponent returns ModelComponent
+	 *
+	 * Constraint:
+	 *     (name=ValidID deps+=Dependency+ right=Distribution)
+	 */
+	protected void sequence_ModelComponent(ISerializationContext context, ModelComponent semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

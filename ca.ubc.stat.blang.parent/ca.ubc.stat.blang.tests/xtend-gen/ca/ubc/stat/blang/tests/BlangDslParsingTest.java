@@ -76,6 +76,17 @@ public class BlangDslParsingTest {
       _builder.append("\t");
       _builder.append("random Real y");
       _builder.newLine();
+      _builder.append("\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("laws {");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("y | Real mean = mu ~ Normal(mean, [mean * 2])");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
       _builder.append("}");
       _builder.newLine();
       final BlangModel model = this._parseHelper.parse(_builder);

@@ -69,6 +69,13 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
       case BlangDslPackage.VARS: return createVars();
       case BlangDslPackage.RANDOM: return createRandom();
       case BlangDslPackage.VAR_DECL: return createVarDecl();
+      case BlangDslPackage.LAWS: return createLaws();
+      case BlangDslPackage.MODEL_COMPONENT: return createModelComponent();
+      case BlangDslPackage.DEPENDENCY: return createDependency();
+      case BlangDslPackage.DISTRIBUTION: return createDistribution();
+      case BlangDslPackage.PARAM: return createParam();
+      case BlangDslPackage.CONST_PARAM: return createConstParam();
+      case BlangDslPackage.LAZY_PARAM: return createLazyParam();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -116,6 +123,83 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
   {
     VarDeclImpl varDecl = new VarDeclImpl();
     return varDecl;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Laws createLaws()
+  {
+    LawsImpl laws = new LawsImpl();
+    return laws;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ModelComponent createModelComponent()
+  {
+    ModelComponentImpl modelComponent = new ModelComponentImpl();
+    return modelComponent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Dependency createDependency()
+  {
+    DependencyImpl dependency = new DependencyImpl();
+    return dependency;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Distribution createDistribution()
+  {
+    DistributionImpl distribution = new DistributionImpl();
+    return distribution;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Param createParam()
+  {
+    ParamImpl param = new ParamImpl();
+    return param;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ConstParam createConstParam()
+  {
+    ConstParamImpl constParam = new ConstParamImpl();
+    return constParam;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LazyParam createLazyParam()
+  {
+    LazyParamImpl lazyParam = new LazyParamImpl();
+    return lazyParam;
   }
 
   /**

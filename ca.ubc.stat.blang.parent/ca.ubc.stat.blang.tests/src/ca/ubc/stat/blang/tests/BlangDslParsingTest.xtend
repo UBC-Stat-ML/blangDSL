@@ -48,6 +48,10 @@ class BlangDslParsingTest {
 			model {
 				random Real mu
 				random Real y
+				
+				laws {
+					y | Real mean = mu ~ Normal(mean, [mean * 2])
+				}
 			}
 		'''.parse
 		model.assertNoErrors;

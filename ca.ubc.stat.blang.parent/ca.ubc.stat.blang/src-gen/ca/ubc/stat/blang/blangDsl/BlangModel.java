@@ -107,29 +107,29 @@ public interface BlangModel extends EObject
   void setVars(Vars value);
 
   /**
-   * Returns the value of the '<em><b>Laws</b></em>' attribute.
+   * Returns the value of the '<em><b>Laws</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Laws</em>' attribute isn't clear,
+   * If the meaning of the '<em>Laws</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Laws</em>' attribute.
-   * @see #setLaws(String)
+   * @return the value of the '<em>Laws</em>' containment reference.
+   * @see #setLaws(Laws)
    * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getBlangModel_Laws()
-   * @model
+   * @model containment="true"
    * @generated
    */
-  String getLaws();
+  Laws getLaws();
 
   /**
-   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.BlangModel#getLaws <em>Laws</em>}' attribute.
+   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.BlangModel#getLaws <em>Laws</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Laws</em>' attribute.
+   * @param value the new value of the '<em>Laws</em>' containment reference.
    * @see #getLaws()
    * @generated
    */
-  void setLaws(String value);
+  void setLaws(Laws value);
 
 } // BlangModel

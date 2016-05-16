@@ -60,6 +60,69 @@ public interface BlangDslFactory extends EFactory
   VarDecl createVarDecl();
 
   /**
+   * Returns a new object of class '<em>Laws</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Laws</em>'.
+   * @generated
+   */
+  Laws createLaws();
+
+  /**
+   * Returns a new object of class '<em>Model Component</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Model Component</em>'.
+   * @generated
+   */
+  ModelComponent createModelComponent();
+
+  /**
+   * Returns a new object of class '<em>Dependency</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dependency</em>'.
+   * @generated
+   */
+  Dependency createDependency();
+
+  /**
+   * Returns a new object of class '<em>Distribution</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Distribution</em>'.
+   * @generated
+   */
+  Distribution createDistribution();
+
+  /**
+   * Returns a new object of class '<em>Param</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Param</em>'.
+   * @generated
+   */
+  Param createParam();
+
+  /**
+   * Returns a new object of class '<em>Const Param</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Const Param</em>'.
+   * @generated
+   */
+  ConstParam createConstParam();
+
+  /**
+   * Returns a new object of class '<em>Lazy Param</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Lazy Param</em>'.
+   * @generated
+   */
+  LazyParam createLazyParam();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

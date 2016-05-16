@@ -10,7 +10,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//BlangModel/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//BlangModel/importSection"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//BlangModel/vars"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//BlangModel/laws"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//BlangModel/laws"/>
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//Vars">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Vars/randomVars"/>
@@ -23,6 +23,30 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//VarDecl/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//VarDecl/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//VarDecl/right"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//Laws">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Laws/modelComponents"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//ModelComponent">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ModelComponent/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelComponent/deps"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelComponent/right"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//Dependency">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Dependency/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//Dependency/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//Dependency/init"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//Distribution">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Distribution/clazz"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Distribution/param"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//Param"/>
+    <genClasses ecoreClass="BlangDsl.ecore#//ConstParam">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ConstParam/id"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//LazyParam">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//LazyParam/expr"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
