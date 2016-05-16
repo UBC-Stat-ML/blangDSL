@@ -71,7 +71,19 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
    				}
    			}
    			
-   			// TODO: add constructor "Name(randomVar...) {(this.randomVar = randomVar)...}
+   			if (model.vars?.randomVars != null) {
+	   			it.members += model.toConstructor [
+                    visibility = JvmVisibility.PUBLIC
+                    for (varDecl : model.vars?.randomVars) {
+                        parameters += varDecl.toParameter(varDecl.name, varDecl.type)
+                    }
+                    body = '''
+                        «FOR varDecl : model.vars?.randomVars»
+                            this.«varDecl.name» = «varDecl.name»
+                        «ENDFOR»
+                    '''
+                ]
+   			}
    			
    			it.members += model.toMethod("components", typeRef(Collection, typeRef(ModelComponent))) [
    				visibility = JvmVisibility.PUBLIC

@@ -17,8 +17,10 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtend2.lib.StringConcatenationClient;
+import org.eclipse.xtext.common.types.JvmConstructor;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.common.types.JvmField;
+import org.eclipse.xtext.common.types.JvmFormalParameter;
 import org.eclipse.xtext.common.types.JvmGenericType;
 import org.eclipse.xtext.common.types.JvmMember;
 import org.eclipse.xtext.common.types.JvmOperation;
@@ -103,10 +105,58 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
           this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
         }
       }
-      EList<JvmMember> _members_1 = it.getMembers();
+      Vars _vars_2 = model.getVars();
+      EList<Random> _randomVars_1 = null;
+      if (_vars_2!=null) {
+        _randomVars_1=_vars_2.getRandomVars();
+      }
+      boolean _notEquals_2 = (!Objects.equal(_randomVars_1, null));
+      if (_notEquals_2) {
+        EList<JvmMember> _members_1 = it.getMembers();
+        final Procedure1<JvmConstructor> _function_2 = (JvmConstructor it_1) -> {
+          it_1.setVisibility(JvmVisibility.PUBLIC);
+          Vars _vars_3 = model.getVars();
+          EList<Random> _randomVars_2 = null;
+          if (_vars_3!=null) {
+            _randomVars_2=_vars_3.getRandomVars();
+          }
+          for (final Random varDecl_1 : _randomVars_2) {
+            EList<JvmFormalParameter> _parameters = it_1.getParameters();
+            String _name_3 = varDecl_1.getName();
+            JvmTypeReference _type_1 = varDecl_1.getType();
+            JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(varDecl_1, _name_3, _type_1);
+            this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+          }
+          StringConcatenationClient _client = new StringConcatenationClient() {
+            @Override
+            protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+              {
+                Vars _vars = model.getVars();
+                EList<Random> _randomVars = null;
+                if (_vars!=null) {
+                  _randomVars=_vars.getRandomVars();
+                }
+                for(final Random varDecl : _randomVars) {
+                  _builder.append("this.");
+                  String _name = varDecl.getName();
+                  _builder.append(_name, "");
+                  _builder.append(" = ");
+                  String _name_1 = varDecl.getName();
+                  _builder.append(_name_1, "");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
+            }
+          };
+          this._jvmTypesBuilder.setBody(it_1, _client);
+        };
+        JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(model, _function_2);
+        this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_1, _constructor);
+      }
+      EList<JvmMember> _members_2 = it.getMembers();
       JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(ModelComponent.class);
       JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Collection.class, _typeRef_1);
-      final Procedure1<JvmOperation> _function_2 = (JvmOperation it_1) -> {
+      final Procedure1<JvmOperation> _function_3 = (JvmOperation it_1) -> {
         it_1.setVisibility(JvmVisibility.PUBLIC);
         StringConcatenationClient _client = new StringConcatenationClient() {
           @Override
@@ -122,8 +172,8 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         };
         this._jvmTypesBuilder.setBody(it_1, _client);
       };
-      JvmOperation _method = this._jvmTypesBuilder.toMethod(model, "components", _typeRef_2, _function_2);
-      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_1, _method);
+      JvmOperation _method = this._jvmTypesBuilder.toMethod(model, "components", _typeRef_2, _function_3);
+      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_2, _method);
     };
     acceptor.<JvmGenericType>accept(_class, _function);
   }

@@ -34,6 +34,11 @@ class BlangDslGeneratorTest {
 		  
 		  public final Real y;
 		  
+		  public MyFile(final Real mu, final Real y) {
+		    this.mu = mu
+		    this.y = y
+		  }
+		  
 		  public Collection<ModelComponent> components() {
 		    java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();
 		    
