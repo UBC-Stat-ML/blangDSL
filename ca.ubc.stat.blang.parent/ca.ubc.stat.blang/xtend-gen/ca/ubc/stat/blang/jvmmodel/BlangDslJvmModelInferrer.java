@@ -105,22 +105,32 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
           this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
         }
       }
+      boolean _and = false;
       Vars _vars_2 = model.getVars();
       EList<Random> _randomVars_1 = null;
       if (_vars_2!=null) {
         _randomVars_1=_vars_2.getRandomVars();
       }
       boolean _notEquals_2 = (!Objects.equal(_randomVars_1, null));
-      if (_notEquals_2) {
+      if (!_notEquals_2) {
+        _and = false;
+      } else {
+        Vars _vars_3 = model.getVars();
+        EList<Random> _randomVars_2 = _vars_3.getRandomVars();
+        boolean _isEmpty = _randomVars_2.isEmpty();
+        boolean _not = (!_isEmpty);
+        _and = _not;
+      }
+      if (_and) {
         EList<JvmMember> _members_1 = it.getMembers();
         final Procedure1<JvmConstructor> _function_2 = (JvmConstructor it_1) -> {
           it_1.setVisibility(JvmVisibility.PUBLIC);
-          Vars _vars_3 = model.getVars();
-          EList<Random> _randomVars_2 = null;
-          if (_vars_3!=null) {
-            _randomVars_2=_vars_3.getRandomVars();
+          Vars _vars_4 = model.getVars();
+          EList<Random> _randomVars_3 = null;
+          if (_vars_4!=null) {
+            _randomVars_3=_vars_4.getRandomVars();
           }
-          for (final Random varDecl_1 : _randomVars_2) {
+          for (final Random varDecl_1 : _randomVars_3) {
             EList<JvmFormalParameter> _parameters = it_1.getParameters();
             String _name_3 = varDecl_1.getName();
             JvmTypeReference _type_1 = varDecl_1.getType();

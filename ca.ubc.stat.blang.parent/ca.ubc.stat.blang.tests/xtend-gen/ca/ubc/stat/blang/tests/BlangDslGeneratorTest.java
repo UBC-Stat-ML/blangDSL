@@ -24,6 +24,52 @@ public class BlangDslGeneratorTest {
   private CompilationTestHelper _compilationTestHelper;
   
   @Test
+  public void emptyParams() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("model {");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("import blang.core.Model;");
+      _builder_1.newLine();
+      _builder_1.append("import blang.core.ModelComponent;");
+      _builder_1.newLine();
+      _builder_1.append("import java.util.Collection;");
+      _builder_1.newLine();
+      _builder_1.newLine();
+      _builder_1.append("@SuppressWarnings(\"all\")");
+      _builder_1.newLine();
+      _builder_1.append("public class MyFile implements Model {");
+      _builder_1.newLine();
+      _builder_1.append("  ");
+      _builder_1.append("public Collection<ModelComponent> components() {");
+      _builder_1.newLine();
+      _builder_1.append("    ");
+      _builder_1.append("java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();");
+      _builder_1.newLine();
+      _builder_1.append("    ");
+      _builder_1.newLine();
+      _builder_1.append("    ");
+      _builder_1.newLine();
+      _builder_1.append("    ");
+      _builder_1.newLine();
+      _builder_1.append("    ");
+      _builder_1.append("return components;");
+      _builder_1.newLine();
+      _builder_1.append("  ");
+      _builder_1.append("}");
+      _builder_1.newLine();
+      _builder_1.append("}");
+      _builder_1.newLine();
+      this._compilationTestHelper.assertCompilesTo(_builder, _builder_1);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
   public void randomParams() {
     try {
       StringConcatenation _builder = new StringConcatenation();

@@ -15,6 +15,33 @@ class BlangDslGeneratorTest {
 	@Inject extension CompilationTestHelper
 	
 	@Test
+	def void emptyParams() {
+		'''
+			model {
+			}
+		'''.assertCompilesTo(
+		'''
+		import blang.core.Model;
+		import blang.core.ModelComponent;
+		import java.util.Collection;
+		
+		@SuppressWarnings("all")
+		public class MyFile implements Model {
+		  public Collection<ModelComponent> components() {
+		    java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();
+		    
+		    
+		    
+		    return components;
+		  }
+		}
+		'''
+		)
+	}
+	
+
+	
+	@Test
 	def void randomParams() {
 		'''
 			model {
