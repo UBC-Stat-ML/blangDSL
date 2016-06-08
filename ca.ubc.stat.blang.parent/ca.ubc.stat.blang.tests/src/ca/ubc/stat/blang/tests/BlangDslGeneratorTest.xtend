@@ -75,7 +75,9 @@ class BlangDslGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.prototype3.Real;
+        import java.util.ArrayList;
         import java.util.Collection;
+        import java.util.function.Supplier;
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
@@ -89,18 +91,19 @@ class BlangDslGeneratorTest {
           }
           
           public Collection<ModelComponent> components() {
-            java.util.ArrayList<ModelComponent> components = new java.util.ArrayList();
+            ArrayList<ModelComponent> components = new ArrayList();
             
-            components.add(new Normal(y,
-                                      $generated_setupSubModel0Param0(mu),
-                                      $generated_setupSubModel0Param1(mu))
+            components.add(new Normal(
+                y,
+                $generated_setupSubModel0Param0(mu),
+                $generated_setupSubModel0Param1(mu))
             );
             
             return components;
           }
           
-          private static java.util.function.Supplier<Real> $generated_setupSubModel0Param0(final Real mean) {
-            new java.util.function.Supplier<Real>() {
+          private static Supplier<Real> $generated_setupSubModel0Param0(final Real mean) {
+            new Supplier<Real>() {
                 @Override
                 public Real get() {
                     return mean;
@@ -108,8 +111,8 @@ class BlangDslGeneratorTest {
             };
           }
           
-          private static java.util.function.Supplier<Real> $generated_setupSubModel0Param1(final Real mean) {
-            new java.util.function.Supplier<Real>() {
+          private static Supplier<Real> $generated_setupSubModel0Param1(final Real mean) {
+            new Supplier<Real>() {
                 @Override
                 public Real get() {
                     return () -> Math.pow(mean.doubleValue(), 2);

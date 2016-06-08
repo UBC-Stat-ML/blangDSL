@@ -9,7 +9,9 @@ import ca.ubc.stat.blang.blangDsl.ModelComponent
 import ca.ubc.stat.blang.blangDsl.Param
 import com.google.inject.Inject
 import java.lang.reflect.ParameterizedType
+import java.util.ArrayList
 import java.util.Collection
+import java.util.function.Supplier
 import org.eclipse.xtext.common.types.JvmDeclaredType
 import org.eclipse.xtext.common.types.JvmVisibility
 import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer
@@ -93,11 +95,11 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += model.toMethod("components", typeRef(Collection, typeRef(blang.core.ModelComponent))) [
                 visibility = JvmVisibility.PUBLIC
                 body = '''
-                    java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();
+                    «typeRef(ArrayList, typeRef(blang.core.ModelComponent))» components = new «typeRef(ArrayList)»();
                     
                     «
                     // TODO: iterate through components in the laws section
-                    FOR i : 0..model.laws.modelComponents.size - 1
+                    FOR i : 0..<model.laws.modelComponents.size
                     »
                     components.add(«generateModelComponentInit(model.laws.modelComponents.get(i), i)»);
                     «ENDFOR»
@@ -119,15 +121,16 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     
     def generateModelComponentInit(ModelComponent component, int modelCounter) {
         '''
-            new «component.right.clazz.type.identifier»(«component.name»
-            «FOR i : 0..<component.right.param.size»,
-                $generated_setupSubModel«modelCounter»Param«i»(
-                    «FOR j : 0..<component.deps.size SEPARATOR ", "»
-                        «component.deps.get(j).init»
-                    «ENDFOR»
-                    )
-                «ENDFOR»
-                )
+            new «component.right.clazz.type.identifier»(
+                «component.name»«
+                FOR i : 0..<component.right.param.size»,
+                $generated_setupSubModel«modelCounter»Param«i»(«
+                    FOR j : 0..<component.deps.size SEPARATOR ", "»«
+                        component.deps.get(j).init»«
+                    ENDFOR
+                    »)«
+                ENDFOR
+                »)
             '''
     }
     
@@ -142,14 +145,15 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         val paramType = distCtor.genericParameterTypes.get(paramCounter+1)
         val paramTypeArgs = (paramType as ParameterizedType).actualTypeArguments
         val Param param = component.right.param.get(paramCounter)
+        val paramSupplierTypeRef = typeRef(Supplier, typeRef(paramTypeArgs.get(0).typeName))
         param.toMethod("$generated_setupSubModel" + modelCounter + "Param" + paramCounter,
-            typeRef(paramType.typeName)
+            paramSupplierTypeRef
         ) [
             parameters += param.toParameter("mean", typeRef(paramTypeArgs.get(0).typeName))
             static = true
             visibility = JvmVisibility.PRIVATE
           body = '''
-          new «typeRef(paramType.typeName)»() {
+          new «paramSupplierTypeRef»() {
               @Override
               public «paramTypeArgs.get(0)» get() {
                   «generateParam(param)»
@@ -167,4 +171,28 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     def static dispatch StringConcatenationClient generateParam(LazyParam p) {
         '''return «p.expr»;'''
     }
+    
+//    def dispatch void infer(Param param, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
+//        val modelCounter = 1;
+//        val paramCounter = 1;
+//        val distClass = Class.forName("Normal")
+//        val distCtors = distClass.constructors
+//        val distCtor = distCtors?.get(0)
+//        val paramType = distCtor.genericParameterTypes.get(paramCounter+1)
+//        val paramTypeArgs = (paramType as ParameterizedType).actualTypeArguments
+//        acceptor.accept(param.toMethod("$generated_setupSubModel" + modelCounter + "Param" + paramCounter,
+//                                       typeRef(paramType.typeName)) [
+//            parameters += param.toParameter("mean", typeRef(paramTypeArgs.get(0).typeName))
+//            static = true
+//            visibility = JvmVisibility.PRIVATE
+//          body = '''
+//          new «typeRef(paramType.typeName)»() {
+//              @Override
+//              public «paramTypeArgs.get(0)» get() {
+//                  «generateParam(param)»
+//              }
+//          };'''
+//        ]
+//    }
+
 }

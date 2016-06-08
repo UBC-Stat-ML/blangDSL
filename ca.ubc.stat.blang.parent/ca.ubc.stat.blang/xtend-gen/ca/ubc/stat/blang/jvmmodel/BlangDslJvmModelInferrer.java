@@ -19,8 +19,10 @@ import com.google.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Supplier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -44,7 +46,6 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.ExclusiveRange;
 import org.eclipse.xtext.xbase.lib.Extension;
-import org.eclipse.xtext.xbase.lib.IntegerRange;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 /**
@@ -203,16 +204,21 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
           StringConcatenationClient _client = new StringConcatenationClient() {
             @Override
             protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-              _builder.append("java.util.ArrayList<blang.core.ModelComponent> components = new java.util.ArrayList();");
-              _builder.newLine();
+              JvmTypeReference _typeRef = BlangDslJvmModelInferrer.this._typeReferenceBuilder.typeRef(blang.core.ModelComponent.class);
+              JvmTypeReference _typeRef_1 = BlangDslJvmModelInferrer.this._typeReferenceBuilder.typeRef(ArrayList.class, _typeRef);
+              _builder.append(_typeRef_1, "");
+              _builder.append(" components = new ");
+              JvmTypeReference _typeRef_2 = BlangDslJvmModelInferrer.this._typeReferenceBuilder.typeRef(ArrayList.class);
+              _builder.append(_typeRef_2, "");
+              _builder.append("();");
+              _builder.newLineIfNotEmpty();
               _builder.newLine();
               {
                 Laws _laws = model.getLaws();
                 EList<ModelComponent> _modelComponents = _laws.getModelComponents();
                 int _size = _modelComponents.size();
-                int _minus = (_size - 1);
-                IntegerRange _upTo = new IntegerRange(0, _minus);
-                for(final Integer i : _upTo) {
+                ExclusiveRange _doubleDotLessThan = new ExclusiveRange(0, _size, true);
+                for(final Integer i : _doubleDotLessThan) {
                   _builder.append("components.add(");
                   Laws _laws_1 = model.getLaws();
                   EList<ModelComponent> _modelComponents_1 = _laws_1.getModelComponents();
@@ -266,9 +272,10 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     String _identifier = _type.getIdentifier();
     _builder.append(_identifier, "");
     _builder.append("(");
-    String _name = component.getName();
-    _builder.append(_name, "");
     _builder.newLineIfNotEmpty();
+    _builder.append("    ");
+    String _name = component.getName();
+    _builder.append(_name, "    ");
     {
       Distribution _right_1 = component.getRight();
       EList<Param> _param = _right_1.getParam();
@@ -283,7 +290,6 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         _builder.append("Param");
         _builder.append(i, "    ");
         _builder.append("(");
-        _builder.newLineIfNotEmpty();
         {
           EList<Dependency> _deps = component.getDeps();
           int _size_1 = _deps.size();
@@ -293,24 +299,19 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             if (!_hasElements) {
               _hasElements = true;
             } else {
-              _builder.appendImmediate(", ", "        ");
+              _builder.appendImmediate(", ", "    ");
             }
-            _builder.append("        ");
             EList<Dependency> _deps_1 = component.getDeps();
             Dependency _get = _deps_1.get((j).intValue());
             String _init = _get.getInit();
-            _builder.append(_init, "        ");
-            _builder.newLineIfNotEmpty();
+            _builder.append(_init, "    ");
           }
         }
-        _builder.append("        ");
         _builder.append(")");
-        _builder.newLine();
       }
     }
-    _builder.append("    ");
     _builder.append(")");
-    _builder.newLine();
+    _builder.newLineIfNotEmpty();
     return _builder;
   }
   
@@ -335,12 +336,14 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         Distribution _right_1 = component.getRight();
         EList<Param> _param = _right_1.getParam();
         final Param param = _param.get(paramCounter);
-        String _typeName = paramType.getTypeName();
+        Type _get_1 = paramTypeArgs[0];
+        String _typeName = _get_1.getTypeName();
         JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(_typeName);
+        final JvmTypeReference paramSupplierTypeRef = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef);
         final Procedure1<JvmOperation> _function = (JvmOperation it) -> {
           EList<JvmFormalParameter> _parameters = it.getParameters();
-          Type _get_1 = paramTypeArgs[0];
-          String _typeName_1 = _get_1.getTypeName();
+          Type _get_2 = paramTypeArgs[0];
+          String _typeName_1 = _get_2.getTypeName();
           JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(_typeName_1);
           JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(param, "mean", _typeRef_1);
           this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
@@ -350,9 +353,7 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             @Override
             protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
               _builder.append("new ");
-              String _typeName = paramType.getTypeName();
-              JvmTypeReference _typeRef = BlangDslJvmModelInferrer.this._typeReferenceBuilder.typeRef(_typeName);
-              _builder.append(_typeRef, "");
+              _builder.append(paramSupplierTypeRef, "");
               _builder.append("() {");
               _builder.newLineIfNotEmpty();
               _builder.append("    ");
@@ -376,7 +377,7 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
           };
           this._jvmTypesBuilder.setBody(it, _client);
         };
-        _xblockexpression = this._jvmTypesBuilder.toMethod(param, ((("$generated_setupSubModel" + Integer.valueOf(modelCounter)) + "Param") + Integer.valueOf(paramCounter)), _typeRef, _function);
+        _xblockexpression = this._jvmTypesBuilder.toMethod(param, ((("$generated_setupSubModel" + Integer.valueOf(modelCounter)) + "Param") + Integer.valueOf(paramCounter)), paramSupplierTypeRef, _function);
       }
       return _xblockexpression;
     } catch (Throwable _e) {
