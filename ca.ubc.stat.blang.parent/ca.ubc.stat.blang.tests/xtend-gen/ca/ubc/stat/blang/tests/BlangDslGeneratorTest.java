@@ -64,7 +64,7 @@ public class BlangDslGeneratorTest {
       StringConcatenation _builder_1 = new StringConcatenation();
       _builder_1.append("import blang.core.Model;");
       _builder_1.newLine();
-      _builder_1.append("import blang.prototype.Real;");
+      _builder_1.append("import blang.prototype3.Real;");
       _builder_1.newLine();
       _builder_1.newLine();
       _builder_1.append("@SuppressWarnings(\"all\")");
@@ -131,7 +131,7 @@ public class BlangDslGeneratorTest {
       _builder_1.newLine();
       _builder_1.append("import blang.core.ModelComponent;");
       _builder_1.newLine();
-      _builder_1.append("import blang.prototype2.Real;");
+      _builder_1.append("import blang.prototype3.Real;");
       _builder_1.newLine();
       _builder_1.append("import java.util.Collection;");
       _builder_1.newLine();

@@ -42,7 +42,7 @@ class BlangDslGeneratorTest {
 		'''.assertCompilesTo(
 		'''
 		import blang.core.Model;
-		import blang.prototype.Real;
+		import blang.prototype3.Real;
 		
 		@SuppressWarnings("all")
 		public class MyFile implements Model {
@@ -74,7 +74,7 @@ class BlangDslGeneratorTest {
         '''
         import blang.core.Model;
         import blang.core.ModelComponent;
-        import blang.prototype2.Real;
+        import blang.prototype3.Real;
         import java.util.Collection;
         
         @SuppressWarnings("all")
