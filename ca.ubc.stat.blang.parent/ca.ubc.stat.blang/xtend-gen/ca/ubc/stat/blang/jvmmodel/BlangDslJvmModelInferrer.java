@@ -170,6 +170,7 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                   _builder.append(" = ");
                   String _name_1 = varDecl.getName();
                   _builder.append(_name_1, "");
+                  _builder.append(";");
                   _builder.newLineIfNotEmpty();
                 }
               }

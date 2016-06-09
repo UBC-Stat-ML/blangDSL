@@ -85,7 +85,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                     }
                     body = '''
                         «FOR varDecl : model.vars?.randomVars»
-                            this.«varDecl.name» = «varDecl.name»
+                            this.«varDecl.name» = «varDecl.name»;
                         «ENDFOR»
                     '''
                 ]

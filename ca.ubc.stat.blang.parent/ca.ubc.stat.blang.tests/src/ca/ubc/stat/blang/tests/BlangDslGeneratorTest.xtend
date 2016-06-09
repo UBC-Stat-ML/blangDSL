@@ -51,8 +51,8 @@ class BlangDslGeneratorTest {
 		  public final Real y;
 		  
 		  public MyFile(final Real mu, final Real y) {
-		    this.mu = mu
-		    this.y = y
+		    this.mu = mu;
+		    this.y = y;
 		  }
 		}
 		'''	
@@ -86,8 +86,8 @@ class BlangDslGeneratorTest {
           public final Real y;
           
           public MyFile(final Real mu, final Real y) {
-            this.mu = mu
-            this.y = y
+            this.mu = mu;
+            this.y = y;
           }
           
           public Collection<ModelComponent> components() {

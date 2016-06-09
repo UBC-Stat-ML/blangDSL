@@ -85,10 +85,10 @@ public class BlangDslGeneratorTest {
       _builder_1.append("public MyFile(final Real mu, final Real y) {");
       _builder_1.newLine();
       _builder_1.append("    ");
-      _builder_1.append("this.mu = mu");
+      _builder_1.append("this.mu = mu;");
       _builder_1.newLine();
       _builder_1.append("    ");
-      _builder_1.append("this.y = y");
+      _builder_1.append("this.y = y;");
       _builder_1.newLine();
       _builder_1.append("  ");
       _builder_1.append("}");
@@ -158,10 +158,10 @@ public class BlangDslGeneratorTest {
       _builder_1.append("public MyFile(final Real mu, final Real y) {");
       _builder_1.newLine();
       _builder_1.append("    ");
-      _builder_1.append("this.mu = mu");
+      _builder_1.append("this.mu = mu;");
       _builder_1.newLine();
       _builder_1.append("    ");
-      _builder_1.append("this.y = y");
+      _builder_1.append("this.y = y;");
       _builder_1.newLine();
       _builder_1.append("  ");
       _builder_1.append("}");
