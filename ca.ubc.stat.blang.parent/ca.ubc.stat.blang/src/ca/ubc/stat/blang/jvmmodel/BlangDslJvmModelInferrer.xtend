@@ -124,7 +124,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             new «component.right.clazz.type.identifier»(
                 «component.name»«
                 FOR i : 0..<component.right.param.size»,
-                $generated_setupSubModel«modelCounter»Param«i»(«
+                new $Generated_SupplierSubModel«modelCounter»Param«i»(«
                     FOR j : 0..<component.deps.size SEPARATOR ", "»«
                         component.deps.get(j).init»«
                     ENDFOR
@@ -146,53 +146,37 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         val paramTypeArgs = (paramType as ParameterizedType).actualTypeArguments
         val Param param = component.right.param.get(paramCounter)
         val paramSupplierTypeRef = typeRef(Supplier, typeRef(paramTypeArgs.get(0).typeName))
-        param.toMethod("$generated_setupSubModel" + modelCounter + "Param" + paramCounter,
-            paramSupplierTypeRef
-        ) [
-            parameters += param.toParameter("mean", typeRef(paramTypeArgs.get(0).typeName))
-            static = true
-            visibility = JvmVisibility.PRIVATE
-          body = '''
-          new «paramSupplierTypeRef»() {
-              @Override
-              public «paramTypeArgs.get(0)» get() {
-                  «generateParam(param)»
-              }
-          };'''
+        
+        param.toClass("$Generated_SupplierSubModel" + modelCounter + "Param" + paramCounter) [
+            it.superTypes += paramSupplierTypeRef
+            it.static = true
+            for (dep : component.deps) {
+                it.members += param.toField(dep.name, dep.type) [
+                    final = true
+                ]
+            }
+            it.members += param.toConstructor [
+                    visibility = JvmVisibility.PUBLIC
+                    for (dep : component.deps) {
+                        parameters += param.toParameter(dep.name, dep.type)
+                    }
+                    body = '''
+                        «FOR dep : component.deps»
+                            this.«dep.name» = «dep.name»;
+                        «ENDFOR»
+                    '''
+                ]
+            
+            it.members += param.toMethod("get", typeRef(paramTypeArgs.get(0).typeName)) [
+                annotations += annotationRef("java.lang.Override")
+                switch(param) {
+                    ConstParam:
+                        body = '''return «param.id»;'''
+                    LazyParam:
+                        body = param.expr
+                }
+            ]
         ]
     }
-    
-    
-    def static dispatch StringConcatenationClient generateParam(ConstParam p) {
-        '''return «p.id»;'''
-    }
-    
-
-    def static dispatch StringConcatenationClient generateParam(LazyParam p) {
-        '''return «p.expr»;'''
-    }
-    
-//    def dispatch void infer(Param param, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
-//        val modelCounter = 1;
-//        val paramCounter = 1;
-//        val distClass = Class.forName("Normal")
-//        val distCtors = distClass.constructors
-//        val distCtor = distCtors?.get(0)
-//        val paramType = distCtor.genericParameterTypes.get(paramCounter+1)
-//        val paramTypeArgs = (paramType as ParameterizedType).actualTypeArguments
-//        acceptor.accept(param.toMethod("$generated_setupSubModel" + modelCounter + "Param" + paramCounter,
-//                                       typeRef(paramType.typeName)) [
-//            parameters += param.toParameter("mean", typeRef(paramTypeArgs.get(0).typeName))
-//            static = true
-//            visibility = JvmVisibility.PRIVATE
-//          body = '''
-//          new «typeRef(paramType.typeName)»() {
-//              @Override
-//              public «paramTypeArgs.get(0)» get() {
-//                  «generateParam(param)»
-//              }
-//          };'''
-//        ]
-//    }
 
 }

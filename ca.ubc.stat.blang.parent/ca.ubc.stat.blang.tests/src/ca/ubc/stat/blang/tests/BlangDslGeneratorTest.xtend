@@ -95,29 +95,43 @@ class BlangDslGeneratorTest {
             
             components.add(new Normal(
                 y,
-                $generated_setupSubModel0Param0(mu),
-                $generated_setupSubModel0Param1(mu))
+                new $Generated_SupplierSubModel0Param0(mu),
+                new $Generated_SupplierSubModel0Param1(mu))
             );
             
             return components;
           }
           
-          private static Supplier<Real> $generated_setupSubModel0Param0(final Real mean) {
-            new Supplier<Real>() {
-                @Override
-                public Real get() {
-                    return mean;
-                }
-            };
+          public static class $Generated_SupplierSubModel0Param0 implements Supplier<Real> {
+            private final Real mean;
+            
+            public $Generated_SupplierSubModel0Param0(final Real mean) {
+              this.mean = mean;
+            }
+            
+            @Override
+            public Real get() {
+              return mean;
+            }
           }
           
-          private static Supplier<Real> $generated_setupSubModel0Param1(final Real mean) {
-            new Supplier<Real>() {
-                @Override
-                public Real get() {
-                    return () -> Math.pow(mean.doubleValue(), 2);
+          public static class $Generated_SupplierSubModel0Param1 implements Supplier<Real> {
+            private final Real mean;
+            
+            public $Generated_SupplierSubModel0Param1(final Real mean) {
+              this.mean = mean;
+            }
+            
+            @Override
+            public Real get() {
+              final Real _function = new Real() {
+                public double doubleValue() {
+                  double _doubleValue = $Generated_SupplierSubModel0Param1.this.mean.doubleValue();
+                  return Math.pow(_doubleValue, 2);
                 }
-            };
+              };
+              return _function;
+            }
           }
         }
         ''' 

@@ -82,7 +82,7 @@ public class BlangDslParsingTest {
       _builder.append("laws {");
       _builder.newLine();
       _builder.append("\t\t");
-      _builder.append("y | Real mean = mu ~ Normal(mean, [mean * 2])");
+      _builder.append("y | Real mean = mu ~ Normal(mean, [mean.doubleValue * 2])");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("}");

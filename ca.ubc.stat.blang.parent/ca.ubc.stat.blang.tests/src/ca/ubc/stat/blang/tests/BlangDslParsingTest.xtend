@@ -50,7 +50,7 @@ class BlangDslParsingTest {
 				random Real y
 				
 				laws {
-					y | Real mean = mu ~ Normal(mean, [mean * 2])
+					y | Real mean = mu ~ Normal(mean, [mean.doubleValue * 2])
 				}
 			}
 		'''.parse
