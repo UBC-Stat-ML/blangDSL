@@ -51,6 +51,15 @@ public interface BlangDslFactory extends EFactory
   Random createRandom();
 
   /**
+   * Returns a new object of class '<em>Param Var</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Param Var</em>'.
+   * @generated
+   */
+  ParamVar createParamVar();
+
+  /**
    * Returns a new object of class '<em>Var Decl</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

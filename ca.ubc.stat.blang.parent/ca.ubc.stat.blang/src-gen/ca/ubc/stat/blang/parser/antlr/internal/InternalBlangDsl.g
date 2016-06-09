@@ -207,21 +207,43 @@ ruleVars returns [EObject current=null]
 		)
 		(
 			(
-				{
-					newCompositeNode(grammarAccess.getVarsAccess().getRandomVarsRandomParserRuleCall_1_0());
-				}
-				lv_randomVars_1_0=ruleRandom
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getVarsRule());
+				(
+					{
+						newCompositeNode(grammarAccess.getVarsAccess().getRandomVarsRandomParserRuleCall_1_0_0());
 					}
-					add(
-						$current,
-						"randomVars",
-						lv_randomVars_1_0,
-						"ca.ubc.stat.blang.BlangDsl.Random");
-					afterParserOrEnumRuleCall();
-				}
+					lv_randomVars_1_0=ruleRandom
+					{
+						if ($current==null) {
+							$current = createModelElementForParent(grammarAccess.getVarsRule());
+						}
+						add(
+							$current,
+							"randomVars",
+							lv_randomVars_1_0,
+							"ca.ubc.stat.blang.BlangDsl.Random");
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)
+			    |
+			(
+				(
+					{
+						newCompositeNode(grammarAccess.getVarsAccess().getParamVarsParamVarParserRuleCall_1_1_0());
+					}
+					lv_paramVars_2_0=ruleParamVar
+					{
+						if ($current==null) {
+							$current = createModelElementForParent(grammarAccess.getVarsRule());
+						}
+						add(
+							$current,
+							"paramVars",
+							lv_paramVars_2_0,
+							"ca.ubc.stat.blang.BlangDsl.ParamVar");
+						afterParserOrEnumRuleCall();
+					}
+				)
 			)
 		)*
 	)
@@ -275,6 +297,67 @@ ruleRandom returns [EObject current=null]
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getRandomRule());
+					}
+					set(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.xbase.Xtype.ValidID");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+	)
+;
+
+// Entry rule entryRuleParamVar
+entryRuleParamVar returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getParamVarRule()); }
+	iv_ruleParamVar=ruleParamVar
+	{ $current=$iv_ruleParamVar.current; }
+	EOF;
+
+// Rule ParamVar
+ruleParamVar returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='param'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getParamVarAccess().getParamKeyword_0());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getParamVarAccess().getTypeJvmTypeReferenceParserRuleCall_1_0());
+				}
+				lv_type_1_0=ruleJvmTypeReference
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getParamVarRule());
+					}
+					set(
+						$current,
+						"type",
+						lv_type_1_0,
+						"org.eclipse.xtext.xbase.Xtype.JvmTypeReference");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getParamVarAccess().getNameValidIDParserRuleCall_2_0());
+				}
+				lv_name_2_0=ruleValidID
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getParamVarRule());
 					}
 					set(
 						$current,

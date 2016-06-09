@@ -94,6 +94,13 @@ public class BlangDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BlangDslPackage.PARAM_VAR:
+      {
+        ParamVar paramVar = (ParamVar)theEObject;
+        T result = caseParamVar(paramVar);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BlangDslPackage.VAR_DECL:
       {
         VarDecl varDecl = (VarDecl)theEObject;
@@ -200,6 +207,22 @@ public class BlangDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseRandom(Random object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Param Var</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Param Var</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseParamVar(ParamVar object)
   {
     return null;
   }

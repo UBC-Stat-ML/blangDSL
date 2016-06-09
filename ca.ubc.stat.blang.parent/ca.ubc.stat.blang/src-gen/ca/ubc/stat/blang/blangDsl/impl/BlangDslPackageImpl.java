@@ -13,6 +13,7 @@ import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
 import ca.ubc.stat.blang.blangDsl.ModelComponent;
 import ca.ubc.stat.blang.blangDsl.Param;
+import ca.ubc.stat.blang.blangDsl.ParamVar;
 import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.VarDecl;
 import ca.ubc.stat.blang.blangDsl.Vars;
@@ -58,6 +59,13 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * @generated
    */
   private EClass randomEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass paramVarEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -257,6 +265,16 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EReference getVars_ParamVars()
+  {
+    return (EReference)varsEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getRandom()
   {
     return randomEClass;
@@ -280,6 +298,36 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
   public EAttribute getRandom_Name()
   {
     return (EAttribute)randomEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getParamVar()
+  {
+    return paramVarEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getParamVar_Type()
+  {
+    return (EReference)paramVarEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getParamVar_Name()
+  {
+    return (EAttribute)paramVarEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -540,10 +588,15 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
 
     varsEClass = createEClass(VARS);
     createEReference(varsEClass, VARS__RANDOM_VARS);
+    createEReference(varsEClass, VARS__PARAM_VARS);
 
     randomEClass = createEClass(RANDOM);
     createEReference(randomEClass, RANDOM__TYPE);
     createEAttribute(randomEClass, RANDOM__NAME);
+
+    paramVarEClass = createEClass(PARAM_VAR);
+    createEReference(paramVarEClass, PARAM_VAR__TYPE);
+    createEAttribute(paramVarEClass, PARAM_VAR__NAME);
 
     varDeclEClass = createEClass(VAR_DECL);
     createEReference(varDeclEClass, VAR_DECL__TYPE);
@@ -622,10 +675,15 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
 
     initEClass(varsEClass, Vars.class, "Vars", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getVars_RandomVars(), this.getRandom(), null, "randomVars", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getVars_ParamVars(), this.getParamVar(), null, "paramVars", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(randomEClass, Random.class, "Random", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getRandom_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, Random.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRandom_Name(), ecorePackage.getEString(), "name", null, 0, 1, Random.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(paramVarEClass, ParamVar.class, "ParamVar", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getParamVar_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, ParamVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getParamVar_Name(), ecorePackage.getEString(), "name", null, 0, 1, ParamVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(varDeclEClass, VarDecl.class, "VarDecl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getVarDecl_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, VarDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

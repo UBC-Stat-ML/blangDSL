@@ -103,24 +103,36 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.Vars");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Action cVarsAction_0 = (Action)cGroup.eContents().get(0);
-		private final Assignment cRandomVarsAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cRandomVarsRandomParserRuleCall_1_0 = (RuleCall)cRandomVarsAssignment_1.eContents().get(0);
+		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
+		private final Assignment cRandomVarsAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
+		private final RuleCall cRandomVarsRandomParserRuleCall_1_0_0 = (RuleCall)cRandomVarsAssignment_1_0.eContents().get(0);
+		private final Assignment cParamVarsAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
+		private final RuleCall cParamVarsParamVarParserRuleCall_1_1_0 = (RuleCall)cParamVarsAssignment_1_1.eContents().get(0);
 		
 		//Vars:
-		//	{Vars} randomVars+=Random*;
+		//	{Vars} (randomVars+=Random | paramVars+=ParamVar)*;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//{Vars} randomVars+=Random*
+		//{Vars} (randomVars+=Random | paramVars+=ParamVar)*
 		public Group getGroup() { return cGroup; }
 		
 		//{Vars}
 		public Action getVarsAction_0() { return cVarsAction_0; }
 		
-		//randomVars+=Random*
-		public Assignment getRandomVarsAssignment_1() { return cRandomVarsAssignment_1; }
+		//(randomVars+=Random | paramVars+=ParamVar)*
+		public Alternatives getAlternatives_1() { return cAlternatives_1; }
+		
+		//randomVars+=Random
+		public Assignment getRandomVarsAssignment_1_0() { return cRandomVarsAssignment_1_0; }
 		
 		//Random
-		public RuleCall getRandomVarsRandomParserRuleCall_1_0() { return cRandomVarsRandomParserRuleCall_1_0; }
+		public RuleCall getRandomVarsRandomParserRuleCall_1_0_0() { return cRandomVarsRandomParserRuleCall_1_0_0; }
+		
+		//paramVars+=ParamVar
+		public Assignment getParamVarsAssignment_1_1() { return cParamVarsAssignment_1_1; }
+		
+		//ParamVar
+		public RuleCall getParamVarsParamVarParserRuleCall_1_1_0() { return cParamVarsParamVarParserRuleCall_1_1_0; }
 	}
 	public class RandomElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.Random");
@@ -140,6 +152,37 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//'random'
 		public Keyword getRandomKeyword_0() { return cRandomKeyword_0; }
+		
+		//type=JvmTypeReference
+		public Assignment getTypeAssignment_1() { return cTypeAssignment_1; }
+		
+		//JvmTypeReference
+		public RuleCall getTypeJvmTypeReferenceParserRuleCall_1_0() { return cTypeJvmTypeReferenceParserRuleCall_1_0; }
+		
+		//name=ValidID
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//ValidID
+		public RuleCall getNameValidIDParserRuleCall_2_0() { return cNameValidIDParserRuleCall_2_0; }
+	}
+	public class ParamVarElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.ParamVar");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cParamKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cTypeAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cTypeJvmTypeReferenceParserRuleCall_1_0 = (RuleCall)cTypeAssignment_1.eContents().get(0);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameValidIDParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		
+		//ParamVar:
+		//	'param' type=JvmTypeReference name=ValidID;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'param' type=JvmTypeReference name=ValidID
+		public Group getGroup() { return cGroup; }
+		
+		//'param'
+		public Keyword getParamKeyword_0() { return cParamKeyword_0; }
 		
 		//type=JvmTypeReference
 		public Assignment getTypeAssignment_1() { return cTypeAssignment_1; }
@@ -420,6 +463,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	private final BlangModelElements pBlangModel;
 	private final VarsElements pVars;
 	private final RandomElements pRandom;
+	private final ParamVarElements pParamVar;
 	private final VarDeclElements pVarDecl;
 	private final LawsElements pLaws;
 	private final ModelComponentElements pModelComponent;
@@ -445,6 +489,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pBlangModel = new BlangModelElements();
 		this.pVars = new VarsElements();
 		this.pRandom = new RandomElements();
+		this.pParamVar = new ParamVarElements();
 		this.pVarDecl = new VarDeclElements();
 		this.pLaws = new LawsElements();
 		this.pModelComponent = new ModelComponentElements();
@@ -501,7 +546,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Vars:
-	//	{Vars} randomVars+=Random*;
+	//	{Vars} (randomVars+=Random | paramVars+=ParamVar)*;
 	public VarsElements getVarsAccess() {
 		return pVars;
 	}
@@ -518,6 +563,16 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getRandomRule() {
 		return getRandomAccess().getRule();
+	}
+	
+	//ParamVar:
+	//	'param' type=JvmTypeReference name=ValidID;
+	public ParamVarElements getParamVarAccess() {
+		return pParamVar;
+	}
+	
+	public ParserRule getParamVarRule() {
+		return getParamVarAccess().getRule();
 	}
 	
 	//VarDecl:

@@ -75,16 +75,29 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                         it.final = true
                     ]
                 }
+                for (varDecl : model.vars.paramVars) {
+                    members += varDecl.toField(varDecl.name, typeRef(Supplier, varDecl.type)) [
+                        visibility = JvmVisibility.PUBLIC
+                        it.final = true
+                    ]
+                }
             }
             
-            if (model.vars?.randomVars != null && !model.vars.randomVars.empty) {
+            if ((model.vars?.randomVars != null && !model.vars.randomVars.empty) ||
+                (model.vars?.paramVars != null &&!model.vars.paramVars.empty)) {
                 it.members += model.toConstructor [
                     visibility = JvmVisibility.PUBLIC
                     for (varDecl : model.vars?.randomVars) {
                         parameters += varDecl.toParameter(varDecl.name, varDecl.type)
                     }
+                    for (varDecl : model.vars?.paramVars) {
+                        parameters += varDecl.toParameter(varDecl.name, typeRef(Supplier, varDecl.type))
+                    }
                     body = '''
                         «FOR varDecl : model.vars?.randomVars»
+                            this.«varDecl.name» = «varDecl.name»;
+                        «ENDFOR»
+                        «FOR varDecl : model.vars?.paramVars»
                             this.«varDecl.name» = «varDecl.name»;
                         «ENDFOR»
                     '''
@@ -97,11 +110,8 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 body = '''
                     «typeRef(ArrayList, typeRef(blang.core.ModelComponent))» components = new «typeRef(ArrayList)»();
                     
-                    «
-                    // TODO: iterate through components in the laws section
-                    FOR i : 0..<model.laws.modelComponents.size
-                    »
-                    components.add(«generateModelComponentInit(model.laws.modelComponents.get(i), i)»);
+                    «FOR i : 0..<model.laws.modelComponents.size»
+                        components.add(«generateModelComponentInit(model.laws.modelComponents.get(i), i)»);
                     «ENDFOR»
                     
                     return components;

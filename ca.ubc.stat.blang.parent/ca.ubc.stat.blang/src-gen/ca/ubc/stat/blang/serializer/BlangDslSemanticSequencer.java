@@ -11,6 +11,7 @@ import ca.ubc.stat.blang.blangDsl.Distribution;
 import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
 import ca.ubc.stat.blang.blangDsl.ModelComponent;
+import ca.ubc.stat.blang.blangDsl.ParamVar;
 import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.VarDecl;
 import ca.ubc.stat.blang.blangDsl.Vars;
@@ -106,6 +107,9 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 				return; 
 			case BlangDslPackage.MODEL_COMPONENT:
 				sequence_ModelComponent(context, (ModelComponent) semanticObject); 
+				return; 
+			case BlangDslPackage.PARAM_VAR:
+				sequence_ParamVar(context, (ParamVar) semanticObject); 
 				return; 
 			case BlangDslPackage.RANDOM:
 				sequence_Random(context, (Random) semanticObject); 
@@ -472,6 +476,27 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	
 	/**
 	 * Contexts:
+	 *     ParamVar returns ParamVar
+	 *
+	 * Constraint:
+	 *     (type=JvmTypeReference name=ValidID)
+	 */
+	protected void sequence_ParamVar(ISerializationContext context, ParamVar semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.PARAM_VAR__TYPE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.PARAM_VAR__TYPE));
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.PARAM_VAR__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.PARAM_VAR__NAME));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getParamVarAccess().getTypeJvmTypeReferenceParserRuleCall_1_0(), semanticObject.getType());
+		feeder.accept(grammarAccess.getParamVarAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
 	 *     Random returns Random
 	 *
 	 * Constraint:
@@ -508,7 +533,7 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	 *     Vars returns Vars
 	 *
 	 * Constraint:
-	 *     randomVars+=Random*
+	 *     (randomVars+=Random | paramVars+=ParamVar)*
 	 */
 	protected void sequence_Vars(ISerializationContext context, Vars semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);

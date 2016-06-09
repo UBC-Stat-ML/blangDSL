@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.Vars#getRandomVars <em>Random Vars</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.Vars#getParamVars <em>Param Vars</em>}</li>
  * </ul>
  *
  * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getVars()
@@ -40,5 +41,21 @@ public interface Vars extends EObject
    * @generated
    */
   EList<Random> getRandomVars();
+
+  /**
+   * Returns the value of the '<em><b>Param Vars</b></em>' containment reference list.
+   * The list contents are of type {@link ca.ubc.stat.blang.blangDsl.ParamVar}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Param Vars</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Param Vars</em>' containment reference list.
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getVars_ParamVars()
+   * @model containment="true"
+   * @generated
+   */
+  EList<ParamVar> getParamVars();
 
 } // Vars

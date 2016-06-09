@@ -68,6 +68,7 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
       case BlangDslPackage.BLANG_MODEL: return createBlangModel();
       case BlangDslPackage.VARS: return createVars();
       case BlangDslPackage.RANDOM: return createRandom();
+      case BlangDslPackage.PARAM_VAR: return createParamVar();
       case BlangDslPackage.VAR_DECL: return createVarDecl();
       case BlangDslPackage.LAWS: return createLaws();
       case BlangDslPackage.MODEL_COMPONENT: return createModelComponent();
@@ -112,6 +113,17 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
   {
     RandomImpl random = new RandomImpl();
     return random;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ParamVar createParamVar()
+  {
+    ParamVarImpl paramVar = new ParamVarImpl();
+    return paramVar;
   }
 
   /**

@@ -14,11 +14,15 @@ BlangModel:
 	
 Vars:
 	{Vars}
-	(randomVars += Random)*
+	((randomVars += Random) | (paramVars += ParamVar))*
 	;
 
 Random:
 	'random' type=JvmTypeReference name=ValidID
+;
+
+ParamVar:
+    'param' type=JvmTypeReference name=ValidID
 ;
 
 VarDecl:

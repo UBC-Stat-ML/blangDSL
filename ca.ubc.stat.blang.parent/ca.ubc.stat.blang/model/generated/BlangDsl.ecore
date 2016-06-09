@@ -11,8 +11,15 @@
   <eClassifiers xsi:type="ecore:EClass" name="Vars">
     <eStructuralFeatures xsi:type="ecore:EReference" name="randomVars" upperBound="-1"
         eType="#//Random" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="paramVars" upperBound="-1"
+        eType="#//ParamVar" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Random">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass platform:/resource/org.eclipse.xtext.common.types/model/JavaVMTypes.ecore#//JvmTypeReference"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParamVar">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass platform:/resource/org.eclipse.xtext.common.types/model/JavaVMTypes.ecore#//JvmTypeReference"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
