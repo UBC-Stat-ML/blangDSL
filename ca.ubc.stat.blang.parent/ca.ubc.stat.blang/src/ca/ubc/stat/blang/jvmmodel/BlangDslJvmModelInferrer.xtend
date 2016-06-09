@@ -81,6 +81,14 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                         it.final = true
                     ]
                 }
+                for (varDecl : model.vars.consts) {
+                    members += varDecl.toField(varDecl.name, varDecl.type) [
+                        visibility = JvmVisibility.DEFAULT
+                        it.final = true
+                        it.static = true
+                        initializer = varDecl.right
+                    ]
+                }
             }
             
             if ((model.vars?.randomVars != null && !model.vars.randomVars.empty) ||

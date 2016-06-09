@@ -245,6 +245,26 @@ ruleVars returns [EObject current=null]
 					}
 				)
 			)
+			    |
+			(
+				(
+					{
+						newCompositeNode(grammarAccess.getVarsAccess().getConstsConstParserRuleCall_1_2_0());
+					}
+					lv_consts_3_0=ruleConst
+					{
+						if ($current==null) {
+							$current = createModelElementForParent(grammarAccess.getVarsRule());
+						}
+						add(
+							$current,
+							"consts",
+							lv_consts_3_0,
+							"ca.ubc.stat.blang.BlangDsl.Const");
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)
 		)*
 	)
 ;
@@ -364,6 +384,90 @@ ruleParamVar returns [EObject current=null]
 						"name",
 						lv_name_2_0,
 						"org.eclipse.xtext.xbase.Xtype.ValidID");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+	)
+;
+
+// Entry rule entryRuleConst
+entryRuleConst returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getConstRule()); }
+	iv_ruleConst=ruleConst
+	{ $current=$iv_ruleConst.current; }
+	EOF;
+
+// Rule Const
+ruleConst returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='const'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getConstAccess().getConstKeyword_0());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getConstAccess().getTypeJvmTypeReferenceParserRuleCall_1_0());
+				}
+				lv_type_1_0=ruleJvmTypeReference
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getConstRule());
+					}
+					set(
+						$current,
+						"type",
+						lv_type_1_0,
+						"org.eclipse.xtext.xbase.Xtype.JvmTypeReference");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getConstAccess().getNameValidIDParserRuleCall_2_0());
+				}
+				lv_name_2_0=ruleValidID
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getConstRule());
+					}
+					set(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.xbase.Xtype.ValidID");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_3='='
+		{
+			newLeafNode(otherlv_3, grammarAccess.getConstAccess().getEqualsSignKeyword_3());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getConstAccess().getRightXExpressionParserRuleCall_4_0());
+				}
+				lv_right_4_0=ruleXExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getConstRule());
+					}
+					set(
+						$current,
+						"right",
+						lv_right_4_0,
+						"org.eclipse.xtext.xbase.Xbase.XExpression");
 					afterParserOrEnumRuleCall();
 				}
 			)

@@ -15,6 +15,7 @@
     <genClasses ecoreClass="BlangDsl.ecore#//Vars">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Vars/randomVars"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Vars/paramVars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Vars/consts"/>
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//Random">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Random/type"/>
@@ -23,6 +24,11 @@
     <genClasses ecoreClass="BlangDsl.ecore#//ParamVar">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ParamVar/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ParamVar/name"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//Const">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Const/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//Const/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Const/right"/>
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//VarDecl">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//VarDecl/type"/>

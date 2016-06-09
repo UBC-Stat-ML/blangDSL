@@ -60,6 +60,15 @@ public interface BlangDslFactory extends EFactory
   ParamVar createParamVar();
 
   /**
+   * Returns a new object of class '<em>Const</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Const</em>'.
+   * @generated
+   */
+  Const createConst();
+
+  /**
    * Returns a new object of class '<em>Var Decl</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

@@ -96,6 +96,11 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
         return createParamVarAdapter();
       }
       @Override
+      public Adapter caseConst(Const object)
+      {
+        return createConstAdapter();
+      }
+      @Override
       public Adapter caseVarDecl(VarDecl object)
       {
         return createVarDeclAdapter();
@@ -213,6 +218,21 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createParamVarAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.Const <em>Const</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see ca.ubc.stat.blang.blangDsl.Const
+   * @generated
+   */
+  public Adapter createConstAdapter()
   {
     return null;
   }

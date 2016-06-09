@@ -82,6 +82,7 @@ public class BlangDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getVarsAccess().getGroup(), "rule__Vars__Group__0");
 					put(grammarAccess.getRandomAccess().getGroup(), "rule__Random__Group__0");
 					put(grammarAccess.getParamVarAccess().getGroup(), "rule__ParamVar__Group__0");
+					put(grammarAccess.getConstAccess().getGroup(), "rule__Const__Group__0");
 					put(grammarAccess.getVarDeclAccess().getGroup(), "rule__VarDecl__Group__0");
 					put(grammarAccess.getLawsAccess().getGroup(), "rule__Laws__Group__0");
 					put(grammarAccess.getModelComponentAccess().getGroup(), "rule__ModelComponent__Group__0");
@@ -273,10 +274,14 @@ public class BlangDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getBlangModelAccess().getLawsAssignment_3_3(), "rule__BlangModel__LawsAssignment_3_3");
 					put(grammarAccess.getVarsAccess().getRandomVarsAssignment_1_0(), "rule__Vars__RandomVarsAssignment_1_0");
 					put(grammarAccess.getVarsAccess().getParamVarsAssignment_1_1(), "rule__Vars__ParamVarsAssignment_1_1");
+					put(grammarAccess.getVarsAccess().getConstsAssignment_1_2(), "rule__Vars__ConstsAssignment_1_2");
 					put(grammarAccess.getRandomAccess().getTypeAssignment_1(), "rule__Random__TypeAssignment_1");
 					put(grammarAccess.getRandomAccess().getNameAssignment_2(), "rule__Random__NameAssignment_2");
 					put(grammarAccess.getParamVarAccess().getTypeAssignment_1(), "rule__ParamVar__TypeAssignment_1");
 					put(grammarAccess.getParamVarAccess().getNameAssignment_2(), "rule__ParamVar__NameAssignment_2");
+					put(grammarAccess.getConstAccess().getTypeAssignment_1(), "rule__Const__TypeAssignment_1");
+					put(grammarAccess.getConstAccess().getNameAssignment_2(), "rule__Const__NameAssignment_2");
+					put(grammarAccess.getConstAccess().getRightAssignment_4(), "rule__Const__RightAssignment_4");
 					put(grammarAccess.getVarDeclAccess().getTypeAssignment_0(), "rule__VarDecl__TypeAssignment_0");
 					put(grammarAccess.getVarDeclAccess().getNameAssignment_1(), "rule__VarDecl__NameAssignment_1");
 					put(grammarAccess.getVarDeclAccess().getRightAssignment_3(), "rule__VarDecl__RightAssignment_3");

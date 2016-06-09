@@ -4,6 +4,7 @@
 package ca.ubc.stat.blang.blangDsl.impl;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
+import ca.ubc.stat.blang.blangDsl.Const;
 import ca.ubc.stat.blang.blangDsl.ParamVar;
 import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.Vars;
@@ -32,6 +33,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.VarsImpl#getRandomVars <em>Random Vars</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.VarsImpl#getParamVars <em>Param Vars</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.VarsImpl#getConsts <em>Consts</em>}</li>
  * </ul>
  *
  * @generated
@@ -57,6 +59,16 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
    * @ordered
    */
   protected EList<ParamVar> paramVars;
+
+  /**
+   * The cached value of the '{@link #getConsts() <em>Consts</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getConsts()
+   * @generated
+   * @ordered
+   */
+  protected EList<Const> consts;
 
   /**
    * <!-- begin-user-doc -->
@@ -112,6 +124,20 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<Const> getConsts()
+  {
+    if (consts == null)
+    {
+      consts = new EObjectContainmentEList<Const>(Const.class, this, BlangDslPackage.VARS__CONSTS);
+    }
+    return consts;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -121,6 +147,8 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
         return ((InternalEList<?>)getRandomVars()).basicRemove(otherEnd, msgs);
       case BlangDslPackage.VARS__PARAM_VARS:
         return ((InternalEList<?>)getParamVars()).basicRemove(otherEnd, msgs);
+      case BlangDslPackage.VARS__CONSTS:
+        return ((InternalEList<?>)getConsts()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -139,6 +167,8 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
         return getRandomVars();
       case BlangDslPackage.VARS__PARAM_VARS:
         return getParamVars();
+      case BlangDslPackage.VARS__CONSTS:
+        return getConsts();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -162,6 +192,10 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
         getParamVars().clear();
         getParamVars().addAll((Collection<? extends ParamVar>)newValue);
         return;
+      case BlangDslPackage.VARS__CONSTS:
+        getConsts().clear();
+        getConsts().addAll((Collection<? extends Const>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -182,6 +216,9 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
       case BlangDslPackage.VARS__PARAM_VARS:
         getParamVars().clear();
         return;
+      case BlangDslPackage.VARS__CONSTS:
+        getConsts().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -200,6 +237,8 @@ public class VarsImpl extends MinimalEObjectImpl.Container implements Vars
         return randomVars != null && !randomVars.isEmpty();
       case BlangDslPackage.VARS__PARAM_VARS:
         return paramVars != null && !paramVars.isEmpty();
+      case BlangDslPackage.VARS__CONSTS:
+        return consts != null && !consts.isEmpty();
     }
     return super.eIsSet(featureID);
   }

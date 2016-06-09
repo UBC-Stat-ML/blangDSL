@@ -6,6 +6,7 @@ package ca.ubc.stat.blang.blangDsl.impl;
 import ca.ubc.stat.blang.blangDsl.BlangDslFactory;
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
+import ca.ubc.stat.blang.blangDsl.Const;
 import ca.ubc.stat.blang.blangDsl.ConstParam;
 import ca.ubc.stat.blang.blangDsl.Dependency;
 import ca.ubc.stat.blang.blangDsl.Distribution;
@@ -66,6 +67,13 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * @generated
    */
   private EClass paramVarEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass constEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -275,6 +283,16 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EReference getVars_Consts()
+  {
+    return (EReference)varsEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getRandom()
   {
     return randomEClass;
@@ -328,6 +346,46 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
   public EAttribute getParamVar_Name()
   {
     return (EAttribute)paramVarEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getConst()
+  {
+    return constEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getConst_Type()
+  {
+    return (EReference)constEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getConst_Name()
+  {
+    return (EAttribute)constEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getConst_Right()
+  {
+    return (EReference)constEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -589,6 +647,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     varsEClass = createEClass(VARS);
     createEReference(varsEClass, VARS__RANDOM_VARS);
     createEReference(varsEClass, VARS__PARAM_VARS);
+    createEReference(varsEClass, VARS__CONSTS);
 
     randomEClass = createEClass(RANDOM);
     createEReference(randomEClass, RANDOM__TYPE);
@@ -597,6 +656,11 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     paramVarEClass = createEClass(PARAM_VAR);
     createEReference(paramVarEClass, PARAM_VAR__TYPE);
     createEAttribute(paramVarEClass, PARAM_VAR__NAME);
+
+    constEClass = createEClass(CONST);
+    createEReference(constEClass, CONST__TYPE);
+    createEAttribute(constEClass, CONST__NAME);
+    createEReference(constEClass, CONST__RIGHT);
 
     varDeclEClass = createEClass(VAR_DECL);
     createEReference(varDeclEClass, VAR_DECL__TYPE);
@@ -676,6 +740,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     initEClass(varsEClass, Vars.class, "Vars", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getVars_RandomVars(), this.getRandom(), null, "randomVars", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getVars_ParamVars(), this.getParamVar(), null, "paramVars", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getVars_Consts(), this.getConst(), null, "consts", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(randomEClass, Random.class, "Random", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getRandom_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, Random.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -684,6 +749,11 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     initEClass(paramVarEClass, ParamVar.class, "ParamVar", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getParamVar_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, ParamVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getParamVar_Name(), ecorePackage.getEString(), "name", null, 0, 1, ParamVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(constEClass, Const.class, "Const", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getConst_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, Const.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getConst_Name(), ecorePackage.getEString(), "name", null, 0, 1, Const.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getConst_Right(), theXbasePackage.getXExpression(), null, "right", null, 0, 1, Const.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(varDeclEClass, VarDecl.class, "VarDecl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getVarDecl_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, VarDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -223,4 +223,37 @@ public class ModelVarsGeneratorTest {
       throw Exceptions.sneakyThrow(_e);
     }
   }
+  
+  @Test
+  public void consts() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("import static java.lang.Math.*");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("model {");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("const double LOG2PI = log(2 * PI)");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("import blang.core.Model;");
+      _builder_1.newLine();
+      _builder_1.newLine();
+      _builder_1.append("@SuppressWarnings(\"all\")");
+      _builder_1.newLine();
+      _builder_1.append("public class MyFile implements Model {");
+      _builder_1.newLine();
+      _builder_1.append("  ");
+      _builder_1.append("final static double LOG2PI = Math.log((2 * Math.PI));");
+      _builder_1.newLine();
+      _builder_1.append("}");
+      _builder_1.newLine();
+      this._compilationTestHelper.assertCompilesTo(_builder, _builder_1);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
 }

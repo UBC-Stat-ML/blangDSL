@@ -141,13 +141,22 @@ public interface BlangDslPackage extends EPackage
   int VARS__PARAM_VARS = 1;
 
   /**
+   * The feature id for the '<em><b>Consts</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VARS__CONSTS = 2;
+
+  /**
    * The number of structural features of the '<em>Vars</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VARS_FEATURE_COUNT = 2;
+  int VARS_FEATURE_COUNT = 3;
 
   /**
    * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.RandomImpl <em>Random</em>}' class.
@@ -224,6 +233,52 @@ public interface BlangDslPackage extends EPackage
   int PARAM_VAR_FEATURE_COUNT = 2;
 
   /**
+   * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.ConstImpl <em>Const</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see ca.ubc.stat.blang.blangDsl.impl.ConstImpl
+   * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getConst()
+   * @generated
+   */
+  int CONST = 4;
+
+  /**
+   * The feature id for the '<em><b>Type</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONST__TYPE = 0;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONST__NAME = 1;
+
+  /**
+   * The feature id for the '<em><b>Right</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONST__RIGHT = 2;
+
+  /**
+   * The number of structural features of the '<em>Const</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONST_FEATURE_COUNT = 3;
+
+  /**
    * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.VarDeclImpl <em>Var Decl</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -231,7 +286,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getVarDecl()
    * @generated
    */
-  int VAR_DECL = 4;
+  int VAR_DECL = 5;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -277,7 +332,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getLaws()
    * @generated
    */
-  int LAWS = 5;
+  int LAWS = 6;
 
   /**
    * The feature id for the '<em><b>Model Components</b></em>' containment reference list.
@@ -305,7 +360,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getModelComponent()
    * @generated
    */
-  int MODEL_COMPONENT = 6;
+  int MODEL_COMPONENT = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -351,7 +406,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getDependency()
    * @generated
    */
-  int DEPENDENCY = 7;
+  int DEPENDENCY = 8;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -397,7 +452,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getDistribution()
    * @generated
    */
-  int DISTRIBUTION = 8;
+  int DISTRIBUTION = 9;
 
   /**
    * The feature id for the '<em><b>Clazz</b></em>' containment reference.
@@ -434,7 +489,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getParam()
    * @generated
    */
-  int PARAM = 9;
+  int PARAM = 10;
 
   /**
    * The number of structural features of the '<em>Param</em>' class.
@@ -453,7 +508,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getConstParam()
    * @generated
    */
-  int CONST_PARAM = 10;
+  int CONST_PARAM = 11;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -481,7 +536,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getLazyParam()
    * @generated
    */
-  int LAZY_PARAM = 11;
+  int LAZY_PARAM = 12;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -589,6 +644,17 @@ public interface BlangDslPackage extends EPackage
   EReference getVars_ParamVars();
 
   /**
+   * Returns the meta object for the containment reference list '{@link ca.ubc.stat.blang.blangDsl.Vars#getConsts <em>Consts</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Consts</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Vars#getConsts()
+   * @see #getVars()
+   * @generated
+   */
+  EReference getVars_Consts();
+
+  /**
    * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.Random <em>Random</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -651,6 +717,49 @@ public interface BlangDslPackage extends EPackage
    * @generated
    */
   EAttribute getParamVar_Name();
+
+  /**
+   * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.Const <em>Const</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Const</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Const
+   * @generated
+   */
+  EClass getConst();
+
+  /**
+   * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.Const#getType <em>Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Type</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Const#getType()
+   * @see #getConst()
+   * @generated
+   */
+  EReference getConst_Type();
+
+  /**
+   * Returns the meta object for the attribute '{@link ca.ubc.stat.blang.blangDsl.Const#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Const#getName()
+   * @see #getConst()
+   * @generated
+   */
+  EAttribute getConst_Name();
+
+  /**
+   * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.Const#getRight <em>Right</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Right</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.Const#getRight()
+   * @see #getConst()
+   * @generated
+   */
+  EReference getConst_Right();
 
   /**
    * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.VarDecl <em>Var Decl</em>}'.
@@ -978,6 +1087,14 @@ public interface BlangDslPackage extends EPackage
     EReference VARS__PARAM_VARS = eINSTANCE.getVars_ParamVars();
 
     /**
+     * The meta object literal for the '<em><b>Consts</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference VARS__CONSTS = eINSTANCE.getVars_Consts();
+
+    /**
      * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.RandomImpl <em>Random</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1028,6 +1145,40 @@ public interface BlangDslPackage extends EPackage
      * @generated
      */
     EAttribute PARAM_VAR__NAME = eINSTANCE.getParamVar_Name();
+
+    /**
+     * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.ConstImpl <em>Const</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see ca.ubc.stat.blang.blangDsl.impl.ConstImpl
+     * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getConst()
+     * @generated
+     */
+    EClass CONST = eINSTANCE.getConst();
+
+    /**
+     * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CONST__TYPE = eINSTANCE.getConst_Type();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CONST__NAME = eINSTANCE.getConst_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Right</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CONST__RIGHT = eINSTANCE.getConst_Right();
 
     /**
      * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.VarDeclImpl <em>Var Decl</em>}' class.

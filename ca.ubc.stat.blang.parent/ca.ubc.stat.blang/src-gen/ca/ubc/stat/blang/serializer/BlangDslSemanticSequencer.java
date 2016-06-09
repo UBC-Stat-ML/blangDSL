@@ -5,6 +5,7 @@ package ca.ubc.stat.blang.serializer;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
+import ca.ubc.stat.blang.blangDsl.Const;
 import ca.ubc.stat.blang.blangDsl.ConstParam;
 import ca.ubc.stat.blang.blangDsl.Dependency;
 import ca.ubc.stat.blang.blangDsl.Distribution;
@@ -89,6 +90,9 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 			switch (semanticObject.eClass().getClassifierID()) {
 			case BlangDslPackage.BLANG_MODEL:
 				sequence_BlangModel(context, (BlangModel) semanticObject); 
+				return; 
+			case BlangDslPackage.CONST:
+				sequence_Const(context, (Const) semanticObject); 
 				return; 
 			case BlangDslPackage.CONST_PARAM:
 				sequence_ConstParam(context, (ConstParam) semanticObject); 
@@ -397,6 +401,30 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	
 	/**
 	 * Contexts:
+	 *     Const returns Const
+	 *
+	 * Constraint:
+	 *     (type=JvmTypeReference name=ValidID right=XExpression)
+	 */
+	protected void sequence_Const(ISerializationContext context, Const semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.CONST__TYPE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.CONST__TYPE));
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.CONST__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.CONST__NAME));
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.CONST__RIGHT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.CONST__RIGHT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getConstAccess().getTypeJvmTypeReferenceParserRuleCall_1_0(), semanticObject.getType());
+		feeder.accept(grammarAccess.getConstAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getConstAccess().getRightXExpressionParserRuleCall_4_0(), semanticObject.getRight());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
 	 *     Dependency returns Dependency
 	 *
 	 * Constraint:
@@ -533,7 +561,7 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	 *     Vars returns Vars
 	 *
 	 * Constraint:
-	 *     (randomVars+=Random | paramVars+=ParamVar)*
+	 *     (randomVars+=Random | paramVars+=ParamVar | consts+=Const)*
 	 */
 	protected void sequence_Vars(ISerializationContext context, Vars semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);

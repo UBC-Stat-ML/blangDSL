@@ -14,7 +14,7 @@ BlangModel:
 	
 Vars:
 	{Vars}
-	((randomVars += Random) | (paramVars += ParamVar))*
+	((randomVars += Random) | (paramVars += ParamVar) | (consts += Const))*
 	;
 
 Random:
@@ -23,6 +23,10 @@ Random:
 
 ParamVar:
     'param' type=JvmTypeReference name=ValidID
+;
+
+Const:
+    'const' type=JvmTypeReference name=ValidID '=' right=XExpression
 ;
 
 VarDecl:

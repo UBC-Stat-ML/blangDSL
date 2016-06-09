@@ -119,4 +119,25 @@ class ModelVarsGeneratorTest {
         ''' 
         )
     }
+    
+    @Test
+    def void consts() {
+        '''
+            import static java.lang.Math.*
+            
+            model {
+                const double LOG2PI = log(2 * PI)
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          final static double LOG2PI = Math.log((2 * Math.PI));
+        }
+        ''' 
+        )
+    }
+    
 }

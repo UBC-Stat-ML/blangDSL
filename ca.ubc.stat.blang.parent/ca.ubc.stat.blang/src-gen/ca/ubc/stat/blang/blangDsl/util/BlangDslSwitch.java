@@ -101,6 +101,13 @@ public class BlangDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BlangDslPackage.CONST:
+      {
+        Const const_ = (Const)theEObject;
+        T result = caseConst(const_);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BlangDslPackage.VAR_DECL:
       {
         VarDecl varDecl = (VarDecl)theEObject;
@@ -223,6 +230,22 @@ public class BlangDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseParamVar(ParamVar object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Const</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Const</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseConst(Const object)
   {
     return null;
   }
