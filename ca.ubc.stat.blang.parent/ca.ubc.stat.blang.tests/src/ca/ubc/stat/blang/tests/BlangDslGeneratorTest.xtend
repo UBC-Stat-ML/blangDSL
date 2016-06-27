@@ -194,6 +194,88 @@ class BlangDslGeneratorTest {
     
     
     @Test
+    def void logScaleFactorMultiVar() {
+        '''
+            model {
+                param Real mean
+
+                param Real variance
+                
+                random Real x
+                
+                laws {
+                    logf(x, mean, variance) = {
+                        -0.5 * (x.doubleValue - mean.doubleValue)**2 / variance.doubleValue
+                    }
+                }
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import blang.factors.LogScaleFactor;
+        import blang.prototype3.Real;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        import java.util.function.Supplier;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          public final Supplier<Real> mean;
+          
+          public final Supplier<Real> variance;
+          
+          public final Real x;
+          
+          public MyFile(final Real x, final Supplier<Real> mean, final Supplier<Real> variance) {
+            this.mean = mean;
+            this.variance = variance;
+            this.x = x;
+          }
+          
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            components.add(new $Generated_LogScaleFactor0(x, mean, variance));
+            
+            return components;
+          }
+          
+          public static class $Generated_LogScaleFactor0 implements LogScaleFactor {
+            private final Real x;
+            
+            private final Supplier<Real> mean;
+            
+            private final Supplier<Real> variance;
+            
+            public $Generated_LogScaleFactor0(final Real x, final Supplier<Real> mean, final Supplier<Real> variance) {
+              this.x = x;
+              this.mean = mean;
+              this.variance = variance;
+            }
+            
+            @Override
+            public double logDensity() {
+              return $logDensity(x, mean.get(), variance.get());
+            }
+            
+            private double $logDensity(final Real x, final Real mean, final Real variance) {
+              double _doubleValue = x.doubleValue();
+              double _doubleValue_1 = mean.doubleValue();
+              double _minus = (_doubleValue - _doubleValue_1);
+              double _multiply = ((-0.5) * _minus);
+              double _power = Math.pow(_multiply, 2);
+              double _doubleValue_2 = variance.doubleValue();
+              return (_power / _doubleValue_2);
+            }
+          }
+        }
+        '''
+        )
+    }
+    
+    
+    @Test
     def void supportFactor() {
         '''
             model {
@@ -244,6 +326,63 @@ class BlangDslGeneratorTest {
             private boolean $inSupport(final Real variance) {
               double _doubleValue = variance.doubleValue();
               return (_doubleValue > 0);
+            }
+          }
+        }
+        '''
+        )
+    }
+    
+    
+    @Test
+    def void supportFactorRandom() {
+        '''
+            model {
+                random java.util.Random rand
+                
+                laws {
+                    indicator(rand) = rand.nextBoolean()
+                }
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import blang.core.SupportFactor;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        import java.util.Random;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          public final Random rand;
+          
+          public MyFile(final Random rand) {
+            this.rand = rand;
+          }
+          
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            components.add(new blang.core.SupportFactor(new $Generated_SetupSupport0(rand)));
+            
+            return components;
+          }
+          
+          public static class $Generated_SetupSupport0 implements SupportFactor.Support {
+            private final Random rand;
+            
+            public $Generated_SetupSupport0(final Random rand) {
+              this.rand = rand;
+            }
+            
+            @Override
+            public boolean inSupport() {
+              return $inSupport(rand);
+            }
+            
+            private boolean $inSupport(final Random rand) {
+              return rand.nextBoolean();
             }
           }
         }

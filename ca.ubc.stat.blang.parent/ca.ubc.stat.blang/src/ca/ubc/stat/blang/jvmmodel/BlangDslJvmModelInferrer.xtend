@@ -143,6 +143,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             case "param": typeRef(Supplier, v.type) 
         }
     }
+
     
     def dispatch generateModelComponentInit(ModelParam component, int modelCounter) {
         '''
@@ -210,12 +211,13 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     }
 
     def generateSupportFactor(SupportFactor factor, int modelCounter) {
+        val model = factor.eContainer.eContainer as BlangModel;
+        
         factor.toClass("$Generated_SetupSupport" + modelCounter) [
             it.superTypes += typeRef(blang.core.SupportFactor.Support)
             it.static = true
-
             for (p : factor.params) {
-                it.members += factor.toField(p, typeRef(Supplier, typeRef(Real))) [
+                it.members += factor.toField(p, getVarType(model.vars.findFirst[name == p])) [
                     final = true
                 ]
             }
@@ -223,7 +225,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += factor.toConstructor [
                 it.visibility = JvmVisibility.PUBLIC
                 for (p : factor.params) {
-                    parameters += factor.toParameter(p, typeRef(Supplier, typeRef(Real)))
+                    parameters += factor.toParameter(p, getVarType(model.vars.findFirst[name == p]))
                 }
                 body = '''
                     «FOR p : factor.params»
@@ -235,14 +237,16 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += factor.expr.toMethod("inSupport", typeRef(boolean)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                    return $inSupport(«FOR p : factor.params SEPARATOR ", "»«
-                      p».get()«ENDFOR»);
+                    return $inSupport(«
+                    FOR p : factor.params SEPARATOR ", "»«p»«
+                      IF model.vars.findFirst[name == p].qualType == "param" ».get()« ENDIF»«
+                    ENDFOR»);
                 '''
             ]
             it.members += factor.expr.toMethod("$inSupport", typeRef(boolean)) [
                 visibility = JvmVisibility.PRIVATE
                 for (p : factor.params) {
-                    parameters += factor.toParameter(p, typeRef(Real))
+                    parameters += factor.toParameter(p, model.vars.findFirst[name == p].type)
                 }
                 body = factor.expr
             ]
@@ -250,12 +254,14 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     }
 
     def generateLogScaleFactor(LogScaleFactor factor, int modelCounter) {
+        val model = factor.eContainer.eContainer as BlangModel;
+        
         factor.toClass("$Generated_LogScaleFactor" + modelCounter) [
             it.superTypes += typeRef(blang.factors.LogScaleFactor)
             it.static = true
 
             for (p : factor.params) {
-                it.members += factor.toField(p, typeRef(Supplier, typeRef(Real))) [
+                it.members += factor.toField(p, getVarType(model.vars.findFirst[name == p])) [
                     final = true
                 ]
             }
@@ -263,7 +269,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += factor.toConstructor [
                 it.visibility = JvmVisibility.PUBLIC
                 for (p : factor.params) {
-                    parameters += factor.toParameter(p, typeRef(Supplier, typeRef(Real)))
+                    parameters += factor.toParameter(p, getVarType(model.vars.findFirst[name == p]))
                 }
                 body = '''
                     «FOR p : factor.params»
@@ -275,14 +281,16 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += factor.expr.toMethod("logDensity", typeRef(double)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                    return $logDensity(«FOR p : factor.params SEPARATOR ", "»«
-                      p».get()«ENDFOR»);
+                    return $logDensity(«
+                    FOR p : factor.params SEPARATOR ", "»«p»«
+                      IF model.vars.findFirst[name == p].qualType == "param" ».get()« ENDIF»«
+                    ENDFOR»);
                 '''
             ]
             it.members += factor.expr.toMethod("$logDensity", typeRef(double)) [
                 visibility = JvmVisibility.PRIVATE
                 for (p : factor.params) {
-                    parameters += factor.toParameter(p, typeRef(Real))
+                    parameters += factor.toParameter(p, model.vars.findFirst[name == p].type)
                 }
                 body = factor.expr
             ]

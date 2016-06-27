@@ -4,7 +4,6 @@
 package ca.ubc.stat.blang.jvmmodel;
 
 import blang.core.Model;
-import blang.prototype3.Real;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
 import ca.ubc.stat.blang.blangDsl.Const;
 import ca.ubc.stat.blang.blangDsl.ConstParam;
@@ -538,205 +537,275 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
   }
   
   public JvmGenericType generateSupportFactor(final SupportFactor factor, final int modelCounter) {
-    final Procedure1<JvmGenericType> _function = (JvmGenericType it) -> {
-      EList<JvmTypeReference> _superTypes = it.getSuperTypes();
-      JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(blang.core.SupportFactor.Support.class);
-      this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
-      it.setStatic(true);
-      EList<String> _params = factor.getParams();
-      for (final String p : _params) {
-        EList<JvmMember> _members = it.getMembers();
-        JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Real.class);
-        JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_1);
-        final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
-          it_1.setFinal(true);
-        };
-        JvmField _field = this._jvmTypesBuilder.toField(factor, p, _typeRef_2, _function_1);
-        this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
-      }
-      EList<JvmMember> _members_1 = it.getMembers();
-      final Procedure1<JvmConstructor> _function_2 = (JvmConstructor it_1) -> {
-        it_1.setVisibility(JvmVisibility.PUBLIC);
-        EList<String> _params_1 = factor.getParams();
-        for (final String p_1 : _params_1) {
-          EList<JvmFormalParameter> _parameters = it_1.getParameters();
-          JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(Real.class);
-          JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_3);
-          JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _typeRef_4);
-          this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+    JvmGenericType _xblockexpression = null;
+    {
+      EObject _eContainer = factor.eContainer();
+      EObject _eContainer_1 = _eContainer.eContainer();
+      final BlangModel model = ((BlangModel) _eContainer_1);
+      final Procedure1<JvmGenericType> _function = (JvmGenericType it) -> {
+        EList<JvmTypeReference> _superTypes = it.getSuperTypes();
+        JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(blang.core.SupportFactor.Support.class);
+        this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
+        it.setStatic(true);
+        EList<String> _params = factor.getParams();
+        for (final String p : _params) {
+          EList<JvmMember> _members = it.getMembers();
+          EList<ModelVar> _vars = model.getVars();
+          final Function1<ModelVar, Boolean> _function_1 = (ModelVar it_1) -> {
+            String _name = it_1.getName();
+            return Boolean.valueOf(Objects.equal(_name, p));
+          };
+          ModelVar _findFirst = IterableExtensions.<ModelVar>findFirst(_vars, _function_1);
+          JvmTypeReference _varType = this.getVarType(_findFirst);
+          final Procedure1<JvmField> _function_2 = (JvmField it_1) -> {
+            it_1.setFinal(true);
+          };
+          JvmField _field = this._jvmTypesBuilder.toField(factor, p, _varType, _function_2);
+          this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
         }
-        StringConcatenationClient _client = new StringConcatenationClient() {
-          @Override
-          protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            {
-              EList<String> _params = factor.getParams();
-              for(final String p : _params) {
-                _builder.append("this.");
-                _builder.append(p, "");
-                _builder.append(" = ");
-                _builder.append(p, "");
-                _builder.append(";");
-                _builder.newLineIfNotEmpty();
-              }
-            }
+        EList<JvmMember> _members_1 = it.getMembers();
+        final Procedure1<JvmConstructor> _function_3 = (JvmConstructor it_1) -> {
+          it_1.setVisibility(JvmVisibility.PUBLIC);
+          EList<String> _params_1 = factor.getParams();
+          for (final String p_1 : _params_1) {
+            EList<JvmFormalParameter> _parameters = it_1.getParameters();
+            EList<ModelVar> _vars_1 = model.getVars();
+            final Function1<ModelVar, Boolean> _function_4 = (ModelVar it_2) -> {
+              String _name = it_2.getName();
+              return Boolean.valueOf(Objects.equal(_name, p_1));
+            };
+            ModelVar _findFirst_1 = IterableExtensions.<ModelVar>findFirst(_vars_1, _function_4);
+            JvmTypeReference _varType_1 = this.getVarType(_findFirst_1);
+            JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _varType_1);
+            this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
           }
-        };
-        this._jvmTypesBuilder.setBody(it_1, _client);
-      };
-      JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(factor, _function_2);
-      this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_1, _constructor);
-      EList<JvmMember> _members_2 = it.getMembers();
-      XExpression _expr = factor.getExpr();
-      JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(boolean.class);
-      final Procedure1<JvmOperation> _function_3 = (JvmOperation it_1) -> {
-        EList<JvmAnnotationReference> _annotations = it_1.getAnnotations();
-        JvmAnnotationReference _annotationRef = this._annotationTypesBuilder.annotationRef("java.lang.Override");
-        this._jvmTypesBuilder.<JvmAnnotationReference>operator_add(_annotations, _annotationRef);
-        StringConcatenationClient _client = new StringConcatenationClient() {
-          @Override
-          protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            _builder.append("return $inSupport(");
-            {
-              EList<String> _params = factor.getParams();
-              boolean _hasElements = false;
-              for(final String p : _params) {
-                if (!_hasElements) {
-                  _hasElements = true;
-                } else {
-                  _builder.appendImmediate(", ", "");
+          StringConcatenationClient _client = new StringConcatenationClient() {
+            @Override
+            protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+              {
+                EList<String> _params = factor.getParams();
+                for(final String p : _params) {
+                  _builder.append("this.");
+                  _builder.append(p, "");
+                  _builder.append(" = ");
+                  _builder.append(p, "");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
                 }
-                _builder.append(p, "");
-                _builder.append(".get()");
               }
             }
-            _builder.append(");");
-            _builder.newLineIfNotEmpty();
-          }
+          };
+          this._jvmTypesBuilder.setBody(it_1, _client);
         };
-        this._jvmTypesBuilder.setBody(it_1, _client);
+        JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(factor, _function_3);
+        this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_1, _constructor);
+        EList<JvmMember> _members_2 = it.getMembers();
+        XExpression _expr = factor.getExpr();
+        JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(boolean.class);
+        final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
+          EList<JvmAnnotationReference> _annotations = it_1.getAnnotations();
+          JvmAnnotationReference _annotationRef = this._annotationTypesBuilder.annotationRef("java.lang.Override");
+          this._jvmTypesBuilder.<JvmAnnotationReference>operator_add(_annotations, _annotationRef);
+          StringConcatenationClient _client = new StringConcatenationClient() {
+            @Override
+            protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+              _builder.append("return $inSupport(");
+              {
+                EList<String> _params = factor.getParams();
+                boolean _hasElements = false;
+                for(final String p : _params) {
+                  if (!_hasElements) {
+                    _hasElements = true;
+                  } else {
+                    _builder.appendImmediate(", ", "");
+                  }
+                  _builder.append(p, "");
+                  {
+                    EList<ModelVar> _vars = model.getVars();
+                    final Function1<ModelVar, Boolean> _function = (ModelVar it_2) -> {
+                      String _name = it_2.getName();
+                      return Boolean.valueOf(Objects.equal(_name, p));
+                    };
+                    ModelVar _findFirst = IterableExtensions.<ModelVar>findFirst(_vars, _function);
+                    String _qualType = _findFirst.getQualType();
+                    boolean _equals = Objects.equal(_qualType, "param");
+                    if (_equals) {
+                      _builder.append(".get()");
+                    }
+                  }
+                }
+              }
+              _builder.append(");");
+              _builder.newLineIfNotEmpty();
+            }
+          };
+          this._jvmTypesBuilder.setBody(it_1, _client);
+        };
+        JvmOperation _method = this._jvmTypesBuilder.toMethod(_expr, "inSupport", _typeRef_1, _function_4);
+        this._jvmTypesBuilder.<JvmOperation>operator_add(_members_2, _method);
+        EList<JvmMember> _members_3 = it.getMembers();
+        XExpression _expr_1 = factor.getExpr();
+        JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(boolean.class);
+        final Procedure1<JvmOperation> _function_5 = (JvmOperation it_1) -> {
+          it_1.setVisibility(JvmVisibility.PRIVATE);
+          EList<String> _params_1 = factor.getParams();
+          for (final String p_1 : _params_1) {
+            EList<JvmFormalParameter> _parameters = it_1.getParameters();
+            EList<ModelVar> _vars_1 = model.getVars();
+            final Function1<ModelVar, Boolean> _function_6 = (ModelVar it_2) -> {
+              String _name = it_2.getName();
+              return Boolean.valueOf(Objects.equal(_name, p_1));
+            };
+            ModelVar _findFirst_1 = IterableExtensions.<ModelVar>findFirst(_vars_1, _function_6);
+            JvmTypeReference _type = _findFirst_1.getType();
+            JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _type);
+            this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+          }
+          XExpression _expr_2 = factor.getExpr();
+          this._jvmTypesBuilder.setBody(it_1, _expr_2);
+        };
+        JvmOperation _method_1 = this._jvmTypesBuilder.toMethod(_expr_1, "$inSupport", _typeRef_2, _function_5);
+        this._jvmTypesBuilder.<JvmOperation>operator_add(_members_3, _method_1);
       };
-      JvmOperation _method = this._jvmTypesBuilder.toMethod(_expr, "inSupport", _typeRef_3, _function_3);
-      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_2, _method);
-      EList<JvmMember> _members_3 = it.getMembers();
-      XExpression _expr_1 = factor.getExpr();
-      JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(boolean.class);
-      final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
-        it_1.setVisibility(JvmVisibility.PRIVATE);
-        EList<String> _params_1 = factor.getParams();
-        for (final String p_1 : _params_1) {
-          EList<JvmFormalParameter> _parameters = it_1.getParameters();
-          JvmTypeReference _typeRef_5 = this._typeReferenceBuilder.typeRef(Real.class);
-          JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _typeRef_5);
-          this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
-        }
-        XExpression _expr_2 = factor.getExpr();
-        this._jvmTypesBuilder.setBody(it_1, _expr_2);
-      };
-      JvmOperation _method_1 = this._jvmTypesBuilder.toMethod(_expr_1, "$inSupport", _typeRef_4, _function_4);
-      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_3, _method_1);
-    };
-    return this._jvmTypesBuilder.toClass(factor, ("$Generated_SetupSupport" + Integer.valueOf(modelCounter)), _function);
+      _xblockexpression = this._jvmTypesBuilder.toClass(factor, ("$Generated_SetupSupport" + Integer.valueOf(modelCounter)), _function);
+    }
+    return _xblockexpression;
   }
   
   public JvmGenericType generateLogScaleFactor(final LogScaleFactor factor, final int modelCounter) {
-    final Procedure1<JvmGenericType> _function = (JvmGenericType it) -> {
-      EList<JvmTypeReference> _superTypes = it.getSuperTypes();
-      JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(blang.factors.LogScaleFactor.class);
-      this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
-      it.setStatic(true);
-      EList<String> _params = factor.getParams();
-      for (final String p : _params) {
-        EList<JvmMember> _members = it.getMembers();
-        JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Real.class);
-        JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_1);
-        final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
-          it_1.setFinal(true);
-        };
-        JvmField _field = this._jvmTypesBuilder.toField(factor, p, _typeRef_2, _function_1);
-        this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
-      }
-      EList<JvmMember> _members_1 = it.getMembers();
-      final Procedure1<JvmConstructor> _function_2 = (JvmConstructor it_1) -> {
-        it_1.setVisibility(JvmVisibility.PUBLIC);
-        EList<String> _params_1 = factor.getParams();
-        for (final String p_1 : _params_1) {
-          EList<JvmFormalParameter> _parameters = it_1.getParameters();
-          JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(Real.class);
-          JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_3);
-          JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _typeRef_4);
-          this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+    JvmGenericType _xblockexpression = null;
+    {
+      EObject _eContainer = factor.eContainer();
+      EObject _eContainer_1 = _eContainer.eContainer();
+      final BlangModel model = ((BlangModel) _eContainer_1);
+      final Procedure1<JvmGenericType> _function = (JvmGenericType it) -> {
+        EList<JvmTypeReference> _superTypes = it.getSuperTypes();
+        JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(blang.factors.LogScaleFactor.class);
+        this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
+        it.setStatic(true);
+        EList<String> _params = factor.getParams();
+        for (final String p : _params) {
+          EList<JvmMember> _members = it.getMembers();
+          EList<ModelVar> _vars = model.getVars();
+          final Function1<ModelVar, Boolean> _function_1 = (ModelVar it_1) -> {
+            String _name = it_1.getName();
+            return Boolean.valueOf(Objects.equal(_name, p));
+          };
+          ModelVar _findFirst = IterableExtensions.<ModelVar>findFirst(_vars, _function_1);
+          JvmTypeReference _varType = this.getVarType(_findFirst);
+          final Procedure1<JvmField> _function_2 = (JvmField it_1) -> {
+            it_1.setFinal(true);
+          };
+          JvmField _field = this._jvmTypesBuilder.toField(factor, p, _varType, _function_2);
+          this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
         }
-        StringConcatenationClient _client = new StringConcatenationClient() {
-          @Override
-          protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            {
-              EList<String> _params = factor.getParams();
-              for(final String p : _params) {
-                _builder.append("this.");
-                _builder.append(p, "");
-                _builder.append(" = ");
-                _builder.append(p, "");
-                _builder.append(";");
-                _builder.newLineIfNotEmpty();
-              }
-            }
+        EList<JvmMember> _members_1 = it.getMembers();
+        final Procedure1<JvmConstructor> _function_3 = (JvmConstructor it_1) -> {
+          it_1.setVisibility(JvmVisibility.PUBLIC);
+          EList<String> _params_1 = factor.getParams();
+          for (final String p_1 : _params_1) {
+            EList<JvmFormalParameter> _parameters = it_1.getParameters();
+            EList<ModelVar> _vars_1 = model.getVars();
+            final Function1<ModelVar, Boolean> _function_4 = (ModelVar it_2) -> {
+              String _name = it_2.getName();
+              return Boolean.valueOf(Objects.equal(_name, p_1));
+            };
+            ModelVar _findFirst_1 = IterableExtensions.<ModelVar>findFirst(_vars_1, _function_4);
+            JvmTypeReference _varType_1 = this.getVarType(_findFirst_1);
+            JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _varType_1);
+            this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
           }
-        };
-        this._jvmTypesBuilder.setBody(it_1, _client);
-      };
-      JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(factor, _function_2);
-      this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_1, _constructor);
-      EList<JvmMember> _members_2 = it.getMembers();
-      XExpression _expr = factor.getExpr();
-      JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(double.class);
-      final Procedure1<JvmOperation> _function_3 = (JvmOperation it_1) -> {
-        EList<JvmAnnotationReference> _annotations = it_1.getAnnotations();
-        JvmAnnotationReference _annotationRef = this._annotationTypesBuilder.annotationRef("java.lang.Override");
-        this._jvmTypesBuilder.<JvmAnnotationReference>operator_add(_annotations, _annotationRef);
-        StringConcatenationClient _client = new StringConcatenationClient() {
-          @Override
-          protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            _builder.append("return $logDensity(");
-            {
-              EList<String> _params = factor.getParams();
-              boolean _hasElements = false;
-              for(final String p : _params) {
-                if (!_hasElements) {
-                  _hasElements = true;
-                } else {
-                  _builder.appendImmediate(", ", "");
+          StringConcatenationClient _client = new StringConcatenationClient() {
+            @Override
+            protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+              {
+                EList<String> _params = factor.getParams();
+                for(final String p : _params) {
+                  _builder.append("this.");
+                  _builder.append(p, "");
+                  _builder.append(" = ");
+                  _builder.append(p, "");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
                 }
-                _builder.append(p, "");
-                _builder.append(".get()");
               }
             }
-            _builder.append(");");
-            _builder.newLineIfNotEmpty();
-          }
+          };
+          this._jvmTypesBuilder.setBody(it_1, _client);
         };
-        this._jvmTypesBuilder.setBody(it_1, _client);
+        JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(factor, _function_3);
+        this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_1, _constructor);
+        EList<JvmMember> _members_2 = it.getMembers();
+        XExpression _expr = factor.getExpr();
+        JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(double.class);
+        final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
+          EList<JvmAnnotationReference> _annotations = it_1.getAnnotations();
+          JvmAnnotationReference _annotationRef = this._annotationTypesBuilder.annotationRef("java.lang.Override");
+          this._jvmTypesBuilder.<JvmAnnotationReference>operator_add(_annotations, _annotationRef);
+          StringConcatenationClient _client = new StringConcatenationClient() {
+            @Override
+            protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+              _builder.append("return $logDensity(");
+              {
+                EList<String> _params = factor.getParams();
+                boolean _hasElements = false;
+                for(final String p : _params) {
+                  if (!_hasElements) {
+                    _hasElements = true;
+                  } else {
+                    _builder.appendImmediate(", ", "");
+                  }
+                  _builder.append(p, "");
+                  {
+                    EList<ModelVar> _vars = model.getVars();
+                    final Function1<ModelVar, Boolean> _function = (ModelVar it_2) -> {
+                      String _name = it_2.getName();
+                      return Boolean.valueOf(Objects.equal(_name, p));
+                    };
+                    ModelVar _findFirst = IterableExtensions.<ModelVar>findFirst(_vars, _function);
+                    String _qualType = _findFirst.getQualType();
+                    boolean _equals = Objects.equal(_qualType, "param");
+                    if (_equals) {
+                      _builder.append(".get()");
+                    }
+                  }
+                }
+              }
+              _builder.append(");");
+              _builder.newLineIfNotEmpty();
+            }
+          };
+          this._jvmTypesBuilder.setBody(it_1, _client);
+        };
+        JvmOperation _method = this._jvmTypesBuilder.toMethod(_expr, "logDensity", _typeRef_1, _function_4);
+        this._jvmTypesBuilder.<JvmOperation>operator_add(_members_2, _method);
+        EList<JvmMember> _members_3 = it.getMembers();
+        XExpression _expr_1 = factor.getExpr();
+        JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(double.class);
+        final Procedure1<JvmOperation> _function_5 = (JvmOperation it_1) -> {
+          it_1.setVisibility(JvmVisibility.PRIVATE);
+          EList<String> _params_1 = factor.getParams();
+          for (final String p_1 : _params_1) {
+            EList<JvmFormalParameter> _parameters = it_1.getParameters();
+            EList<ModelVar> _vars_1 = model.getVars();
+            final Function1<ModelVar, Boolean> _function_6 = (ModelVar it_2) -> {
+              String _name = it_2.getName();
+              return Boolean.valueOf(Objects.equal(_name, p_1));
+            };
+            ModelVar _findFirst_1 = IterableExtensions.<ModelVar>findFirst(_vars_1, _function_6);
+            JvmTypeReference _type = _findFirst_1.getType();
+            JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _type);
+            this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+          }
+          XExpression _expr_2 = factor.getExpr();
+          this._jvmTypesBuilder.setBody(it_1, _expr_2);
+        };
+        JvmOperation _method_1 = this._jvmTypesBuilder.toMethod(_expr_1, "$logDensity", _typeRef_2, _function_5);
+        this._jvmTypesBuilder.<JvmOperation>operator_add(_members_3, _method_1);
       };
-      JvmOperation _method = this._jvmTypesBuilder.toMethod(_expr, "logDensity", _typeRef_3, _function_3);
-      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_2, _method);
-      EList<JvmMember> _members_3 = it.getMembers();
-      XExpression _expr_1 = factor.getExpr();
-      JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(double.class);
-      final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
-        it_1.setVisibility(JvmVisibility.PRIVATE);
-        EList<String> _params_1 = factor.getParams();
-        for (final String p_1 : _params_1) {
-          EList<JvmFormalParameter> _parameters = it_1.getParameters();
-          JvmTypeReference _typeRef_5 = this._typeReferenceBuilder.typeRef(Real.class);
-          JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _typeRef_5);
-          this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
-        }
-        XExpression _expr_2 = factor.getExpr();
-        this._jvmTypesBuilder.setBody(it_1, _expr_2);
-      };
-      JvmOperation _method_1 = this._jvmTypesBuilder.toMethod(_expr_1, "$logDensity", _typeRef_4, _function_4);
-      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_3, _method_1);
-    };
-    return this._jvmTypesBuilder.toClass(factor, ("$Generated_LogScaleFactor" + Integer.valueOf(modelCounter)), _function);
+      _xblockexpression = this._jvmTypesBuilder.toClass(factor, ("$Generated_LogScaleFactor" + Integer.valueOf(modelCounter)), _function);
+    }
+    return _xblockexpression;
   }
   
   public void infer(final EObject model, final IJvmDeclaredTypeAcceptor acceptor, final boolean isPreIndexingPhase) {
