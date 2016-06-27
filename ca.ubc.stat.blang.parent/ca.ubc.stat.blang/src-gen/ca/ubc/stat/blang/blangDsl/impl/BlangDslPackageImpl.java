@@ -12,6 +12,7 @@ import ca.ubc.stat.blang.blangDsl.Dependency;
 import ca.ubc.stat.blang.blangDsl.Distribution;
 import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
+import ca.ubc.stat.blang.blangDsl.LogScaleFactor;
 import ca.ubc.stat.blang.blangDsl.ModelComponent;
 import ca.ubc.stat.blang.blangDsl.ModelParam;
 import ca.ubc.stat.blang.blangDsl.Param;
@@ -104,6 +105,13 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * @generated
    */
   private EClass supportFactorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass logScaleFactorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -509,6 +517,26 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getLogScaleFactor()
+  {
+    return logScaleFactorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLogScaleFactor_Expr()
+  {
+    return (EReference)logScaleFactorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getModelParam()
   {
     return modelParamEClass;
@@ -722,6 +750,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     supportFactorEClass = createEClass(SUPPORT_FACTOR);
     createEReference(supportFactorEClass, SUPPORT_FACTOR__EXPR);
 
+    logScaleFactorEClass = createEClass(LOG_SCALE_FACTOR);
+    createEReference(logScaleFactorEClass, LOG_SCALE_FACTOR__EXPR);
+
     modelParamEClass = createEClass(MODEL_PARAM);
     createEReference(modelParamEClass, MODEL_PARAM__DEPS);
     createEReference(modelParamEClass, MODEL_PARAM__RIGHT);
@@ -779,6 +810,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
 
     // Add supertypes to classes
     supportFactorEClass.getESuperTypes().add(this.getModelComponent());
+    logScaleFactorEClass.getESuperTypes().add(this.getModelComponent());
     modelParamEClass.getESuperTypes().add(this.getModelComponent());
     constParamEClass.getESuperTypes().add(this.getParam());
     lazyParamEClass.getESuperTypes().add(this.getParam());
@@ -821,6 +853,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
 
     initEClass(supportFactorEClass, SupportFactor.class, "SupportFactor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getSupportFactor_Expr(), theXbasePackage.getXExpression(), null, "expr", null, 0, 1, SupportFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(logScaleFactorEClass, LogScaleFactor.class, "LogScaleFactor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLogScaleFactor_Expr(), theXbasePackage.getXExpression(), null, "expr", null, 0, 1, LogScaleFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(modelParamEClass, ModelParam.class, "ModelParam", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getModelParam_Deps(), this.getDependency(), null, "deps", null, 0, -1, ModelParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

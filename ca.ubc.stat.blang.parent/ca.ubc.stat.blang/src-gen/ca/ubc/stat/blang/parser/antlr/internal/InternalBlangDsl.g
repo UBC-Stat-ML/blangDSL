@@ -558,11 +558,20 @@ ruleModelComponent returns [EObject current=null]
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getModelComponentAccess().getModelParamParserRuleCall_1());
+			newCompositeNode(grammarAccess.getModelComponentAccess().getLogScaleFactorParserRuleCall_1());
 		}
-		this_ModelParam_1=ruleModelParam
+		this_LogScaleFactor_1=ruleLogScaleFactor
 		{
-			$current = $this_ModelParam_1.current;
+			$current = $this_LogScaleFactor_1.current;
+			afterParserOrEnumRuleCall();
+		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getModelComponentAccess().getModelParamParserRuleCall_2());
+		}
+		this_ModelParam_2=ruleModelParam
+		{
+			$current = $this_ModelParam_2.current;
 			afterParserOrEnumRuleCall();
 		}
 	)
@@ -628,6 +637,79 @@ ruleSupportFactor returns [EObject current=null]
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getSupportFactorRule());
+					}
+					set(
+						$current,
+						"expr",
+						lv_expr_5_0,
+						"org.eclipse.xtext.xbase.Xbase.XBlockExpression");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+	)
+;
+
+// Entry rule entryRuleLogScaleFactor
+entryRuleLogScaleFactor returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getLogScaleFactorRule()); }
+	iv_ruleLogScaleFactor=ruleLogScaleFactor
+	{ $current=$iv_ruleLogScaleFactor.current; }
+	EOF;
+
+// Rule LogScaleFactor
+ruleLogScaleFactor returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='logf'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getLogScaleFactorAccess().getLogfKeyword_0());
+		}
+		otherlv_1='('
+		{
+			newLeafNode(otherlv_1, grammarAccess.getLogScaleFactorAccess().getLeftParenthesisKeyword_1());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getLogScaleFactorAccess().getNameValidIDParserRuleCall_2_0());
+				}
+				lv_name_2_0=ruleValidID
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getLogScaleFactorRule());
+					}
+					set(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.xbase.Xtype.ValidID");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_3=')'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getLogScaleFactorAccess().getRightParenthesisKeyword_3());
+		}
+		otherlv_4='='
+		{
+			newLeafNode(otherlv_4, grammarAccess.getLogScaleFactorAccess().getEqualsSignKeyword_4());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getLogScaleFactorAccess().getExprXBlockExpressionParserRuleCall_5_0());
+				}
+				lv_expr_5_0=ruleXBlockExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getLogScaleFactorRule());
 					}
 					set(
 						$current,

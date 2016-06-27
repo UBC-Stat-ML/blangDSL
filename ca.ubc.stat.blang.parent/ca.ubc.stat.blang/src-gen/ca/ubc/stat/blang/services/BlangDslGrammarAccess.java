@@ -328,20 +328,24 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.ModelComponent");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cSupportFactorParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
-		private final RuleCall cModelParamParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cLogScaleFactorParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cModelParamParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
 		
 		//ModelComponent:
-		//	SupportFactor | ModelParam;
+		//	SupportFactor | LogScaleFactor | ModelParam;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//SupportFactor | ModelParam
+		//SupportFactor | LogScaleFactor | ModelParam
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//SupportFactor
 		public RuleCall getSupportFactorParserRuleCall_0() { return cSupportFactorParserRuleCall_0; }
 		
+		//LogScaleFactor
+		public RuleCall getLogScaleFactorParserRuleCall_1() { return cLogScaleFactorParserRuleCall_1; }
+		
 		//ModelParam
-		public RuleCall getModelParamParserRuleCall_1() { return cModelParamParserRuleCall_1; }
+		public RuleCall getModelParamParserRuleCall_2() { return cModelParamParserRuleCall_2; }
 	}
 	public class SupportFactorElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.SupportFactor");
@@ -365,6 +369,50 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//'indicator'
 		public Keyword getIndicatorKeyword_0() { return cIndicatorKeyword_0; }
+		
+		//'('
+		public Keyword getLeftParenthesisKeyword_1() { return cLeftParenthesisKeyword_1; }
+		
+		//name=ValidID
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//ValidID
+		public RuleCall getNameValidIDParserRuleCall_2_0() { return cNameValidIDParserRuleCall_2_0; }
+		
+		//')'
+		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
+		
+		//'='
+		public Keyword getEqualsSignKeyword_4() { return cEqualsSignKeyword_4; }
+		
+		//expr=XBlockExpression
+		public Assignment getExprAssignment_5() { return cExprAssignment_5; }
+		
+		//XBlockExpression
+		public RuleCall getExprXBlockExpressionParserRuleCall_5_0() { return cExprXBlockExpressionParserRuleCall_5_0; }
+	}
+	public class LogScaleFactorElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.LogScaleFactor");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cLogfKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cLeftParenthesisKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameValidIDParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Keyword cEqualsSignKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cExprAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cExprXBlockExpressionParserRuleCall_5_0 = (RuleCall)cExprAssignment_5.eContents().get(0);
+		
+		//// logf(variance) = -0.5 * ( log(variance.doubleValue) + LOG2PI )
+		//LogScaleFactor:
+		//	'logf' '(' name=ValidID ')' '=' expr=XBlockExpression;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'logf' '(' name=ValidID ')' '=' expr=XBlockExpression
+		public Group getGroup() { return cGroup; }
+		
+		//'logf'
+		public Keyword getLogfKeyword_0() { return cLogfKeyword_0; }
 		
 		//'('
 		public Keyword getLeftParenthesisKeyword_1() { return cLeftParenthesisKeyword_1; }
@@ -583,6 +631,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	private final LawsElements pLaws;
 	private final ModelComponentElements pModelComponent;
 	private final SupportFactorElements pSupportFactor;
+	private final LogScaleFactorElements pLogScaleFactor;
 	private final ModelParamElements pModelParam;
 	private final DependencyElements pDependency;
 	private final DistributionElements pDistribution;
@@ -612,6 +661,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pLaws = new LawsElements();
 		this.pModelComponent = new ModelComponentElements();
 		this.pSupportFactor = new SupportFactorElements();
+		this.pLogScaleFactor = new LogScaleFactorElements();
 		this.pModelParam = new ModelParamElements();
 		this.pDependency = new DependencyElements();
 		this.pDistribution = new DistributionElements();
@@ -729,7 +779,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//ModelComponent:
-	//	SupportFactor | ModelParam;
+	//	SupportFactor | LogScaleFactor | ModelParam;
 	public ModelComponentElements getModelComponentAccess() {
 		return pModelComponent;
 	}
@@ -747,6 +797,17 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getSupportFactorRule() {
 		return getSupportFactorAccess().getRule();
+	}
+	
+	//// logf(variance) = -0.5 * ( log(variance.doubleValue) + LOG2PI )
+	//LogScaleFactor:
+	//	'logf' '(' name=ValidID ')' '=' expr=XBlockExpression;
+	public LogScaleFactorElements getLogScaleFactorAccess() {
+		return pLogScaleFactor;
+	}
+	
+	public ParserRule getLogScaleFactorRule() {
+		return getLogScaleFactorAccess().getRule();
 	}
 	
 	//// y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])

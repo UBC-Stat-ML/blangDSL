@@ -41,12 +41,17 @@ Laws:
 ;
 
 ModelComponent:
-    SupportFactor | ModelParam
+    SupportFactor | LogScaleFactor | ModelParam
 ;
 
 // indicator(variance) = variance.doubleValue > 0
 SupportFactor:
     'indicator' '(' (name = ValidID) ')' '=' (expr = XBlockExpression)
+;
+
+// logf(variance) = -0.5 * ( log(variance.doubleValue) + LOG2PI )
+LogScaleFactor:
+    'logf' '(' (name = ValidID) ')' '=' (expr = XBlockExpression)
 ;
 
 // y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])

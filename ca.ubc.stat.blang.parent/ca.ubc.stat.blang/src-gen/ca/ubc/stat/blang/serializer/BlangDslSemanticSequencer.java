@@ -11,6 +11,7 @@ import ca.ubc.stat.blang.blangDsl.Dependency;
 import ca.ubc.stat.blang.blangDsl.Distribution;
 import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
+import ca.ubc.stat.blang.blangDsl.LogScaleFactor;
 import ca.ubc.stat.blang.blangDsl.ModelParam;
 import ca.ubc.stat.blang.blangDsl.ParamVar;
 import ca.ubc.stat.blang.blangDsl.Random;
@@ -109,6 +110,9 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 				return; 
 			case BlangDslPackage.LAZY_PARAM:
 				sequence_LazyParam(context, (LazyParam) semanticObject); 
+				return; 
+			case BlangDslPackage.LOG_SCALE_FACTOR:
+				sequence_LogScaleFactor(context, (LogScaleFactor) semanticObject); 
 				return; 
 			case BlangDslPackage.MODEL_PARAM:
 				sequence_ModelParam(context, (ModelParam) semanticObject); 
@@ -490,6 +494,28 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
 		feeder.accept(grammarAccess.getLazyParamAccess().getExprXClosureParserRuleCall_0(), semanticObject.getExpr());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ModelComponent returns LogScaleFactor
+	 *     LogScaleFactor returns LogScaleFactor
+	 *
+	 * Constraint:
+	 *     (name=ValidID expr=XBlockExpression)
+	 */
+	protected void sequence_LogScaleFactor(ISerializationContext context, LogScaleFactor semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.MODEL_COMPONENT__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.MODEL_COMPONENT__NAME));
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.LOG_SCALE_FACTOR__EXPR) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.LOG_SCALE_FACTOR__EXPR));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getLogScaleFactorAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getLogScaleFactorAccess().getExprXBlockExpressionParserRuleCall_5_0(), semanticObject.getExpr());
 		feeder.finish();
 	}
 	

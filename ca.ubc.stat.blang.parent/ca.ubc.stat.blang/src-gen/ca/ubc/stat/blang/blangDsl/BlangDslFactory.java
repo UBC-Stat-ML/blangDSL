@@ -105,6 +105,15 @@ public interface BlangDslFactory extends EFactory
   SupportFactor createSupportFactor();
 
   /**
+   * Returns a new object of class '<em>Log Scale Factor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Log Scale Factor</em>'.
+   * @generated
+   */
+  LogScaleFactor createLogScaleFactor();
+
+  /**
    * Returns a new object of class '<em>Model Param</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

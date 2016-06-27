@@ -5,7 +5,6 @@ package ca.ubc.stat.blang.jvmmodel
 
 import blang.core.Model
 import ca.ubc.stat.blang.blangDsl.BlangModel
-import ca.ubc.stat.blang.blangDsl.ModelComponent
 import ca.ubc.stat.blang.blangDsl.Param
 import com.google.inject.Inject
 import java.lang.reflect.ParameterizedType
@@ -19,7 +18,7 @@ import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import ca.ubc.stat.blang.blangDsl.ConstParam
 import ca.ubc.stat.blang.blangDsl.LazyParam
-import org.eclipse.xtend2.lib.StringConcatenationClient
+import ca.ubc.stat.blang.blangDsl.LogScaleFactor
 import ca.ubc.stat.blang.blangDsl.ModelParam
 import ca.ubc.stat.blang.blangDsl.SupportFactor
 import blang.prototype3.Real
@@ -138,6 +137,8 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                         }
                     SupportFactor:
                         it.members += generateSupportFactor(component, componentCounter)
+                    LogScaleFactor:
+                        it.members += generateLogScaleFactor(component, componentCounter)
                     //default: throw new Exception("What to do: " + component.class)
                 }
             }
@@ -164,6 +165,10 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     
     def dispatch generateModelComponentInit(SupportFactor component, int modelCounter) {
         '''new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«component.name»))'''
+    }
+    
+    def dispatch generateModelComponentInit(LogScaleFactor component, int modelCounter) {
+        '''new $Generated_LogScaleFactor«modelCounter»(«component.name»)'''
     }
     
     def generateModelComponentParamSupplier(ModelParam component,
@@ -235,6 +240,38 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 '''
             ]
             it.members += factor.expr.toMethod("$inSupport", typeRef(boolean)) [
+                visibility = JvmVisibility.PRIVATE
+                parameters += factor.toParameter("variance", typeRef(Real))
+                body = factor.expr
+            ]
+        ]
+    }
+
+    def generateLogScaleFactor(LogScaleFactor factor,
+                              int modelCounter) {
+        factor.toClass("$Generated_LogScaleFactor" + modelCounter) [
+            it.superTypes += typeRef(blang.factors.LogScaleFactor)
+            it.static = true
+            
+            it.members += factor.toField(factor.name, typeRef(Supplier, typeRef(Real))) [
+                final = true
+            ]
+            
+            it.members += factor.toConstructor [
+                it.visibility = JvmVisibility.PUBLIC
+                parameters += factor.toParameter(factor.name, typeRef(Supplier, typeRef(Real)))
+                body = '''
+                this.«factor.name» = «factor.name»;
+                '''
+            ]
+            
+            it.members += factor.expr.toMethod("logDensity", typeRef(double)) [
+                annotations += annotationRef("java.lang.Override")
+                body = '''
+                return $logDensity(variance.get());
+                '''
+            ]
+            it.members += factor.expr.toMethod("$logDensity", typeRef(double)) [
                 visibility = JvmVisibility.PRIVATE
                 parameters += factor.toParameter("variance", typeRef(Real))
                 body = factor.expr

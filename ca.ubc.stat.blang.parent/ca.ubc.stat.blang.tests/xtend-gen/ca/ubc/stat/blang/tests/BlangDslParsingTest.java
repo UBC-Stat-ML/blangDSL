@@ -124,4 +124,38 @@ public class BlangDslParsingTest {
       throw Exceptions.sneakyThrow(_e);
     }
   }
+  
+  @Test
+  public void logFactor() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("model {");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("param Real variance");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("const double LOG2PI = Math.log(2 * Math.PI)");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("laws {");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("logf(variance) = { -0.5 * ( Math.log(variance.doubleValue) + LOG2PI ) }");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      final BlangModel model = this._parseHelper.parse(_builder);
+      this._validationTestHelper.assertNoErrors(model);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
 }

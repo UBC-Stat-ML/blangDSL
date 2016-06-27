@@ -121,6 +121,11 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
         return createSupportFactorAdapter();
       }
       @Override
+      public Adapter caseLogScaleFactor(LogScaleFactor object)
+      {
+        return createLogScaleFactorAdapter();
+      }
+      @Override
       public Adapter caseModelParam(ModelParam object)
       {
         return createModelParamAdapter();
@@ -303,6 +308,21 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createSupportFactorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.LogScaleFactor <em>Log Scale Factor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see ca.ubc.stat.blang.blangDsl.LogScaleFactor
+   * @generated
+   */
+  public Adapter createLogScaleFactorAdapter()
   {
     return null;
   }

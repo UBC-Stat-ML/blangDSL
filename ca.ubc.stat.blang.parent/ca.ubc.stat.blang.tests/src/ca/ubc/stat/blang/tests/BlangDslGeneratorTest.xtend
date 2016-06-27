@@ -61,7 +61,71 @@ class BlangDslGeneratorTest {
 	
 	
 	@Test
-	def void supportFactor() {
+	def void logFactor() {
+        '''
+            model {
+                param Real variance
+                
+                const double LOG2PI = Math.log(2 * Math.PI)
+                laws {
+                    logf(variance) = -0.5 * ( Math.log(variance.doubleValue) + LOG2PI )
+                }
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import blang.factors.LogScaleFactor;
+        import blang.prototype3.Real;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        import java.util.function.Supplier;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          public final Supplier<Real> variance;
+          
+          final static double LOG2PI = Math.log((2 * Math.PI));
+          
+          public MyFile(final Supplier<Real> variance) {
+            this.variance = variance;
+          }
+          
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            components.add(new $Generated_LogScaleFactor0(variance));
+            
+            return components;
+          }
+          
+          public static class $Generated_LogScaleFactor0 implements LogScaleFactor {
+            private final Supplier<Real> variance;
+            
+            public $Generated_LogScaleFactor0(final Supplier<Real> variance) {
+              this.variance = variance;
+            }
+            
+            @Override
+            public double logDensity() {
+              return $logDensity(variance.get());
+            }
+            
+            private double $logDensity(final Real variance) {
+              double _doubleValue = variance.doubleValue();
+              double _log = Math.log(_doubleValue);
+              double _plus = (_log + MyFile.LOG2PI);
+              return ((-0.5) * _plus);
+            }
+          }
+        }
+        '''
+        )
+	}
+    
+    
+    @Test
+    def void supportFactor() {
         '''
             model {
                 param Real variance
@@ -116,7 +180,7 @@ class BlangDslGeneratorTest {
         }
         '''
         )
-	}
+    }
 	
 	
     @Test

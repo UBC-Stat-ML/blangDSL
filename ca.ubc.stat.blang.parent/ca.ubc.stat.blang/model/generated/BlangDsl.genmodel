@@ -44,6 +44,9 @@
     <genClasses ecoreClass="BlangDsl.ecore#//SupportFactor">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//SupportFactor/expr"/>
     </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//LogScaleFactor">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//LogScaleFactor/expr"/>
+    </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//ModelParam">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelParam/deps"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelParam/right"/>

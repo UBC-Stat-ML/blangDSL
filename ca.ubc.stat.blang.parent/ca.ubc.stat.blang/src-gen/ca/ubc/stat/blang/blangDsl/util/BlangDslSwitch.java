@@ -137,6 +137,14 @@ public class BlangDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BlangDslPackage.LOG_SCALE_FACTOR:
+      {
+        LogScaleFactor logScaleFactor = (LogScaleFactor)theEObject;
+        T result = caseLogScaleFactor(logScaleFactor);
+        if (result == null) result = caseModelComponent(logScaleFactor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BlangDslPackage.MODEL_PARAM:
       {
         ModelParam modelParam = (ModelParam)theEObject;
@@ -326,6 +334,22 @@ public class BlangDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseSupportFactor(SupportFactor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Log Scale Factor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Log Scale Factor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLogScaleFactor(LogScaleFactor object)
   {
     return null;
   }

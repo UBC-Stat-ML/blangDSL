@@ -418,6 +418,43 @@ public interface BlangDslPackage extends EPackage
   int SUPPORT_FACTOR_FEATURE_COUNT = MODEL_COMPONENT_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.LogScaleFactorImpl <em>Log Scale Factor</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see ca.ubc.stat.blang.blangDsl.impl.LogScaleFactorImpl
+   * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getLogScaleFactor()
+   * @generated
+   */
+  int LOG_SCALE_FACTOR = 9;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOG_SCALE_FACTOR__NAME = MODEL_COMPONENT__NAME;
+
+  /**
+   * The feature id for the '<em><b>Expr</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOG_SCALE_FACTOR__EXPR = MODEL_COMPONENT_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Log Scale Factor</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOG_SCALE_FACTOR_FEATURE_COUNT = MODEL_COMPONENT_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl <em>Model Param</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -425,7 +462,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getModelParam()
    * @generated
    */
-  int MODEL_PARAM = 9;
+  int MODEL_PARAM = 10;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -471,7 +508,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getDependency()
    * @generated
    */
-  int DEPENDENCY = 10;
+  int DEPENDENCY = 11;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -517,7 +554,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getDistribution()
    * @generated
    */
-  int DISTRIBUTION = 11;
+  int DISTRIBUTION = 12;
 
   /**
    * The feature id for the '<em><b>Clazz</b></em>' containment reference.
@@ -554,7 +591,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getParam()
    * @generated
    */
-  int PARAM = 12;
+  int PARAM = 13;
 
   /**
    * The number of structural features of the '<em>Param</em>' class.
@@ -573,7 +610,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getConstParam()
    * @generated
    */
-  int CONST_PARAM = 13;
+  int CONST_PARAM = 14;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -601,7 +638,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getLazyParam()
    * @generated
    */
-  int LAZY_PARAM = 14;
+  int LAZY_PARAM = 15;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -931,6 +968,27 @@ public interface BlangDslPackage extends EPackage
    * @generated
    */
   EReference getSupportFactor_Expr();
+
+  /**
+   * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.LogScaleFactor <em>Log Scale Factor</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Log Scale Factor</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.LogScaleFactor
+   * @generated
+   */
+  EClass getLogScaleFactor();
+
+  /**
+   * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.LogScaleFactor#getExpr <em>Expr</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Expr</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.LogScaleFactor#getExpr()
+   * @see #getLogScaleFactor()
+   * @generated
+   */
+  EReference getLogScaleFactor_Expr();
 
   /**
    * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.ModelParam <em>Model Param</em>}'.
@@ -1363,6 +1421,24 @@ public interface BlangDslPackage extends EPackage
      * @generated
      */
     EReference SUPPORT_FACTOR__EXPR = eINSTANCE.getSupportFactor_Expr();
+
+    /**
+     * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.LogScaleFactorImpl <em>Log Scale Factor</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see ca.ubc.stat.blang.blangDsl.impl.LogScaleFactorImpl
+     * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getLogScaleFactor()
+     * @generated
+     */
+    EClass LOG_SCALE_FACTOR = eINSTANCE.getLogScaleFactor();
+
+    /**
+     * The meta object literal for the '<em><b>Expr</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOG_SCALE_FACTOR__EXPR = eINSTANCE.getLogScaleFactor_Expr();
 
     /**
      * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl <em>Model Param</em>}' class.

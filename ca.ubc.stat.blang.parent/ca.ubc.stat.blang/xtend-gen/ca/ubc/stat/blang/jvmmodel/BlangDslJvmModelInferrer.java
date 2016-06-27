@@ -12,6 +12,7 @@ import ca.ubc.stat.blang.blangDsl.Dependency;
 import ca.ubc.stat.blang.blangDsl.Distribution;
 import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
+import ca.ubc.stat.blang.blangDsl.LogScaleFactor;
 import ca.ubc.stat.blang.blangDsl.ModelComponent;
 import ca.ubc.stat.blang.blangDsl.ModelParam;
 import ca.ubc.stat.blang.blangDsl.Param;
@@ -359,6 +360,14 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_5, _generateSupportFactor);
               }
             }
+            if (!_matched) {
+              if (component instanceof LogScaleFactor) {
+                _matched=true;
+                EList<JvmMember> _members_5 = it.getMembers();
+                JvmGenericType _generateLogScaleFactor = this.generateLogScaleFactor(((LogScaleFactor)component), (componentCounter).intValue());
+                this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_5, _generateLogScaleFactor);
+              }
+            }
           }
         }
       }
@@ -430,6 +439,17 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     String _name = component.getName();
     _builder.append(_name, "");
     _builder.append("))");
+    return _builder;
+  }
+  
+  protected CharSequence _generateModelComponentInit(final LogScaleFactor component, final int modelCounter) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("new $Generated_LogScaleFactor");
+    _builder.append(modelCounter, "");
+    _builder.append("(");
+    String _name = component.getName();
+    _builder.append(_name, "");
+    _builder.append(")");
     return _builder;
   }
   
@@ -626,6 +646,83 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     return this._jvmTypesBuilder.toClass(factor, ("$Generated_SetupSupport" + Integer.valueOf(modelCounter)), _function);
   }
   
+  public JvmGenericType generateLogScaleFactor(final LogScaleFactor factor, final int modelCounter) {
+    final Procedure1<JvmGenericType> _function = (JvmGenericType it) -> {
+      EList<JvmTypeReference> _superTypes = it.getSuperTypes();
+      JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(blang.factors.LogScaleFactor.class);
+      this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
+      it.setStatic(true);
+      EList<JvmMember> _members = it.getMembers();
+      String _name = factor.getName();
+      JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Real.class);
+      JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_1);
+      final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
+        it_1.setFinal(true);
+      };
+      JvmField _field = this._jvmTypesBuilder.toField(factor, _name, _typeRef_2, _function_1);
+      this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
+      EList<JvmMember> _members_1 = it.getMembers();
+      final Procedure1<JvmConstructor> _function_2 = (JvmConstructor it_1) -> {
+        it_1.setVisibility(JvmVisibility.PUBLIC);
+        EList<JvmFormalParameter> _parameters = it_1.getParameters();
+        String _name_1 = factor.getName();
+        JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(Real.class);
+        JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_3);
+        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, _name_1, _typeRef_4);
+        this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+        StringConcatenationClient _client = new StringConcatenationClient() {
+          @Override
+          protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+            _builder.append("this.");
+            String _name = factor.getName();
+            _builder.append(_name, "");
+            _builder.append(" = ");
+            String _name_1 = factor.getName();
+            _builder.append(_name_1, "");
+            _builder.append(";");
+            _builder.newLineIfNotEmpty();
+          }
+        };
+        this._jvmTypesBuilder.setBody(it_1, _client);
+      };
+      JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(factor, _function_2);
+      this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_1, _constructor);
+      EList<JvmMember> _members_2 = it.getMembers();
+      XExpression _expr = factor.getExpr();
+      JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(double.class);
+      final Procedure1<JvmOperation> _function_3 = (JvmOperation it_1) -> {
+        EList<JvmAnnotationReference> _annotations = it_1.getAnnotations();
+        JvmAnnotationReference _annotationRef = this._annotationTypesBuilder.annotationRef("java.lang.Override");
+        this._jvmTypesBuilder.<JvmAnnotationReference>operator_add(_annotations, _annotationRef);
+        StringConcatenationClient _client = new StringConcatenationClient() {
+          @Override
+          protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+            _builder.append("return $logDensity(variance.get());");
+            _builder.newLine();
+          }
+        };
+        this._jvmTypesBuilder.setBody(it_1, _client);
+      };
+      JvmOperation _method = this._jvmTypesBuilder.toMethod(_expr, "logDensity", _typeRef_3, _function_3);
+      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_2, _method);
+      EList<JvmMember> _members_3 = it.getMembers();
+      XExpression _expr_1 = factor.getExpr();
+      JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(double.class);
+      final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
+        it_1.setVisibility(JvmVisibility.PRIVATE);
+        EList<JvmFormalParameter> _parameters = it_1.getParameters();
+        JvmTypeReference _typeRef_5 = this._typeReferenceBuilder.typeRef(Real.class);
+        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, "variance", _typeRef_5);
+        this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+        XExpression _expr_2 = factor.getExpr();
+        this._jvmTypesBuilder.setBody(it_1, _expr_2);
+      };
+      JvmOperation _method_1 = this._jvmTypesBuilder.toMethod(_expr_1, "$logDensity", _typeRef_4, _function_4);
+      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_3, _method_1);
+    };
+    return this._jvmTypesBuilder.toClass(factor, ("$Generated_LogScaleFactor" + Integer.valueOf(modelCounter)), _function);
+  }
+  
   public void infer(final EObject model, final IJvmDeclaredTypeAcceptor acceptor, final boolean isPreIndexingPhase) {
     if (model instanceof BlangModel) {
       _infer((BlangModel)model, acceptor, isPreIndexingPhase);
@@ -640,7 +737,9 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
   }
   
   public CharSequence generateModelComponentInit(final ModelComponent component, final int modelCounter) {
-    if (component instanceof ModelParam) {
+    if (component instanceof LogScaleFactor) {
+      return _generateModelComponentInit((LogScaleFactor)component, modelCounter);
+    } else if (component instanceof ModelParam) {
       return _generateModelComponentInit((ModelParam)component, modelCounter);
     } else if (component instanceof SupportFactor) {
       return _generateModelComponentInit((SupportFactor)component, modelCounter);
