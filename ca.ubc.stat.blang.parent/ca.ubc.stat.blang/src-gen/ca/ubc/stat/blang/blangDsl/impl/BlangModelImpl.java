@@ -5,17 +5,25 @@ package ca.ubc.stat.blang.blangDsl.impl;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
+import ca.ubc.stat.blang.blangDsl.Const;
 import ca.ubc.stat.blang.blangDsl.Laws;
-import ca.ubc.stat.blang.blangDsl.Vars;
+import ca.ubc.stat.blang.blangDsl.ModelVar;
+
+import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.xtext.xtype.XImportSection;
 
@@ -30,6 +38,7 @@ import org.eclipse.xtext.xtype.XImportSection;
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getImportSection <em>Import Section</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getVars <em>Vars</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getConsts <em>Consts</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.BlangModelImpl#getLaws <em>Laws</em>}</li>
  * </ul>
  *
@@ -68,14 +77,24 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
   protected XImportSection importSection;
 
   /**
-   * The cached value of the '{@link #getVars() <em>Vars</em>}' containment reference.
+   * The cached value of the '{@link #getVars() <em>Vars</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getVars()
    * @generated
    * @ordered
    */
-  protected Vars vars;
+  protected EList<ModelVar> vars;
+
+  /**
+   * The cached value of the '{@link #getConsts() <em>Consts</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getConsts()
+   * @generated
+   * @ordered
+   */
+  protected EList<Const> consts;
 
   /**
    * The cached value of the '{@link #getLaws() <em>Laws</em>}' containment reference.
@@ -184,8 +203,12 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
    * <!-- end-user-doc -->
    * @generated
    */
-  public Vars getVars()
+  public EList<ModelVar> getVars()
   {
+    if (vars == null)
+    {
+      vars = new EObjectContainmentEList<ModelVar>(ModelVar.class, this, BlangDslPackage.BLANG_MODEL__VARS);
+    }
     return vars;
   }
 
@@ -194,37 +217,13 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetVars(Vars newVars, NotificationChain msgs)
+  public EList<Const> getConsts()
   {
-    Vars oldVars = vars;
-    vars = newVars;
-    if (eNotificationRequired())
+    if (consts == null)
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BlangDslPackage.BLANG_MODEL__VARS, oldVars, newVars);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
+      consts = new EObjectContainmentEList<Const>(Const.class, this, BlangDslPackage.BLANG_MODEL__CONSTS);
     }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setVars(Vars newVars)
-  {
-    if (newVars != vars)
-    {
-      NotificationChain msgs = null;
-      if (vars != null)
-        msgs = ((InternalEObject)vars).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.BLANG_MODEL__VARS, null, msgs);
-      if (newVars != null)
-        msgs = ((InternalEObject)newVars).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.BLANG_MODEL__VARS, null, msgs);
-      msgs = basicSetVars(newVars, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.BLANG_MODEL__VARS, newVars, newVars));
+    return consts;
   }
 
   /**
@@ -288,7 +287,9 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
       case BlangDslPackage.BLANG_MODEL__IMPORT_SECTION:
         return basicSetImportSection(null, msgs);
       case BlangDslPackage.BLANG_MODEL__VARS:
-        return basicSetVars(null, msgs);
+        return ((InternalEList<?>)getVars()).basicRemove(otherEnd, msgs);
+      case BlangDslPackage.BLANG_MODEL__CONSTS:
+        return ((InternalEList<?>)getConsts()).basicRemove(otherEnd, msgs);
       case BlangDslPackage.BLANG_MODEL__LAWS:
         return basicSetLaws(null, msgs);
     }
@@ -311,6 +312,8 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         return getImportSection();
       case BlangDslPackage.BLANG_MODEL__VARS:
         return getVars();
+      case BlangDslPackage.BLANG_MODEL__CONSTS:
+        return getConsts();
       case BlangDslPackage.BLANG_MODEL__LAWS:
         return getLaws();
     }
@@ -322,6 +325,7 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -334,7 +338,12 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         setImportSection((XImportSection)newValue);
         return;
       case BlangDslPackage.BLANG_MODEL__VARS:
-        setVars((Vars)newValue);
+        getVars().clear();
+        getVars().addAll((Collection<? extends ModelVar>)newValue);
+        return;
+      case BlangDslPackage.BLANG_MODEL__CONSTS:
+        getConsts().clear();
+        getConsts().addAll((Collection<? extends Const>)newValue);
         return;
       case BlangDslPackage.BLANG_MODEL__LAWS:
         setLaws((Laws)newValue);
@@ -360,7 +369,10 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
         setImportSection((XImportSection)null);
         return;
       case BlangDslPackage.BLANG_MODEL__VARS:
-        setVars((Vars)null);
+        getVars().clear();
+        return;
+      case BlangDslPackage.BLANG_MODEL__CONSTS:
+        getConsts().clear();
         return;
       case BlangDslPackage.BLANG_MODEL__LAWS:
         setLaws((Laws)null);
@@ -384,7 +396,9 @@ public class BlangModelImpl extends MinimalEObjectImpl.Container implements Blan
       case BlangDslPackage.BLANG_MODEL__IMPORT_SECTION:
         return importSection != null;
       case BlangDslPackage.BLANG_MODEL__VARS:
-        return vars != null;
+        return vars != null && !vars.isEmpty();
+      case BlangDslPackage.BLANG_MODEL__CONSTS:
+        return consts != null && !consts.isEmpty();
       case BlangDslPackage.BLANG_MODEL__LAWS:
         return laws != null;
     }

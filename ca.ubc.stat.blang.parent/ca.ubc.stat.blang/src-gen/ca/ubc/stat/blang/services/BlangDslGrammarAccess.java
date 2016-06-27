@@ -37,21 +37,24 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
 		private final Keyword cModelKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_3_1 = (Keyword)cGroup_3.eContents().get(1);
-		private final Assignment cVarsAssignment_3_2 = (Assignment)cGroup_3.eContents().get(2);
-		private final RuleCall cVarsVarsParserRuleCall_3_2_0 = (RuleCall)cVarsAssignment_3_2.eContents().get(0);
+		private final Alternatives cAlternatives_3_2 = (Alternatives)cGroup_3.eContents().get(2);
+		private final Assignment cVarsAssignment_3_2_0 = (Assignment)cAlternatives_3_2.eContents().get(0);
+		private final RuleCall cVarsModelVarParserRuleCall_3_2_0_0 = (RuleCall)cVarsAssignment_3_2_0.eContents().get(0);
+		private final Assignment cConstsAssignment_3_2_1 = (Assignment)cAlternatives_3_2.eContents().get(1);
+		private final RuleCall cConstsConstParserRuleCall_3_2_1_0 = (RuleCall)cConstsAssignment_3_2_1.eContents().get(0);
 		private final Assignment cLawsAssignment_3_3 = (Assignment)cGroup_3.eContents().get(3);
 		private final RuleCall cLawsLawsParserRuleCall_3_3_0 = (RuleCall)cLawsAssignment_3_3.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_3_4 = (Keyword)cGroup_3.eContents().get(4);
 		
 		//BlangModel:
 		//	{BlangModel} ('package' name=QualifiedName)?
-		//	importSection=XImportSection? ('model' '{'
-		//	vars=Vars
+		//	importSection=XImportSection? ('model' '{' (vars+=ModelVar | consts+=Const)*
 		//	laws=Laws?
 		//	'}')?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//{BlangModel} ('package' name=QualifiedName)? importSection=XImportSection? ('model' '{' vars=Vars laws=Laws? '}')?
+		//{BlangModel} ('package' name=QualifiedName)? importSection=XImportSection? ('model' '{' (vars+=ModelVar |
+		//consts+=Const)* laws=Laws? '}')?
 		public Group getGroup() { return cGroup; }
 		
 		//{BlangModel}
@@ -75,7 +78,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		//XImportSection
 		public RuleCall getImportSectionXImportSectionParserRuleCall_2_0() { return cImportSectionXImportSectionParserRuleCall_2_0; }
 		
-		//('model' '{' vars=Vars laws=Laws? '}')?
+		//('model' '{' (vars+=ModelVar | consts+=Const)* laws=Laws? '}')?
 		public Group getGroup_3() { return cGroup_3; }
 		
 		//'model'
@@ -84,11 +87,20 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_3_1() { return cLeftCurlyBracketKeyword_3_1; }
 		
-		//vars=Vars
-		public Assignment getVarsAssignment_3_2() { return cVarsAssignment_3_2; }
+		//(vars+=ModelVar | consts+=Const)*
+		public Alternatives getAlternatives_3_2() { return cAlternatives_3_2; }
 		
-		//Vars
-		public RuleCall getVarsVarsParserRuleCall_3_2_0() { return cVarsVarsParserRuleCall_3_2_0; }
+		//vars+=ModelVar
+		public Assignment getVarsAssignment_3_2_0() { return cVarsAssignment_3_2_0; }
+		
+		//ModelVar
+		public RuleCall getVarsModelVarParserRuleCall_3_2_0_0() { return cVarsModelVarParserRuleCall_3_2_0_0; }
+		
+		//consts+=Const
+		public Assignment getConstsAssignment_3_2_1() { return cConstsAssignment_3_2_1; }
+		
+		//Const
+		public RuleCall getConstsConstParserRuleCall_3_2_1_0() { return cConstsConstParserRuleCall_3_2_1_0; }
 		
 		//laws=Laws?
 		public Assignment getLawsAssignment_3_3() { return cLawsAssignment_3_3; }
@@ -99,98 +111,36 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_3_4() { return cRightCurlyBracketKeyword_3_4; }
 	}
-	public class VarsElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.Vars");
+	public class ModelVarElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.ModelVar");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Action cVarsAction_0 = (Action)cGroup.eContents().get(0);
-		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
-		private final Assignment cRandomVarsAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
-		private final RuleCall cRandomVarsRandomParserRuleCall_1_0_0 = (RuleCall)cRandomVarsAssignment_1_0.eContents().get(0);
-		private final Assignment cParamVarsAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
-		private final RuleCall cParamVarsParamVarParserRuleCall_1_1_0 = (RuleCall)cParamVarsAssignment_1_1.eContents().get(0);
-		private final Assignment cConstsAssignment_1_2 = (Assignment)cAlternatives_1.eContents().get(2);
-		private final RuleCall cConstsConstParserRuleCall_1_2_0 = (RuleCall)cConstsAssignment_1_2.eContents().get(0);
-		
-		//Vars:
-		//	{Vars} (randomVars+=Random | paramVars+=ParamVar | consts+=Const)*;
-		@Override public ParserRule getRule() { return rule; }
-		
-		//{Vars} (randomVars+=Random | paramVars+=ParamVar | consts+=Const)*
-		public Group getGroup() { return cGroup; }
-		
-		//{Vars}
-		public Action getVarsAction_0() { return cVarsAction_0; }
-		
-		//(randomVars+=Random | paramVars+=ParamVar | consts+=Const)*
-		public Alternatives getAlternatives_1() { return cAlternatives_1; }
-		
-		//randomVars+=Random
-		public Assignment getRandomVarsAssignment_1_0() { return cRandomVarsAssignment_1_0; }
-		
-		//Random
-		public RuleCall getRandomVarsRandomParserRuleCall_1_0_0() { return cRandomVarsRandomParserRuleCall_1_0_0; }
-		
-		//paramVars+=ParamVar
-		public Assignment getParamVarsAssignment_1_1() { return cParamVarsAssignment_1_1; }
-		
-		//ParamVar
-		public RuleCall getParamVarsParamVarParserRuleCall_1_1_0() { return cParamVarsParamVarParserRuleCall_1_1_0; }
-		
-		//consts+=Const
-		public Assignment getConstsAssignment_1_2() { return cConstsAssignment_1_2; }
-		
-		//Const
-		public RuleCall getConstsConstParserRuleCall_1_2_0() { return cConstsConstParserRuleCall_1_2_0; }
-	}
-	public class RandomElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.Random");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cRandomKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cQualTypeAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final Alternatives cQualTypeAlternatives_0_0 = (Alternatives)cQualTypeAssignment_0.eContents().get(0);
+		private final Keyword cQualTypeRandomKeyword_0_0_0 = (Keyword)cQualTypeAlternatives_0_0.eContents().get(0);
+		private final Keyword cQualTypeParamKeyword_0_0_1 = (Keyword)cQualTypeAlternatives_0_0.eContents().get(1);
 		private final Assignment cTypeAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cTypeJvmTypeReferenceParserRuleCall_1_0 = (RuleCall)cTypeAssignment_1.eContents().get(0);
 		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cNameValidIDParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
 		
-		//Random:
-		//	'random' type=JvmTypeReference name=ValidID;
+		//ModelVar:
+		//	qualType=('random' | 'param') type=JvmTypeReference name=ValidID;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'random' type=JvmTypeReference name=ValidID
+		//qualType=('random' | 'param') type=JvmTypeReference name=ValidID
 		public Group getGroup() { return cGroup; }
+		
+		//qualType=('random' | 'param')
+		public Assignment getQualTypeAssignment_0() { return cQualTypeAssignment_0; }
+		
+		//('random' | 'param')
+		public Alternatives getQualTypeAlternatives_0_0() { return cQualTypeAlternatives_0_0; }
 		
 		//'random'
-		public Keyword getRandomKeyword_0() { return cRandomKeyword_0; }
-		
-		//type=JvmTypeReference
-		public Assignment getTypeAssignment_1() { return cTypeAssignment_1; }
-		
-		//JvmTypeReference
-		public RuleCall getTypeJvmTypeReferenceParserRuleCall_1_0() { return cTypeJvmTypeReferenceParserRuleCall_1_0; }
-		
-		//name=ValidID
-		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
-		
-		//ValidID
-		public RuleCall getNameValidIDParserRuleCall_2_0() { return cNameValidIDParserRuleCall_2_0; }
-	}
-	public class ParamVarElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.ParamVar");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cParamKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cTypeAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cTypeJvmTypeReferenceParserRuleCall_1_0 = (RuleCall)cTypeAssignment_1.eContents().get(0);
-		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cNameValidIDParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
-		
-		//ParamVar:
-		//	'param' type=JvmTypeReference name=ValidID;
-		@Override public ParserRule getRule() { return rule; }
-		
-		//'param' type=JvmTypeReference name=ValidID
-		public Group getGroup() { return cGroup; }
+		public Keyword getQualTypeRandomKeyword_0_0_0() { return cQualTypeRandomKeyword_0_0_0; }
 		
 		//'param'
-		public Keyword getParamKeyword_0() { return cParamKeyword_0; }
+		public Keyword getQualTypeParamKeyword_0_0_1() { return cQualTypeParamKeyword_0_0_1; }
 		
 		//type=JvmTypeReference
 		public Assignment getTypeAssignment_1() { return cTypeAssignment_1; }
@@ -655,9 +605,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	
 	private final BlangModelElements pBlangModel;
-	private final VarsElements pVars;
-	private final RandomElements pRandom;
-	private final ParamVarElements pParamVar;
+	private final ModelVarElements pModelVar;
 	private final ConstElements pConst;
 	private final VarDeclElements pVarDecl;
 	private final LawsElements pLaws;
@@ -685,9 +633,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		this.gaXbase = gaXbase;
 		this.gaXtype = gaXtype;
 		this.pBlangModel = new BlangModelElements();
-		this.pVars = new VarsElements();
-		this.pRandom = new RandomElements();
-		this.pParamVar = new ParamVarElements();
+		this.pModelVar = new ModelVarElements();
 		this.pConst = new ConstElements();
 		this.pVarDecl = new VarDeclElements();
 		this.pLaws = new LawsElements();
@@ -735,8 +681,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//BlangModel:
 	//	{BlangModel} ('package' name=QualifiedName)?
-	//	importSection=XImportSection? ('model' '{'
-	//	vars=Vars
+	//	importSection=XImportSection? ('model' '{' (vars+=ModelVar | consts+=Const)*
 	//	laws=Laws?
 	//	'}')?;
 	public BlangModelElements getBlangModelAccess() {
@@ -747,34 +692,14 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getBlangModelAccess().getRule();
 	}
 	
-	//Vars:
-	//	{Vars} (randomVars+=Random | paramVars+=ParamVar | consts+=Const)*;
-	public VarsElements getVarsAccess() {
-		return pVars;
+	//ModelVar:
+	//	qualType=('random' | 'param') type=JvmTypeReference name=ValidID;
+	public ModelVarElements getModelVarAccess() {
+		return pModelVar;
 	}
 	
-	public ParserRule getVarsRule() {
-		return getVarsAccess().getRule();
-	}
-	
-	//Random:
-	//	'random' type=JvmTypeReference name=ValidID;
-	public RandomElements getRandomAccess() {
-		return pRandom;
-	}
-	
-	public ParserRule getRandomRule() {
-		return getRandomAccess().getRule();
-	}
-	
-	//ParamVar:
-	//	'param' type=JvmTypeReference name=ValidID;
-	public ParamVarElements getParamVarAccess() {
-		return pParamVar;
-	}
-	
-	public ParserRule getParamVarRule() {
-		return getParamVarAccess().getRule();
+	public ParserRule getModelVarRule() {
+		return getModelVarAccess().getRule();
 	}
 	
 	//Const:

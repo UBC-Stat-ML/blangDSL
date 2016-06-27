@@ -4,7 +4,7 @@
 package ca.ubc.stat.blang.blangDsl.impl;
 
 import ca.ubc.stat.blang.blangDsl.BlangDslPackage;
-import ca.ubc.stat.blang.blangDsl.ParamVar;
+import ca.ubc.stat.blang.blangDsl.ModelVar;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -19,20 +19,41 @@ import org.eclipse.xtext.common.types.JvmTypeReference;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Param Var</b></em>'.
+ * An implementation of the model object '<em><b>Model Var</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ParamVarImpl#getType <em>Type</em>}</li>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ParamVarImpl#getName <em>Name</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ModelVarImpl#getQualType <em>Qual Type</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ModelVarImpl#getType <em>Type</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ModelVarImpl#getName <em>Name</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamVar
+public class ModelVarImpl extends MinimalEObjectImpl.Container implements ModelVar
 {
+  /**
+   * The default value of the '{@link #getQualType() <em>Qual Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getQualType()
+   * @generated
+   * @ordered
+   */
+  protected static final String QUAL_TYPE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getQualType() <em>Qual Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getQualType()
+   * @generated
+   * @ordered
+   */
+  protected String qualType = QUAL_TYPE_EDEFAULT;
+
   /**
    * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
    * <!-- begin-user-doc -->
@@ -68,7 +89,7 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ParamVarImpl()
+  protected ModelVarImpl()
   {
     super();
   }
@@ -81,7 +102,30 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
   @Override
   protected EClass eStaticClass()
   {
-    return BlangDslPackage.Literals.PARAM_VAR;
+    return BlangDslPackage.Literals.MODEL_VAR;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getQualType()
+  {
+    return qualType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setQualType(String newQualType)
+  {
+    String oldQualType = qualType;
+    qualType = newQualType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.MODEL_VAR__QUAL_TYPE, oldQualType, qualType));
   }
 
   /**
@@ -105,7 +149,7 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
     type = newType;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BlangDslPackage.PARAM_VAR__TYPE, oldType, newType);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BlangDslPackage.MODEL_VAR__TYPE, oldType, newType);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -122,14 +166,14 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
     {
       NotificationChain msgs = null;
       if (type != null)
-        msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.PARAM_VAR__TYPE, null, msgs);
+        msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.MODEL_VAR__TYPE, null, msgs);
       if (newType != null)
-        msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.PARAM_VAR__TYPE, null, msgs);
+        msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BlangDslPackage.MODEL_VAR__TYPE, null, msgs);
       msgs = basicSetType(newType, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.PARAM_VAR__TYPE, newType, newType));
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.MODEL_VAR__TYPE, newType, newType));
   }
 
   /**
@@ -152,7 +196,7 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.PARAM_VAR__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.MODEL_VAR__NAME, oldName, name));
   }
 
   /**
@@ -165,7 +209,7 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM_VAR__TYPE:
+      case BlangDslPackage.MODEL_VAR__TYPE:
         return basicSetType(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -181,9 +225,11 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM_VAR__TYPE:
+      case BlangDslPackage.MODEL_VAR__QUAL_TYPE:
+        return getQualType();
+      case BlangDslPackage.MODEL_VAR__TYPE:
         return getType();
-      case BlangDslPackage.PARAM_VAR__NAME:
+      case BlangDslPackage.MODEL_VAR__NAME:
         return getName();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -199,10 +245,13 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM_VAR__TYPE:
+      case BlangDslPackage.MODEL_VAR__QUAL_TYPE:
+        setQualType((String)newValue);
+        return;
+      case BlangDslPackage.MODEL_VAR__TYPE:
         setType((JvmTypeReference)newValue);
         return;
-      case BlangDslPackage.PARAM_VAR__NAME:
+      case BlangDslPackage.MODEL_VAR__NAME:
         setName((String)newValue);
         return;
     }
@@ -219,10 +268,13 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM_VAR__TYPE:
+      case BlangDslPackage.MODEL_VAR__QUAL_TYPE:
+        setQualType(QUAL_TYPE_EDEFAULT);
+        return;
+      case BlangDslPackage.MODEL_VAR__TYPE:
         setType((JvmTypeReference)null);
         return;
-      case BlangDslPackage.PARAM_VAR__NAME:
+      case BlangDslPackage.MODEL_VAR__NAME:
         setName(NAME_EDEFAULT);
         return;
     }
@@ -239,9 +291,11 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
   {
     switch (featureID)
     {
-      case BlangDslPackage.PARAM_VAR__TYPE:
+      case BlangDslPackage.MODEL_VAR__QUAL_TYPE:
+        return QUAL_TYPE_EDEFAULT == null ? qualType != null : !QUAL_TYPE_EDEFAULT.equals(qualType);
+      case BlangDslPackage.MODEL_VAR__TYPE:
         return type != null;
-      case BlangDslPackage.PARAM_VAR__NAME:
+      case BlangDslPackage.MODEL_VAR__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
     }
     return super.eIsSet(featureID);
@@ -258,10 +312,12 @@ public class ParamVarImpl extends MinimalEObjectImpl.Container implements ParamV
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
+    result.append(" (qualType: ");
+    result.append(qualType);
+    result.append(", name: ");
     result.append(name);
     result.append(')');
     return result.toString();
   }
 
-} //ParamVarImpl
+} //ModelVarImpl

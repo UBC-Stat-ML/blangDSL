@@ -22,10 +22,11 @@ import ca.ubc.stat.blang.blangDsl.LogScaleFactor
 import ca.ubc.stat.blang.blangDsl.ModelParam
 import ca.ubc.stat.blang.blangDsl.SupportFactor
 import blang.prototype3.Real
+import ca.ubc.stat.blang.blangDsl.ModelVar
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
- *
+ * 
  * <p>The JVM model should contain all elements that would appear in the Java code 
  * which is generated from the source model. Other models link against the JVM model rather than the source model.</p>     
  */
@@ -67,128 +68,115 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             if (model.name != null) {
                 it.packageName = model.name;
             }
-            
+
             it.superTypes += typeRef(Model)
-            
-            if (model.vars != null) {
-                for (varDecl : model.vars.randomVars) {
-                    members += varDecl.toField(varDecl.name, varDecl.type ) [
-                        visibility = JvmVisibility.PUBLIC
-                        it.final = true
-                    ]
-                }
-                for (varDecl : model.vars.paramVars) {
-                    members += varDecl.toField(varDecl.name, typeRef(Supplier, varDecl.type)) [
-                        visibility = JvmVisibility.PUBLIC
-                        it.final = true
-                    ]
-                }
-                for (varDecl : model.vars.consts) {
-                    members += varDecl.toField(varDecl.name, varDecl.type) [
-                        visibility = JvmVisibility.DEFAULT
-                        it.final = true
-                        it.static = true
-                        initializer = varDecl.right
-                    ]
-                }
+
+            for (varDecl : model.vars) {
+                members += varDecl.toField(varDecl.name, getVarType(varDecl)) [
+                    it.visibility = JvmVisibility.PUBLIC
+                    it.final = true
+                ]
             }
-            
-            if ((model.vars?.randomVars != null && !model.vars.randomVars.empty) ||
-                (model.vars?.paramVars != null &&!model.vars.paramVars.empty)) {
+            for (varDecl : model.consts) {
+                members += varDecl.toField(varDecl.name, varDecl.type) [
+                    visibility = JvmVisibility.DEFAULT
+                    it.final = true
+                    it.static = true
+                    initializer = varDecl.right
+                ]
+            }
+
+            if (model.vars != null && !model.vars.empty) {
                 it.members += model.toConstructor [
                     visibility = JvmVisibility.PUBLIC
-                    for (varDecl : model.vars?.randomVars) {
-                        parameters += varDecl.toParameter(varDecl.name, varDecl.type)
+                    // Random variables show up earlier in the constructor parameters
+                    for (varDecl : model.vars.filter[qualType == 'random']) {
+                        parameters += varDecl.toParameter(varDecl.name, getVarType(varDecl))
                     }
-                    for (varDecl : model.vars?.paramVars) {
-                        parameters += varDecl.toParameter(varDecl.name, typeRef(Supplier, varDecl.type))
+                    for (varDecl : model.vars.filter[qualType != 'random']) {
+                        parameters += varDecl.toParameter(varDecl.name, getVarType(varDecl))
                     }
                     body = '''
-                        «FOR varDecl : model.vars?.randomVars»
-                            this.«varDecl.name» = «varDecl.name»;
-                        «ENDFOR»
-                        «FOR varDecl : model.vars?.paramVars»
+                        «FOR varDecl : model.vars»
                             this.«varDecl.name» = «varDecl.name»;
                         «ENDFOR»
                     '''
                 ]
             }
-            
+
             if (model.laws?.modelComponents != null && !model.laws.modelComponents.empty) {
-            it.members += model.toMethod("components", typeRef(Collection, typeRef(blang.core.ModelComponent))) [
-                visibility = JvmVisibility.PUBLIC
-                body = '''
-                    «typeRef(ArrayList, typeRef(blang.core.ModelComponent))» components = new «typeRef(ArrayList)»();
-                    
-                    «FOR i : 0..<model.laws.modelComponents.size»
-                        components.add(«generateModelComponentInit(model.laws.modelComponents.get(i), i)»);
-                    «ENDFOR»
-                    
-                    return components;
-                '''
-            ]
-            
-            for (componentCounter : 0..<model.laws.modelComponents.size) {
-                var component = model.laws.modelComponents.get(componentCounter)
-                switch(component) {
-                    ModelParam:
-                        for (paramCounter : 0 ..< component.right.param.size) {
-                                it.members += generateModelComponentParamSupplier(component, componentCounter, paramCounter)
-                        }
-                    SupportFactor:
-                        it.members += generateSupportFactor(component, componentCounter)
-                    LogScaleFactor:
-                        it.members += generateLogScaleFactor(component, componentCounter)
-                    //default: throw new Exception("What to do: " + component.class)
+                it.members += model.toMethod("components", typeRef(Collection, typeRef(blang.core.ModelComponent))) [
+                    visibility = JvmVisibility.PUBLIC
+                    body = '''
+                        «typeRef(ArrayList, typeRef(blang.core.ModelComponent))» components = new «typeRef(ArrayList)»();
+                        
+                        «FOR i : 0..<model.laws.modelComponents.size»
+                            components.add(«generateModelComponentInit(model.laws.modelComponents.get(i), i)»);
+                        «ENDFOR»
+                        
+                        return components;
+                    '''
+                ]
+
+                for (componentCounter : 0 ..< model.laws.modelComponents.size) {
+                    var component = model.laws.modelComponents.get(componentCounter)
+                    switch (component) {
+                        ModelParam:
+                            for (paramCounter : 0 ..< component.right.param.size) {
+                                it.members +=
+                                    generateModelComponentParamSupplier(component, componentCounter, paramCounter)
+                            }
+                        SupportFactor:
+                            it.members += generateSupportFactor(component, componentCounter)
+                        LogScaleFactor:
+                            it.members += generateLogScaleFactor(component, componentCounter)
+                    // default: throw new Exception("What to do: " + component.class)
+                    }
                 }
-            }
             }
         ]
     }
-    
+
+    def getVarType(ModelVar v) {
+        switch (v.qualType) {
+            case "random": v.type
+            case "param": typeRef(Supplier, v.type) 
+        }
+    }
     
     def dispatch generateModelComponentInit(ModelParam component, int modelCounter) {
         '''
             new «component.right.clazz.type.identifier»(
-                «component.name»«
-                FOR i : 0..<component.right.param.size»,
+                «component.name»«FOR i : 0..<component.right.param.size»,
                 new $Generated_SupplierSubModel«modelCounter»Param«i»(«
                     FOR j : 0..<component.deps.size SEPARATOR ", "»«
                         component.deps.get(j).init»«
                     ENDFOR
-                    »)«
-                ENDFOR
-                »)
-            '''
+                    »)«ENDFOR»)
+        '''
     }
-    
-    
-    def dispatch generateModelComponentInit(SupportFactor component, int modelCounter) {
-        '''new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«
-                    FOR p : component.params SEPARATOR ", "»«
-                      p»«
-                    ENDFOR»))'''
+
+    def dispatch generateModelComponentInit(SupportFactor component,
+        int modelCounter) {
+        '''new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«FOR p : component.params SEPARATOR ", "»«
+                      p»«ENDFOR»))'''
     }
-    
+
     def dispatch generateModelComponentInit(LogScaleFactor component, int modelCounter) {
-        '''new $Generated_LogScaleFactor«modelCounter»(«
-            FOR p : component.params SEPARATOR ", "»«
-              p»«
-            ENDFOR»)'''
+        '''new $Generated_LogScaleFactor«modelCounter»(«FOR p : component.params SEPARATOR ", "»«
+              p»«ENDFOR»)'''
     }
-    
-    def generateModelComponentParamSupplier(ModelParam component,
-                                            int modelCounter,
-                                            int paramCounter) {
+
+    def generateModelComponentParamSupplier(ModelParam component, int modelCounter, int paramCounter) {
         val dist = component.right.clazz.type
         val distClass = Class.forName(dist.identifier)
         val distCtors = distClass.constructors
         val distCtor = distCtors?.get(0)
-        val paramType = distCtor.genericParameterTypes.get(paramCounter+1)
+        val paramType = distCtor.genericParameterTypes.get(paramCounter + 1)
         val paramTypeArgs = (paramType as ParameterizedType).actualTypeArguments
         val Param param = component.right.param.get(paramCounter)
         val paramSupplierTypeRef = typeRef(Supplier, typeRef(paramTypeArgs.get(0).typeName))
-        
+
         param.toClass("$Generated_SupplierSubModel" + modelCounter + "Param" + paramCounter) [
             it.superTypes += paramSupplierTypeRef
             it.static = true
@@ -198,20 +186,20 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 ]
             }
             it.members += param.toConstructor [
-                    visibility = JvmVisibility.PUBLIC
-                    for (dep : component.deps) {
-                        parameters += param.toParameter(dep.name, dep.type)
-                    }
-                    body = '''
-                        «FOR dep : component.deps»
-                            this.«dep.name» = «dep.name»;
-                        «ENDFOR»
-                    '''
-                ]
-            
+                visibility = JvmVisibility.PUBLIC
+                for (dep : component.deps) {
+                    parameters += param.toParameter(dep.name, dep.type)
+                }
+                body = '''
+                    «FOR dep : component.deps»
+                        this.«dep.name» = «dep.name»;
+                    «ENDFOR»
+                '''
+            ]
+
             it.members += param.toMethod("get", typeRef(paramTypeArgs.get(0).typeName)) [
                 annotations += annotationRef("java.lang.Override")
-                switch(param) {
+                switch (param) {
                     ConstParam:
                         body = '''return «param.id»;'''
                     LazyParam:
@@ -221,38 +209,34 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         ]
     }
 
-    def generateSupportFactor(SupportFactor factor,
-                              int modelCounter) {
+    def generateSupportFactor(SupportFactor factor, int modelCounter) {
         factor.toClass("$Generated_SetupSupport" + modelCounter) [
             it.superTypes += typeRef(blang.core.SupportFactor.Support)
             it.static = true
-            
+
             for (p : factor.params) {
                 it.members += factor.toField(p, typeRef(Supplier, typeRef(Real))) [
                     final = true
                 ]
             }
-                        
+
             it.members += factor.toConstructor [
                 it.visibility = JvmVisibility.PUBLIC
                 for (p : factor.params) {
                     parameters += factor.toParameter(p, typeRef(Supplier, typeRef(Real)))
                 }
                 body = '''
-                «FOR p : factor.params»
-                this.«p» = «p»;
-                «ENDFOR»
+                    «FOR p : factor.params»
+                        this.«p» = «p»;
+                    «ENDFOR»
                 '''
             ]
-            
+
             it.members += factor.expr.toMethod("inSupport", typeRef(boolean)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                return $inSupport(«
-                    FOR p : factor.params SEPARATOR ", "»«
-                      p».get()«
-                    ENDFOR
-                »);
+                    return $inSupport(«FOR p : factor.params SEPARATOR ", "»«
+                      p».get()«ENDFOR»);
                 '''
             ]
             it.members += factor.expr.toMethod("$inSupport", typeRef(boolean)) [
@@ -265,38 +249,34 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         ]
     }
 
-    def generateLogScaleFactor(LogScaleFactor factor,
-                              int modelCounter) {
+    def generateLogScaleFactor(LogScaleFactor factor, int modelCounter) {
         factor.toClass("$Generated_LogScaleFactor" + modelCounter) [
             it.superTypes += typeRef(blang.factors.LogScaleFactor)
             it.static = true
-            
+
             for (p : factor.params) {
                 it.members += factor.toField(p, typeRef(Supplier, typeRef(Real))) [
                     final = true
                 ]
             }
-            
+
             it.members += factor.toConstructor [
                 it.visibility = JvmVisibility.PUBLIC
                 for (p : factor.params) {
                     parameters += factor.toParameter(p, typeRef(Supplier, typeRef(Real)))
                 }
                 body = '''
-                «FOR p : factor.params»
-                this.«p» = «p»;
-                «ENDFOR»
+                    «FOR p : factor.params»
+                        this.«p» = «p»;
+                    «ENDFOR»
                 '''
             ]
-            
+
             it.members += factor.expr.toMethod("logDensity", typeRef(double)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                return $logDensity(«
-                    FOR p : factor.params SEPARATOR ", "»«
-                      p».get()«
-                    ENDFOR
-                »);
+                    return $logDensity(«FOR p : factor.params SEPARATOR ", "»«
+                      p».get()«ENDFOR»);
                 '''
             ]
             it.members += factor.expr.toMethod("$logDensity", typeRef(double)) [

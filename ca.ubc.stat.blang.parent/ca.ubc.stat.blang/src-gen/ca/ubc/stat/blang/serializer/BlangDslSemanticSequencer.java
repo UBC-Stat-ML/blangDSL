@@ -13,11 +13,9 @@ import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
 import ca.ubc.stat.blang.blangDsl.LogScaleFactor;
 import ca.ubc.stat.blang.blangDsl.ModelParam;
-import ca.ubc.stat.blang.blangDsl.ParamVar;
-import ca.ubc.stat.blang.blangDsl.Random;
+import ca.ubc.stat.blang.blangDsl.ModelVar;
 import ca.ubc.stat.blang.blangDsl.SupportFactor;
 import ca.ubc.stat.blang.blangDsl.VarDecl;
-import ca.ubc.stat.blang.blangDsl.Vars;
 import ca.ubc.stat.blang.services.BlangDslGrammarAccess;
 import com.google.inject.Inject;
 import java.util.Set;
@@ -117,20 +115,14 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 			case BlangDslPackage.MODEL_PARAM:
 				sequence_ModelParam(context, (ModelParam) semanticObject); 
 				return; 
-			case BlangDslPackage.PARAM_VAR:
-				sequence_ParamVar(context, (ParamVar) semanticObject); 
-				return; 
-			case BlangDslPackage.RANDOM:
-				sequence_Random(context, (Random) semanticObject); 
+			case BlangDslPackage.MODEL_VAR:
+				sequence_ModelVar(context, (ModelVar) semanticObject); 
 				return; 
 			case BlangDslPackage.SUPPORT_FACTOR:
 				sequence_SupportFactor(context, (SupportFactor) semanticObject); 
 				return; 
 			case BlangDslPackage.VAR_DECL:
 				sequence_VarDecl(context, (VarDecl) semanticObject); 
-				return; 
-			case BlangDslPackage.VARS:
-				sequence_Vars(context, (Vars) semanticObject); 
 				return; 
 			}
 		else if (epackage == TypesPackage.eINSTANCE)
@@ -381,7 +373,7 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	 *     BlangModel returns BlangModel
 	 *
 	 * Constraint:
-	 *     (name=QualifiedName? importSection=XImportSection? (vars=Vars laws=Laws?)?)
+	 *     (name=QualifiedName? importSection=XImportSection? (vars+=ModelVar | consts+=Const)* laws=Laws?)
 	 */
 	protected void sequence_BlangModel(ISerializationContext context, BlangModel semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -526,43 +518,13 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	
 	/**
 	 * Contexts:
-	 *     ParamVar returns ParamVar
+	 *     ModelVar returns ModelVar
 	 *
 	 * Constraint:
-	 *     (type=JvmTypeReference name=ValidID)
+	 *     ((qualType='random' | qualType='param') type=JvmTypeReference name=ValidID)
 	 */
-	protected void sequence_ParamVar(ISerializationContext context, ParamVar semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.PARAM_VAR__TYPE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.PARAM_VAR__TYPE));
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.PARAM_VAR__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.PARAM_VAR__NAME));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getParamVarAccess().getTypeJvmTypeReferenceParserRuleCall_1_0(), semanticObject.getType());
-		feeder.accept(grammarAccess.getParamVarAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
-		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Random returns Random
-	 *
-	 * Constraint:
-	 *     (type=JvmTypeReference name=ValidID)
-	 */
-	protected void sequence_Random(ISerializationContext context, Random semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.RANDOM__TYPE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.RANDOM__TYPE));
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.RANDOM__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.RANDOM__NAME));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getRandomAccess().getTypeJvmTypeReferenceParserRuleCall_1_0(), semanticObject.getType());
-		feeder.accept(grammarAccess.getRandomAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
-		feeder.finish();
+	protected void sequence_ModelVar(ISerializationContext context, ModelVar semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -587,18 +549,6 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	 *     (type=JvmTypeReference? name=ValidID right=XExpression)
 	 */
 	protected void sequence_VarDecl(ISerializationContext context, VarDecl semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Vars returns Vars
-	 *
-	 * Constraint:
-	 *     (randomVars+=Random | paramVars+=ParamVar | consts+=Const)*
-	 */
-	protected void sequence_Vars(ISerializationContext context, Vars semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

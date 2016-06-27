@@ -104,16 +104,16 @@ class ModelVarsGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public final Real y;
-          
           public final Supplier<Real> mu;
           
           public final Supplier<Real> variance;
           
+          public final Real y;
+          
           public MyFile(final Real y, final Supplier<Real> mu, final Supplier<Real> variance) {
-            this.y = y;
             this.mu = mu;
             this.variance = variance;
+            this.y = y;
           }
         }
         ''' 

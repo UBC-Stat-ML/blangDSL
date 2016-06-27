@@ -15,12 +15,10 @@ import ca.ubc.stat.blang.blangDsl.LazyParam;
 import ca.ubc.stat.blang.blangDsl.LogScaleFactor;
 import ca.ubc.stat.blang.blangDsl.ModelComponent;
 import ca.ubc.stat.blang.blangDsl.ModelParam;
+import ca.ubc.stat.blang.blangDsl.ModelVar;
 import ca.ubc.stat.blang.blangDsl.Param;
-import ca.ubc.stat.blang.blangDsl.ParamVar;
-import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.SupportFactor;
 import ca.ubc.stat.blang.blangDsl.VarDecl;
-import ca.ubc.stat.blang.blangDsl.Vars;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -55,21 +53,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass varsEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass randomEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass paramVarEClass = null;
+  private EClass modelVarEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -267,7 +251,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getBlangModel_Laws()
+  public EReference getBlangModel_Consts()
   {
     return (EReference)blangModelEClass.getEStructuralFeatures().get(3);
   }
@@ -277,9 +261,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getVars()
+  public EReference getBlangModel_Laws()
   {
-    return varsEClass;
+    return (EReference)blangModelEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -287,9 +271,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getVars_RandomVars()
+  public EClass getModelVar()
   {
-    return (EReference)varsEClass.getEStructuralFeatures().get(0);
+    return modelVarEClass;
   }
 
   /**
@@ -297,9 +281,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getVars_ParamVars()
+  public EAttribute getModelVar_QualType()
   {
-    return (EReference)varsEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)modelVarEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -307,9 +291,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getVars_Consts()
+  public EReference getModelVar_Type()
   {
-    return (EReference)varsEClass.getEStructuralFeatures().get(2);
+    return (EReference)modelVarEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -317,59 +301,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getRandom()
+  public EAttribute getModelVar_Name()
   {
-    return randomEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getRandom_Type()
-  {
-    return (EReference)randomEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getRandom_Name()
-  {
-    return (EAttribute)randomEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getParamVar()
-  {
-    return paramVarEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getParamVar_Type()
-  {
-    return (EReference)paramVarEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getParamVar_Name()
-  {
-    return (EAttribute)paramVarEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)modelVarEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -736,20 +670,13 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     createEAttribute(blangModelEClass, BLANG_MODEL__NAME);
     createEReference(blangModelEClass, BLANG_MODEL__IMPORT_SECTION);
     createEReference(blangModelEClass, BLANG_MODEL__VARS);
+    createEReference(blangModelEClass, BLANG_MODEL__CONSTS);
     createEReference(blangModelEClass, BLANG_MODEL__LAWS);
 
-    varsEClass = createEClass(VARS);
-    createEReference(varsEClass, VARS__RANDOM_VARS);
-    createEReference(varsEClass, VARS__PARAM_VARS);
-    createEReference(varsEClass, VARS__CONSTS);
-
-    randomEClass = createEClass(RANDOM);
-    createEReference(randomEClass, RANDOM__TYPE);
-    createEAttribute(randomEClass, RANDOM__NAME);
-
-    paramVarEClass = createEClass(PARAM_VAR);
-    createEReference(paramVarEClass, PARAM_VAR__TYPE);
-    createEAttribute(paramVarEClass, PARAM_VAR__NAME);
+    modelVarEClass = createEClass(MODEL_VAR);
+    createEAttribute(modelVarEClass, MODEL_VAR__QUAL_TYPE);
+    createEReference(modelVarEClass, MODEL_VAR__TYPE);
+    createEAttribute(modelVarEClass, MODEL_VAR__NAME);
 
     constEClass = createEClass(CONST);
     createEReference(constEClass, CONST__TYPE);
@@ -841,21 +768,14 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     initEClass(blangModelEClass, BlangModel.class, "BlangModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getBlangModel_Name(), ecorePackage.getEString(), "name", null, 0, 1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBlangModel_ImportSection(), theXtypePackage.getXImportSection(), null, "importSection", null, 0, 1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBlangModel_Vars(), this.getVars(), null, "vars", null, 0, 1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBlangModel_Vars(), this.getModelVar(), null, "vars", null, 0, -1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBlangModel_Consts(), this.getConst(), null, "consts", null, 0, -1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBlangModel_Laws(), this.getLaws(), null, "laws", null, 0, 1, BlangModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(varsEClass, Vars.class, "Vars", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getVars_RandomVars(), this.getRandom(), null, "randomVars", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVars_ParamVars(), this.getParamVar(), null, "paramVars", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVars_Consts(), this.getConst(), null, "consts", null, 0, -1, Vars.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(randomEClass, Random.class, "Random", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getRandom_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, Random.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getRandom_Name(), ecorePackage.getEString(), "name", null, 0, 1, Random.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(paramVarEClass, ParamVar.class, "ParamVar", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getParamVar_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, ParamVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getParamVar_Name(), ecorePackage.getEString(), "name", null, 0, 1, ParamVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(modelVarEClass, ModelVar.class, "ModelVar", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getModelVar_QualType(), ecorePackage.getEString(), "qualType", null, 0, 1, ModelVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModelVar_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, ModelVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getModelVar_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(constEClass, Const.class, "Const", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getConst_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, Const.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -80,24 +80,10 @@ public class BlangDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BlangDslPackage.VARS:
+      case BlangDslPackage.MODEL_VAR:
       {
-        Vars vars = (Vars)theEObject;
-        T result = caseVars(vars);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BlangDslPackage.RANDOM:
-      {
-        Random random = (Random)theEObject;
-        T result = caseRandom(random);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BlangDslPackage.PARAM_VAR:
-      {
-        ParamVar paramVar = (ParamVar)theEObject;
-        T result = caseParamVar(paramVar);
+        ModelVar modelVar = (ModelVar)theEObject;
+        T result = caseModelVar(modelVar);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -211,49 +197,17 @@ public class BlangDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Vars</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Model Var</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Vars</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Model Var</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseVars(Vars object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Random</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Random</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseRandom(Random object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Param Var</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Param Var</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseParamVar(ParamVar object)
+  public T caseModelVar(ModelVar object)
   {
     return null;
   }

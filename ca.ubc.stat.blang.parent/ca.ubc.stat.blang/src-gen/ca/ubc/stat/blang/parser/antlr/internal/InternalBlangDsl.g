@@ -138,29 +138,51 @@ ruleBlangModel returns [EObject current=null]
 			}
 			(
 				(
-					{
-						newCompositeNode(grammarAccess.getBlangModelAccess().getVarsVarsParserRuleCall_3_2_0());
-					}
-					lv_vars_6_0=ruleVars
-					{
-						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getBlangModelRule());
+					(
+						{
+							newCompositeNode(grammarAccess.getBlangModelAccess().getVarsModelVarParserRuleCall_3_2_0_0());
 						}
-						set(
-							$current,
-							"vars",
-							lv_vars_6_0,
-							"ca.ubc.stat.blang.BlangDsl.Vars");
-						afterParserOrEnumRuleCall();
-					}
+						lv_vars_6_0=ruleModelVar
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getBlangModelRule());
+							}
+							add(
+								$current,
+								"vars",
+								lv_vars_6_0,
+								"ca.ubc.stat.blang.BlangDsl.ModelVar");
+							afterParserOrEnumRuleCall();
+						}
+					)
 				)
-			)
+				    |
+				(
+					(
+						{
+							newCompositeNode(grammarAccess.getBlangModelAccess().getConstsConstParserRuleCall_3_2_1_0());
+						}
+						lv_consts_7_0=ruleConst
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getBlangModelRule());
+							}
+							add(
+								$current,
+								"consts",
+								lv_consts_7_0,
+								"ca.ubc.stat.blang.BlangDsl.Const");
+							afterParserOrEnumRuleCall();
+						}
+					)
+				)
+			)*
 			(
 				(
 					{
 						newCompositeNode(grammarAccess.getBlangModelAccess().getLawsLawsParserRuleCall_3_3_0());
 					}
-					lv_laws_7_0=ruleLaws
+					lv_laws_8_0=ruleLaws
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getBlangModelRule());
@@ -168,29 +190,29 @@ ruleBlangModel returns [EObject current=null]
 						set(
 							$current,
 							"laws",
-							lv_laws_7_0,
+							lv_laws_8_0,
 							"ca.ubc.stat.blang.BlangDsl.Laws");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)?
-			otherlv_8='}'
+			otherlv_9='}'
 			{
-				newLeafNode(otherlv_8, grammarAccess.getBlangModelAccess().getRightCurlyBracketKeyword_3_4());
+				newLeafNode(otherlv_9, grammarAccess.getBlangModelAccess().getRightCurlyBracketKeyword_3_4());
 			}
 		)?
 	)
 ;
 
-// Entry rule entryRuleVars
-entryRuleVars returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getVarsRule()); }
-	iv_ruleVars=ruleVars
-	{ $current=$iv_ruleVars.current; }
+// Entry rule entryRuleModelVar
+entryRuleModelVar returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getModelVarRule()); }
+	iv_ruleModelVar=ruleModelVar
+	{ $current=$iv_ruleModelVar.current; }
 	EOF;
 
-// Rule Vars
-ruleVars returns [EObject current=null]
+// Rule ModelVar
+ruleModelVar returns [EObject current=null]
 @init {
 	enterRule();
 }
@@ -199,105 +221,41 @@ ruleVars returns [EObject current=null]
 }:
 	(
 		(
-			{
-				$current = forceCreateModelElement(
-					grammarAccess.getVarsAccess().getVarsAction_0(),
-					$current);
-			}
+			(
+				(
+					lv_qualType_0_1='random'
+					{
+						newLeafNode(lv_qualType_0_1, grammarAccess.getModelVarAccess().getQualTypeRandomKeyword_0_0_0());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getModelVarRule());
+						}
+						setWithLastConsumed($current, "qualType", lv_qualType_0_1, null);
+					}
+					    |
+					lv_qualType_0_2='param'
+					{
+						newLeafNode(lv_qualType_0_2, grammarAccess.getModelVarAccess().getQualTypeParamKeyword_0_0_1());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getModelVarRule());
+						}
+						setWithLastConsumed($current, "qualType", lv_qualType_0_2, null);
+					}
+				)
+			)
 		)
 		(
 			(
-				(
-					{
-						newCompositeNode(grammarAccess.getVarsAccess().getRandomVarsRandomParserRuleCall_1_0_0());
-					}
-					lv_randomVars_1_0=ruleRandom
-					{
-						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getVarsRule());
-						}
-						add(
-							$current,
-							"randomVars",
-							lv_randomVars_1_0,
-							"ca.ubc.stat.blang.BlangDsl.Random");
-						afterParserOrEnumRuleCall();
-					}
-				)
-			)
-			    |
-			(
-				(
-					{
-						newCompositeNode(grammarAccess.getVarsAccess().getParamVarsParamVarParserRuleCall_1_1_0());
-					}
-					lv_paramVars_2_0=ruleParamVar
-					{
-						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getVarsRule());
-						}
-						add(
-							$current,
-							"paramVars",
-							lv_paramVars_2_0,
-							"ca.ubc.stat.blang.BlangDsl.ParamVar");
-						afterParserOrEnumRuleCall();
-					}
-				)
-			)
-			    |
-			(
-				(
-					{
-						newCompositeNode(grammarAccess.getVarsAccess().getConstsConstParserRuleCall_1_2_0());
-					}
-					lv_consts_3_0=ruleConst
-					{
-						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getVarsRule());
-						}
-						add(
-							$current,
-							"consts",
-							lv_consts_3_0,
-							"ca.ubc.stat.blang.BlangDsl.Const");
-						afterParserOrEnumRuleCall();
-					}
-				)
-			)
-		)*
-	)
-;
-
-// Entry rule entryRuleRandom
-entryRuleRandom returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getRandomRule()); }
-	iv_ruleRandom=ruleRandom
-	{ $current=$iv_ruleRandom.current; }
-	EOF;
-
-// Rule Random
-ruleRandom returns [EObject current=null]
-@init {
-	enterRule();
-}
-@after {
-	leaveRule();
-}:
-	(
-		otherlv_0='random'
-		{
-			newLeafNode(otherlv_0, grammarAccess.getRandomAccess().getRandomKeyword_0());
-		}
-		(
-			(
 				{
-					newCompositeNode(grammarAccess.getRandomAccess().getTypeJvmTypeReferenceParserRuleCall_1_0());
+					newCompositeNode(grammarAccess.getModelVarAccess().getTypeJvmTypeReferenceParserRuleCall_1_0());
 				}
 				lv_type_1_0=ruleJvmTypeReference
 				{
 					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getRandomRule());
+						$current = createModelElementForParent(grammarAccess.getModelVarRule());
 					}
 					set(
 						$current,
@@ -311,73 +269,12 @@ ruleRandom returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getRandomAccess().getNameValidIDParserRuleCall_2_0());
+					newCompositeNode(grammarAccess.getModelVarAccess().getNameValidIDParserRuleCall_2_0());
 				}
 				lv_name_2_0=ruleValidID
 				{
 					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getRandomRule());
-					}
-					set(
-						$current,
-						"name",
-						lv_name_2_0,
-						"org.eclipse.xtext.xbase.Xtype.ValidID");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)
-	)
-;
-
-// Entry rule entryRuleParamVar
-entryRuleParamVar returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getParamVarRule()); }
-	iv_ruleParamVar=ruleParamVar
-	{ $current=$iv_ruleParamVar.current; }
-	EOF;
-
-// Rule ParamVar
-ruleParamVar returns [EObject current=null]
-@init {
-	enterRule();
-}
-@after {
-	leaveRule();
-}:
-	(
-		otherlv_0='param'
-		{
-			newLeafNode(otherlv_0, grammarAccess.getParamVarAccess().getParamKeyword_0());
-		}
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getParamVarAccess().getTypeJvmTypeReferenceParserRuleCall_1_0());
-				}
-				lv_type_1_0=ruleJvmTypeReference
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getParamVarRule());
-					}
-					set(
-						$current,
-						"type",
-						lv_type_1_0,
-						"org.eclipse.xtext.xbase.Xtype.JvmTypeReference");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getParamVarAccess().getNameValidIDParserRuleCall_2_0());
-				}
-				lv_name_2_0=ruleValidID
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getParamVarRule());
+						$current = createModelElementForParent(grammarAccess.getModelVarRule());
 					}
 					set(
 						$current,

@@ -7,22 +7,13 @@ BlangModel:
 	('package' name=QualifiedName)?
 	importSection=XImportSection?
 	('model' '{'
-		vars=Vars
+		((vars += ModelVar) | (consts += Const))*
 		laws = Laws?
 	'}')?
 	;
 	
-Vars:
-	{Vars}
-	((randomVars += Random) | (paramVars += ParamVar) | (consts += Const))*
-	;
-
-Random:
-	'random' type=JvmTypeReference name=ValidID
-;
-
-ParamVar:
-    'param' type=JvmTypeReference name=ValidID
+ModelVar:
+	(qualType = ('random' | 'param')) type=JvmTypeReference name=ValidID
 ;
 
 Const:

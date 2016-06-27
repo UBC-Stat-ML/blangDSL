@@ -81,19 +81,9 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
         return createBlangModelAdapter();
       }
       @Override
-      public Adapter caseVars(Vars object)
+      public Adapter caseModelVar(ModelVar object)
       {
-        return createVarsAdapter();
-      }
-      @Override
-      public Adapter caseRandom(Random object)
-      {
-        return createRandomAdapter();
-      }
-      @Override
-      public Adapter caseParamVar(ParamVar object)
-      {
-        return createParamVarAdapter();
+        return createModelVarAdapter();
       }
       @Override
       public Adapter caseConst(Const object)
@@ -193,46 +183,16 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.Vars <em>Vars</em>}'.
+   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.ModelVar <em>Model Var</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see ca.ubc.stat.blang.blangDsl.Vars
+   * @see ca.ubc.stat.blang.blangDsl.ModelVar
    * @generated
    */
-  public Adapter createVarsAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.Random <em>Random</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see ca.ubc.stat.blang.blangDsl.Random
-   * @generated
-   */
-  public Adapter createRandomAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.ParamVar <em>Param Var</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see ca.ubc.stat.blang.blangDsl.ParamVar
-   * @generated
-   */
-  public Adapter createParamVarAdapter()
+  public Adapter createModelVarAdapter()
   {
     return null;
   }

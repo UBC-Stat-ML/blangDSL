@@ -10,20 +10,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//BlangModel/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//BlangModel/importSection"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//BlangModel/vars"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//BlangModel/consts"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//BlangModel/laws"/>
     </genClasses>
-    <genClasses ecoreClass="BlangDsl.ecore#//Vars">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Vars/randomVars"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Vars/paramVars"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Vars/consts"/>
-    </genClasses>
-    <genClasses ecoreClass="BlangDsl.ecore#//Random">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Random/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//Random/name"/>
-    </genClasses>
-    <genClasses ecoreClass="BlangDsl.ecore#//ParamVar">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ParamVar/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ParamVar/name"/>
+    <genClasses ecoreClass="BlangDsl.ecore#//ModelVar">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ModelVar/qualType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelVar/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ModelVar/name"/>
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//Const">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Const/type"/>

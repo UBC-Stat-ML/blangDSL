@@ -15,11 +15,9 @@ import ca.ubc.stat.blang.blangDsl.LazyParam;
 import ca.ubc.stat.blang.blangDsl.LogScaleFactor;
 import ca.ubc.stat.blang.blangDsl.ModelComponent;
 import ca.ubc.stat.blang.blangDsl.ModelParam;
+import ca.ubc.stat.blang.blangDsl.ModelVar;
 import ca.ubc.stat.blang.blangDsl.Param;
-import ca.ubc.stat.blang.blangDsl.ParamVar;
-import ca.ubc.stat.blang.blangDsl.Random;
 import ca.ubc.stat.blang.blangDsl.SupportFactor;
-import ca.ubc.stat.blang.blangDsl.Vars;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import java.lang.reflect.Constructor;
@@ -53,6 +51,8 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.ExclusiveRange;
 import org.eclipse.xtext.xbase.lib.Extension;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 /**
@@ -111,130 +111,80 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
       EList<JvmTypeReference> _superTypes = it.getSuperTypes();
       JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(Model.class);
       this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
-      Vars _vars = model.getVars();
-      boolean _notEquals_1 = (!Objects.equal(_vars, null));
-      if (_notEquals_1) {
-        Vars _vars_1 = model.getVars();
-        EList<Random> _randomVars = _vars_1.getRandomVars();
-        for (final Random varDecl : _randomVars) {
-          EList<JvmMember> _members = it.getMembers();
-          String _name_2 = varDecl.getName();
-          JvmTypeReference _type = varDecl.getType();
-          final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
-            it_1.setVisibility(JvmVisibility.PUBLIC);
-            it_1.setFinal(true);
-          };
-          JvmField _field = this._jvmTypesBuilder.toField(varDecl, _name_2, _type, _function_1);
-          this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
-        }
-        Vars _vars_2 = model.getVars();
-        EList<ParamVar> _paramVars = _vars_2.getParamVars();
-        for (final ParamVar varDecl_1 : _paramVars) {
-          EList<JvmMember> _members_1 = it.getMembers();
-          String _name_3 = varDecl_1.getName();
-          JvmTypeReference _type_1 = varDecl_1.getType();
-          JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Supplier.class, _type_1);
-          final Procedure1<JvmField> _function_2 = (JvmField it_1) -> {
-            it_1.setVisibility(JvmVisibility.PUBLIC);
-            it_1.setFinal(true);
-          };
-          JvmField _field_1 = this._jvmTypesBuilder.toField(varDecl_1, _name_3, _typeRef_1, _function_2);
-          this._jvmTypesBuilder.<JvmField>operator_add(_members_1, _field_1);
-        }
-        Vars _vars_3 = model.getVars();
-        EList<Const> _consts = _vars_3.getConsts();
-        for (final Const varDecl_2 : _consts) {
-          EList<JvmMember> _members_2 = it.getMembers();
-          String _name_4 = varDecl_2.getName();
-          JvmTypeReference _type_2 = varDecl_2.getType();
-          final Procedure1<JvmField> _function_3 = (JvmField it_1) -> {
-            it_1.setVisibility(JvmVisibility.DEFAULT);
-            it_1.setFinal(true);
-            it_1.setStatic(true);
-            XExpression _right = varDecl_2.getRight();
-            this._jvmTypesBuilder.setInitializer(it_1, _right);
-          };
-          JvmField _field_2 = this._jvmTypesBuilder.toField(varDecl_2, _name_4, _type_2, _function_3);
-          this._jvmTypesBuilder.<JvmField>operator_add(_members_2, _field_2);
-        }
+      EList<ModelVar> _vars = model.getVars();
+      for (final ModelVar varDecl : _vars) {
+        EList<JvmMember> _members = it.getMembers();
+        String _name_2 = varDecl.getName();
+        JvmTypeReference _varType = this.getVarType(varDecl);
+        final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
+          it_1.setVisibility(JvmVisibility.PUBLIC);
+          it_1.setFinal(true);
+        };
+        JvmField _field = this._jvmTypesBuilder.toField(varDecl, _name_2, _varType, _function_1);
+        this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
       }
-      boolean _or = false;
+      EList<Const> _consts = model.getConsts();
+      for (final Const varDecl_1 : _consts) {
+        EList<JvmMember> _members_1 = it.getMembers();
+        String _name_3 = varDecl_1.getName();
+        JvmTypeReference _type = varDecl_1.getType();
+        final Procedure1<JvmField> _function_2 = (JvmField it_1) -> {
+          it_1.setVisibility(JvmVisibility.DEFAULT);
+          it_1.setFinal(true);
+          it_1.setStatic(true);
+          XExpression _right = varDecl_1.getRight();
+          this._jvmTypesBuilder.setInitializer(it_1, _right);
+        };
+        JvmField _field_1 = this._jvmTypesBuilder.toField(varDecl_1, _name_3, _type, _function_2);
+        this._jvmTypesBuilder.<JvmField>operator_add(_members_1, _field_1);
+      }
       boolean _and = false;
-      Vars _vars_4 = model.getVars();
-      EList<Random> _randomVars_1 = null;
-      if (_vars_4!=null) {
-        _randomVars_1=_vars_4.getRandomVars();
-      }
-      boolean _notEquals_2 = (!Objects.equal(_randomVars_1, null));
-      if (!_notEquals_2) {
+      EList<ModelVar> _vars_1 = model.getVars();
+      boolean _notEquals_1 = (!Objects.equal(_vars_1, null));
+      if (!_notEquals_1) {
         _and = false;
       } else {
-        Vars _vars_5 = model.getVars();
-        EList<Random> _randomVars_2 = _vars_5.getRandomVars();
-        boolean _isEmpty = _randomVars_2.isEmpty();
+        EList<ModelVar> _vars_2 = model.getVars();
+        boolean _isEmpty = _vars_2.isEmpty();
         boolean _not = (!_isEmpty);
         _and = _not;
       }
       if (_and) {
-        _or = true;
-      } else {
-        boolean _and_1 = false;
-        Vars _vars_6 = model.getVars();
-        EList<ParamVar> _paramVars_1 = null;
-        if (_vars_6!=null) {
-          _paramVars_1=_vars_6.getParamVars();
-        }
-        boolean _notEquals_3 = (!Objects.equal(_paramVars_1, null));
-        if (!_notEquals_3) {
-          _and_1 = false;
-        } else {
-          Vars _vars_7 = model.getVars();
-          EList<ParamVar> _paramVars_2 = _vars_7.getParamVars();
-          boolean _isEmpty_1 = _paramVars_2.isEmpty();
-          boolean _not_1 = (!_isEmpty_1);
-          _and_1 = _not_1;
-        }
-        _or = _and_1;
-      }
-      if (_or) {
-        EList<JvmMember> _members_3 = it.getMembers();
-        final Procedure1<JvmConstructor> _function_4 = (JvmConstructor it_1) -> {
+        EList<JvmMember> _members_2 = it.getMembers();
+        final Procedure1<JvmConstructor> _function_3 = (JvmConstructor it_1) -> {
           it_1.setVisibility(JvmVisibility.PUBLIC);
-          Vars _vars_8 = model.getVars();
-          EList<Random> _randomVars_3 = null;
-          if (_vars_8!=null) {
-            _randomVars_3=_vars_8.getRandomVars();
-          }
-          for (final Random varDecl_3 : _randomVars_3) {
+          EList<ModelVar> _vars_3 = model.getVars();
+          final Function1<ModelVar, Boolean> _function_4 = (ModelVar it_2) -> {
+            String _qualType = it_2.getQualType();
+            return Boolean.valueOf(Objects.equal(_qualType, "random"));
+          };
+          Iterable<ModelVar> _filter = IterableExtensions.<ModelVar>filter(_vars_3, _function_4);
+          for (final ModelVar varDecl_2 : _filter) {
             EList<JvmFormalParameter> _parameters = it_1.getParameters();
-            String _name_5 = varDecl_3.getName();
-            JvmTypeReference _type_3 = varDecl_3.getType();
-            JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(varDecl_3, _name_5, _type_3);
+            String _name_4 = varDecl_2.getName();
+            JvmTypeReference _varType_1 = this.getVarType(varDecl_2);
+            JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(varDecl_2, _name_4, _varType_1);
             this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
           }
-          Vars _vars_9 = model.getVars();
-          EList<ParamVar> _paramVars_3 = null;
-          if (_vars_9!=null) {
-            _paramVars_3=_vars_9.getParamVars();
-          }
-          for (final ParamVar varDecl_4 : _paramVars_3) {
+          EList<ModelVar> _vars_4 = model.getVars();
+          final Function1<ModelVar, Boolean> _function_5 = (ModelVar it_2) -> {
+            String _qualType = it_2.getQualType();
+            return Boolean.valueOf((!Objects.equal(_qualType, "random")));
+          };
+          Iterable<ModelVar> _filter_1 = IterableExtensions.<ModelVar>filter(_vars_4, _function_5);
+          for (final ModelVar varDecl_3 : _filter_1) {
             EList<JvmFormalParameter> _parameters_1 = it_1.getParameters();
-            String _name_6 = varDecl_4.getName();
-            JvmTypeReference _type_4 = varDecl_4.getType();
-            JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Supplier.class, _type_4);
-            JvmFormalParameter _parameter_1 = this._jvmTypesBuilder.toParameter(varDecl_4, _name_6, _typeRef_2);
+            String _name_5 = varDecl_3.getName();
+            JvmTypeReference _varType_2 = this.getVarType(varDecl_3);
+            JvmFormalParameter _parameter_1 = this._jvmTypesBuilder.toParameter(varDecl_3, _name_5, _varType_2);
             this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters_1, _parameter_1);
           }
           StringConcatenationClient _client = new StringConcatenationClient() {
             @Override
             protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
               {
-                Vars _vars = model.getVars();
-                EList<Random> _randomVars = null;
-                if (_vars!=null) {
-                  _randomVars=_vars.getRandomVars();
-                }
-                for(final Random varDecl : _randomVars) {
+                EList<ModelVar> _vars = model.getVars();
+                for(final ModelVar varDecl : _vars) {
                   _builder.append("this.");
                   String _name = varDecl.getName();
                   _builder.append(_name, "");
@@ -245,51 +195,34 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                   _builder.newLineIfNotEmpty();
                 }
               }
-              {
-                Vars _vars_1 = model.getVars();
-                EList<ParamVar> _paramVars = null;
-                if (_vars_1!=null) {
-                  _paramVars=_vars_1.getParamVars();
-                }
-                for(final ParamVar varDecl_1 : _paramVars) {
-                  _builder.append("this.");
-                  String _name_2 = varDecl_1.getName();
-                  _builder.append(_name_2, "");
-                  _builder.append(" = ");
-                  String _name_3 = varDecl_1.getName();
-                  _builder.append(_name_3, "");
-                  _builder.append(";");
-                  _builder.newLineIfNotEmpty();
-                }
-              }
             }
           };
           this._jvmTypesBuilder.setBody(it_1, _client);
         };
-        JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(model, _function_4);
-        this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_3, _constructor);
+        JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(model, _function_3);
+        this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_2, _constructor);
       }
-      boolean _and_2 = false;
+      boolean _and_1 = false;
       Laws _laws = model.getLaws();
       EList<ModelComponent> _modelComponents = null;
       if (_laws!=null) {
         _modelComponents=_laws.getModelComponents();
       }
-      boolean _notEquals_4 = (!Objects.equal(_modelComponents, null));
-      if (!_notEquals_4) {
-        _and_2 = false;
+      boolean _notEquals_2 = (!Objects.equal(_modelComponents, null));
+      if (!_notEquals_2) {
+        _and_1 = false;
       } else {
         Laws _laws_1 = model.getLaws();
         EList<ModelComponent> _modelComponents_1 = _laws_1.getModelComponents();
-        boolean _isEmpty_2 = _modelComponents_1.isEmpty();
-        boolean _not_2 = (!_isEmpty_2);
-        _and_2 = _not_2;
+        boolean _isEmpty_1 = _modelComponents_1.isEmpty();
+        boolean _not_1 = (!_isEmpty_1);
+        _and_1 = _not_1;
       }
-      if (_and_2) {
-        EList<JvmMember> _members_4 = it.getMembers();
-        JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(blang.core.ModelComponent.class);
-        JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(Collection.class, _typeRef_2);
-        final Procedure1<JvmOperation> _function_5 = (JvmOperation it_1) -> {
+      if (_and_1) {
+        EList<JvmMember> _members_3 = it.getMembers();
+        JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(blang.core.ModelComponent.class);
+        JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Collection.class, _typeRef_1);
+        final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
           it_1.setVisibility(JvmVisibility.PUBLIC);
           StringConcatenationClient _client = new StringConcatenationClient() {
             @Override
@@ -326,8 +259,8 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
           };
           this._jvmTypesBuilder.setBody(it_1, _client);
         };
-        JvmOperation _method = this._jvmTypesBuilder.toMethod(model, "components", _typeRef_3, _function_5);
-        this._jvmTypesBuilder.<JvmOperation>operator_add(_members_4, _method);
+        JvmOperation _method = this._jvmTypesBuilder.toMethod(model, "components", _typeRef_2, _function_4);
+        this._jvmTypesBuilder.<JvmOperation>operator_add(_members_3, _method);
         Laws _laws_2 = model.getLaws();
         EList<ModelComponent> _modelComponents_2 = _laws_2.getModelComponents();
         int _size = _modelComponents_2.size();
@@ -346,26 +279,26 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 int _size_1 = _param.size();
                 ExclusiveRange _doubleDotLessThan_1 = new ExclusiveRange(0, _size_1, true);
                 for (final Integer paramCounter : _doubleDotLessThan_1) {
-                  EList<JvmMember> _members_5 = it.getMembers();
+                  EList<JvmMember> _members_4 = it.getMembers();
                   JvmGenericType _generateModelComponentParamSupplier = this.generateModelComponentParamSupplier(((ModelParam)component), (componentCounter).intValue(), (paramCounter).intValue());
-                  this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_5, _generateModelComponentParamSupplier);
+                  this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_4, _generateModelComponentParamSupplier);
                 }
               }
             }
             if (!_matched) {
               if (component instanceof SupportFactor) {
                 _matched=true;
-                EList<JvmMember> _members_5 = it.getMembers();
+                EList<JvmMember> _members_4 = it.getMembers();
                 JvmGenericType _generateSupportFactor = this.generateSupportFactor(((SupportFactor)component), (componentCounter).intValue());
-                this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_5, _generateSupportFactor);
+                this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_4, _generateSupportFactor);
               }
             }
             if (!_matched) {
               if (component instanceof LogScaleFactor) {
                 _matched=true;
-                EList<JvmMember> _members_5 = it.getMembers();
+                EList<JvmMember> _members_4 = it.getMembers();
                 JvmGenericType _generateLogScaleFactor = this.generateLogScaleFactor(((LogScaleFactor)component), (componentCounter).intValue());
-                this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_5, _generateLogScaleFactor);
+                this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_4, _generateLogScaleFactor);
               }
             }
           }
@@ -373,6 +306,21 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
       }
     };
     acceptor.<JvmGenericType>accept(_class, _function);
+  }
+  
+  public JvmTypeReference getVarType(final ModelVar v) {
+    JvmTypeReference _switchResult = null;
+    String _qualType = v.getQualType();
+    switch (_qualType) {
+      case "random":
+        _switchResult = v.getType();
+        break;
+      case "param":
+        JvmTypeReference _type = v.getType();
+        _switchResult = this._typeReferenceBuilder.typeRef(Supplier.class, _type);
+        break;
+    }
+    return _switchResult;
   }
   
   protected CharSequence _generateModelComponentInit(final ModelParam component, final int modelCounter) {

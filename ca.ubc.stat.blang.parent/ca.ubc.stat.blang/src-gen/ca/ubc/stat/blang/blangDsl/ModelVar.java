@@ -9,23 +9,50 @@ import org.eclipse.xtext.common.types.JvmTypeReference;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Param Var</b></em>'.
+ * A representation of the model object '<em><b>Model Var</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.ParamVar#getType <em>Type</em>}</li>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.ParamVar#getName <em>Name</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.ModelVar#getQualType <em>Qual Type</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.ModelVar#getType <em>Type</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.ModelVar#getName <em>Name</em>}</li>
  * </ul>
  *
- * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getParamVar()
+ * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getModelVar()
  * @model
  * @generated
  */
-public interface ParamVar extends EObject
+public interface ModelVar extends EObject
 {
+  /**
+   * Returns the value of the '<em><b>Qual Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Qual Type</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Qual Type</em>' attribute.
+   * @see #setQualType(String)
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getModelVar_QualType()
+   * @model
+   * @generated
+   */
+  String getQualType();
+
+  /**
+   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.ModelVar#getQualType <em>Qual Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Qual Type</em>' attribute.
+   * @see #getQualType()
+   * @generated
+   */
+  void setQualType(String value);
+
   /**
    * Returns the value of the '<em><b>Type</b></em>' containment reference.
    * <!-- begin-user-doc -->
@@ -36,14 +63,14 @@ public interface ParamVar extends EObject
    * <!-- end-user-doc -->
    * @return the value of the '<em>Type</em>' containment reference.
    * @see #setType(JvmTypeReference)
-   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getParamVar_Type()
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getModelVar_Type()
    * @model containment="true"
    * @generated
    */
   JvmTypeReference getType();
 
   /**
-   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.ParamVar#getType <em>Type</em>}' containment reference.
+   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.ModelVar#getType <em>Type</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Type</em>' containment reference.
@@ -62,14 +89,14 @@ public interface ParamVar extends EObject
    * <!-- end-user-doc -->
    * @return the value of the '<em>Name</em>' attribute.
    * @see #setName(String)
-   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getParamVar_Name()
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getModelVar_Name()
    * @model
    * @generated
    */
   String getName();
 
   /**
-   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.ParamVar#getName <em>Name</em>}' attribute.
+   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.ModelVar#getName <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Name</em>' attribute.
@@ -78,4 +105,4 @@ public interface ParamVar extends EObject
    */
   void setName(String value);
 
-} // ParamVar
+} // ModelVar

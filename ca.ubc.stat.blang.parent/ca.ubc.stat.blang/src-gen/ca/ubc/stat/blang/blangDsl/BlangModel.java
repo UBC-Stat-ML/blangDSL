@@ -3,6 +3,8 @@
  */
 package ca.ubc.stat.blang.blangDsl;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.xtext.xtype.XImportSection;
@@ -19,6 +21,7 @@ import org.eclipse.xtext.xtype.XImportSection;
  *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getName <em>Name</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getImportSection <em>Import Section</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getVars <em>Vars</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getConsts <em>Consts</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.BlangModel#getLaws <em>Laws</em>}</li>
  * </ul>
  *
@@ -81,30 +84,36 @@ public interface BlangModel extends EObject
   void setImportSection(XImportSection value);
 
   /**
-   * Returns the value of the '<em><b>Vars</b></em>' containment reference.
+   * Returns the value of the '<em><b>Vars</b></em>' containment reference list.
+   * The list contents are of type {@link ca.ubc.stat.blang.blangDsl.ModelVar}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Vars</em>' containment reference isn't clear,
+   * If the meaning of the '<em>Vars</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Vars</em>' containment reference.
-   * @see #setVars(Vars)
+   * @return the value of the '<em>Vars</em>' containment reference list.
    * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getBlangModel_Vars()
    * @model containment="true"
    * @generated
    */
-  Vars getVars();
+  EList<ModelVar> getVars();
 
   /**
-   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.BlangModel#getVars <em>Vars</em>}' containment reference.
+   * Returns the value of the '<em><b>Consts</b></em>' containment reference list.
+   * The list contents are of type {@link ca.ubc.stat.blang.blangDsl.Const}.
    * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Consts</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Vars</em>' containment reference.
-   * @see #getVars()
+   * @return the value of the '<em>Consts</em>' containment reference list.
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getBlangModel_Consts()
+   * @model containment="true"
    * @generated
    */
-  void setVars(Vars value);
+  EList<Const> getConsts();
 
   /**
    * Returns the value of the '<em><b>Laws</b></em>' containment reference.

@@ -33,31 +33,13 @@ public interface BlangDslFactory extends EFactory
   BlangModel createBlangModel();
 
   /**
-   * Returns a new object of class '<em>Vars</em>'.
+   * Returns a new object of class '<em>Model Var</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Vars</em>'.
+   * @return a new object of class '<em>Model Var</em>'.
    * @generated
    */
-  Vars createVars();
-
-  /**
-   * Returns a new object of class '<em>Random</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Random</em>'.
-   * @generated
-   */
-  Random createRandom();
-
-  /**
-   * Returns a new object of class '<em>Param Var</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Param Var</em>'.
-   * @generated
-   */
-  ParamVar createParamVar();
+  ModelVar createModelVar();
 
   /**
    * Returns a new object of class '<em>Const</em>'.

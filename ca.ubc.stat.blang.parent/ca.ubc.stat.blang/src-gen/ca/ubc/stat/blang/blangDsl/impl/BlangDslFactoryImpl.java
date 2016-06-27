@@ -66,9 +66,7 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
     switch (eClass.getClassifierID())
     {
       case BlangDslPackage.BLANG_MODEL: return createBlangModel();
-      case BlangDslPackage.VARS: return createVars();
-      case BlangDslPackage.RANDOM: return createRandom();
-      case BlangDslPackage.PARAM_VAR: return createParamVar();
+      case BlangDslPackage.MODEL_VAR: return createModelVar();
       case BlangDslPackage.CONST: return createConst();
       case BlangDslPackage.VAR_DECL: return createVarDecl();
       case BlangDslPackage.LAWS: return createLaws();
@@ -102,32 +100,10 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Vars createVars()
+  public ModelVar createModelVar()
   {
-    VarsImpl vars = new VarsImpl();
-    return vars;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Random createRandom()
-  {
-    RandomImpl random = new RandomImpl();
-    return random;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ParamVar createParamVar()
-  {
-    ParamVarImpl paramVar = new ParamVarImpl();
-    return paramVar;
+    ModelVarImpl modelVar = new ModelVarImpl();
+    return modelVar;
   }
 
   /**

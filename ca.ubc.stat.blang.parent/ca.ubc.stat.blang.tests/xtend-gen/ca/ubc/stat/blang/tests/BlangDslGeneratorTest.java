@@ -479,7 +479,7 @@ public class BlangDslGeneratorTest {
       _builder_1.append("    ");
       _builder_1.newLine();
       _builder_1.append("    ");
-      _builder_1.append("components.add(new SupportFactor(new $Generated_SetupSupport0(variance)));");
+      _builder_1.append("components.add(new blang.core.SupportFactor(new $Generated_SetupSupport0(variance)));");
       _builder_1.newLine();
       _builder_1.append("    ");
       _builder_1.newLine();
@@ -626,7 +626,7 @@ public class BlangDslGeneratorTest {
       _builder_1.append("    ");
       _builder_1.newLine();
       _builder_1.append("    ");
-      _builder_1.append("components.add(new SupportFactor(new $Generated_SetupSupport0(mean, variance)));");
+      _builder_1.append("components.add(new blang.core.SupportFactor(new $Generated_SetupSupport0(mean, variance)));");
       _builder_1.newLine();
       _builder_1.append("    ");
       _builder_1.newLine();
@@ -805,7 +805,7 @@ public class BlangDslGeneratorTest {
       _builder_1.append("    ");
       _builder_1.newLine();
       _builder_1.append("    ");
-      _builder_1.append("components.add(new Normal(");
+      _builder_1.append("components.add(new blang.prototype3.Normal(");
       _builder_1.newLine();
       _builder_1.append("        ");
       _builder_1.append("y,");
