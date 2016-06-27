@@ -372,13 +372,78 @@ public interface BlangDslPackage extends EPackage
   int MODEL_COMPONENT__NAME = 0;
 
   /**
+   * The number of structural features of the '<em>Model Component</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MODEL_COMPONENT_FEATURE_COUNT = 1;
+
+  /**
+   * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.SupportFactorImpl <em>Support Factor</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see ca.ubc.stat.blang.blangDsl.impl.SupportFactorImpl
+   * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getSupportFactor()
+   * @generated
+   */
+  int SUPPORT_FACTOR = 8;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUPPORT_FACTOR__NAME = MODEL_COMPONENT__NAME;
+
+  /**
+   * The feature id for the '<em><b>Expr</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUPPORT_FACTOR__EXPR = MODEL_COMPONENT_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Support Factor</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SUPPORT_FACTOR_FEATURE_COUNT = MODEL_COMPONENT_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl <em>Model Param</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl
+   * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getModelParam()
+   * @generated
+   */
+  int MODEL_PARAM = 9;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MODEL_PARAM__NAME = MODEL_COMPONENT__NAME;
+
+  /**
    * The feature id for the '<em><b>Deps</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODEL_COMPONENT__DEPS = 1;
+  int MODEL_PARAM__DEPS = MODEL_COMPONENT_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Right</b></em>' containment reference.
@@ -387,16 +452,16 @@ public interface BlangDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODEL_COMPONENT__RIGHT = 2;
+  int MODEL_PARAM__RIGHT = MODEL_COMPONENT_FEATURE_COUNT + 1;
 
   /**
-   * The number of structural features of the '<em>Model Component</em>' class.
+   * The number of structural features of the '<em>Model Param</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODEL_COMPONENT_FEATURE_COUNT = 3;
+  int MODEL_PARAM_FEATURE_COUNT = MODEL_COMPONENT_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link ca.ubc.stat.blang.blangDsl.impl.DependencyImpl <em>Dependency</em>}' class.
@@ -406,7 +471,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getDependency()
    * @generated
    */
-  int DEPENDENCY = 8;
+  int DEPENDENCY = 10;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -452,7 +517,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getDistribution()
    * @generated
    */
-  int DISTRIBUTION = 9;
+  int DISTRIBUTION = 11;
 
   /**
    * The feature id for the '<em><b>Clazz</b></em>' containment reference.
@@ -489,7 +554,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getParam()
    * @generated
    */
-  int PARAM = 10;
+  int PARAM = 12;
 
   /**
    * The number of structural features of the '<em>Param</em>' class.
@@ -508,7 +573,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getConstParam()
    * @generated
    */
-  int CONST_PARAM = 11;
+  int CONST_PARAM = 13;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -536,7 +601,7 @@ public interface BlangDslPackage extends EPackage
    * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getLazyParam()
    * @generated
    */
-  int LAZY_PARAM = 12;
+  int LAZY_PARAM = 14;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -847,26 +912,57 @@ public interface BlangDslPackage extends EPackage
   EAttribute getModelComponent_Name();
 
   /**
-   * Returns the meta object for the containment reference list '{@link ca.ubc.stat.blang.blangDsl.ModelComponent#getDeps <em>Deps</em>}'.
+   * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.SupportFactor <em>Support Factor</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Support Factor</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.SupportFactor
+   * @generated
+   */
+  EClass getSupportFactor();
+
+  /**
+   * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.SupportFactor#getExpr <em>Expr</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Expr</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.SupportFactor#getExpr()
+   * @see #getSupportFactor()
+   * @generated
+   */
+  EReference getSupportFactor_Expr();
+
+  /**
+   * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.ModelParam <em>Model Param</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Model Param</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.ModelParam
+   * @generated
+   */
+  EClass getModelParam();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link ca.ubc.stat.blang.blangDsl.ModelParam#getDeps <em>Deps</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Deps</em>'.
-   * @see ca.ubc.stat.blang.blangDsl.ModelComponent#getDeps()
-   * @see #getModelComponent()
+   * @see ca.ubc.stat.blang.blangDsl.ModelParam#getDeps()
+   * @see #getModelParam()
    * @generated
    */
-  EReference getModelComponent_Deps();
+  EReference getModelParam_Deps();
 
   /**
-   * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.ModelComponent#getRight <em>Right</em>}'.
+   * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.ModelParam#getRight <em>Right</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Right</em>'.
-   * @see ca.ubc.stat.blang.blangDsl.ModelComponent#getRight()
-   * @see #getModelComponent()
+   * @see ca.ubc.stat.blang.blangDsl.ModelParam#getRight()
+   * @see #getModelParam()
    * @generated
    */
-  EReference getModelComponent_Right();
+  EReference getModelParam_Right();
 
   /**
    * Returns the meta object for class '{@link ca.ubc.stat.blang.blangDsl.Dependency <em>Dependency</em>}'.
@@ -1251,12 +1347,40 @@ public interface BlangDslPackage extends EPackage
     EAttribute MODEL_COMPONENT__NAME = eINSTANCE.getModelComponent_Name();
 
     /**
+     * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.SupportFactorImpl <em>Support Factor</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see ca.ubc.stat.blang.blangDsl.impl.SupportFactorImpl
+     * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getSupportFactor()
+     * @generated
+     */
+    EClass SUPPORT_FACTOR = eINSTANCE.getSupportFactor();
+
+    /**
+     * The meta object literal for the '<em><b>Expr</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference SUPPORT_FACTOR__EXPR = eINSTANCE.getSupportFactor_Expr();
+
+    /**
+     * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl <em>Model Param</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl
+     * @see ca.ubc.stat.blang.blangDsl.impl.BlangDslPackageImpl#getModelParam()
+     * @generated
+     */
+    EClass MODEL_PARAM = eINSTANCE.getModelParam();
+
+    /**
      * The meta object literal for the '<em><b>Deps</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODEL_COMPONENT__DEPS = eINSTANCE.getModelComponent_Deps();
+    EReference MODEL_PARAM__DEPS = eINSTANCE.getModelParam_Deps();
 
     /**
      * The meta object literal for the '<em><b>Right</b></em>' containment reference feature.
@@ -1264,7 +1388,7 @@ public interface BlangDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODEL_COMPONENT__RIGHT = eINSTANCE.getModelComponent_Right();
+    EReference MODEL_PARAM__RIGHT = eINSTANCE.getModelParam_Right();
 
     /**
      * The meta object literal for the '{@link ca.ubc.stat.blang.blangDsl.impl.DependencyImpl <em>Dependency</em>}' class.

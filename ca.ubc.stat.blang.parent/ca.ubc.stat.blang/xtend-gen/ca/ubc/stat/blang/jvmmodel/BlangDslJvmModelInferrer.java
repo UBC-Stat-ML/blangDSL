@@ -4,6 +4,7 @@
 package ca.ubc.stat.blang.jvmmodel;
 
 import blang.core.Model;
+import blang.prototype3.Real;
 import ca.ubc.stat.blang.blangDsl.BlangModel;
 import ca.ubc.stat.blang.blangDsl.Const;
 import ca.ubc.stat.blang.blangDsl.ConstParam;
@@ -12,9 +13,11 @@ import ca.ubc.stat.blang.blangDsl.Distribution;
 import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
 import ca.ubc.stat.blang.blangDsl.ModelComponent;
+import ca.ubc.stat.blang.blangDsl.ModelParam;
 import ca.ubc.stat.blang.blangDsl.Param;
 import ca.ubc.stat.blang.blangDsl.ParamVar;
 import ca.ubc.stat.blang.blangDsl.Random;
+import ca.ubc.stat.blang.blangDsl.SupportFactor;
 import ca.ubc.stat.blang.blangDsl.Vars;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
@@ -333,14 +336,28 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             Laws _laws_3 = model.getLaws();
             EList<ModelComponent> _modelComponents_3 = _laws_3.getModelComponents();
             ModelComponent component = _modelComponents_3.get((componentCounter).intValue());
-            Distribution _right = component.getRight();
-            EList<Param> _param = _right.getParam();
-            int _size_1 = _param.size();
-            ExclusiveRange _doubleDotLessThan_1 = new ExclusiveRange(0, _size_1, true);
-            for (final Integer paramCounter : _doubleDotLessThan_1) {
-              EList<JvmMember> _members_5 = it.getMembers();
-              JvmGenericType _generateModelComponentParamSupplier = this.generateModelComponentParamSupplier(component, (componentCounter).intValue(), (paramCounter).intValue());
-              this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_5, _generateModelComponentParamSupplier);
+            boolean _matched = false;
+            if (!_matched) {
+              if (component instanceof ModelParam) {
+                _matched=true;
+                Distribution _right = ((ModelParam)component).getRight();
+                EList<Param> _param = _right.getParam();
+                int _size_1 = _param.size();
+                ExclusiveRange _doubleDotLessThan_1 = new ExclusiveRange(0, _size_1, true);
+                for (final Integer paramCounter : _doubleDotLessThan_1) {
+                  EList<JvmMember> _members_5 = it.getMembers();
+                  JvmGenericType _generateModelComponentParamSupplier = this.generateModelComponentParamSupplier(((ModelParam)component), (componentCounter).intValue(), (paramCounter).intValue());
+                  this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_5, _generateModelComponentParamSupplier);
+                }
+              }
+            }
+            if (!_matched) {
+              if (component instanceof SupportFactor) {
+                _matched=true;
+                EList<JvmMember> _members_5 = it.getMembers();
+                JvmGenericType _generateSupportFactor = this.generateSupportFactor(((SupportFactor)component), (componentCounter).intValue());
+                this._jvmTypesBuilder.<JvmGenericType>operator_add(_members_5, _generateSupportFactor);
+              }
             }
           }
         }
@@ -349,7 +366,7 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     acceptor.<JvmGenericType>accept(_class, _function);
   }
   
-  public CharSequence generateModelComponentInit(final ModelComponent component, final int modelCounter) {
+  protected CharSequence _generateModelComponentInit(final ModelParam component, final int modelCounter) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("new ");
     Distribution _right = component.getRight();
@@ -401,7 +418,22 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     return _builder;
   }
   
-  public JvmGenericType generateModelComponentParamSupplier(final ModelComponent component, final int modelCounter, final int paramCounter) {
+  protected CharSequence _generateModelComponentInit(final SupportFactor component, final int modelCounter) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("new ");
+    JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(blang.core.SupportFactor.class);
+    String _identifier = _typeRef.getIdentifier();
+    _builder.append(_identifier, "");
+    _builder.append("(new $Generated_SetupSupport");
+    _builder.append(modelCounter, "");
+    _builder.append("(");
+    String _name = component.getName();
+    _builder.append(_name, "");
+    _builder.append("))");
+    return _builder;
+  }
+  
+  public JvmGenericType generateModelComponentParamSupplier(final ModelParam component, final int modelCounter, final int paramCounter) {
     try {
       JvmGenericType _xblockexpression = null;
       {
@@ -517,6 +549,83 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     }
   }
   
+  public JvmGenericType generateSupportFactor(final SupportFactor factor, final int modelCounter) {
+    final Procedure1<JvmGenericType> _function = (JvmGenericType it) -> {
+      EList<JvmTypeReference> _superTypes = it.getSuperTypes();
+      JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(blang.core.SupportFactor.Support.class);
+      this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
+      it.setStatic(true);
+      EList<JvmMember> _members = it.getMembers();
+      String _name = factor.getName();
+      JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Real.class);
+      JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_1);
+      final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
+        it_1.setFinal(true);
+      };
+      JvmField _field = this._jvmTypesBuilder.toField(factor, _name, _typeRef_2, _function_1);
+      this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
+      EList<JvmMember> _members_1 = it.getMembers();
+      final Procedure1<JvmConstructor> _function_2 = (JvmConstructor it_1) -> {
+        it_1.setVisibility(JvmVisibility.PUBLIC);
+        EList<JvmFormalParameter> _parameters = it_1.getParameters();
+        String _name_1 = factor.getName();
+        JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(Real.class);
+        JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_3);
+        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, _name_1, _typeRef_4);
+        this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+        StringConcatenationClient _client = new StringConcatenationClient() {
+          @Override
+          protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+            _builder.append("this.");
+            String _name = factor.getName();
+            _builder.append(_name, "");
+            _builder.append(" = ");
+            String _name_1 = factor.getName();
+            _builder.append(_name_1, "");
+            _builder.append(";");
+            _builder.newLineIfNotEmpty();
+          }
+        };
+        this._jvmTypesBuilder.setBody(it_1, _client);
+      };
+      JvmConstructor _constructor = this._jvmTypesBuilder.toConstructor(factor, _function_2);
+      this._jvmTypesBuilder.<JvmConstructor>operator_add(_members_1, _constructor);
+      EList<JvmMember> _members_2 = it.getMembers();
+      XExpression _expr = factor.getExpr();
+      JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(boolean.class);
+      final Procedure1<JvmOperation> _function_3 = (JvmOperation it_1) -> {
+        EList<JvmAnnotationReference> _annotations = it_1.getAnnotations();
+        JvmAnnotationReference _annotationRef = this._annotationTypesBuilder.annotationRef("java.lang.Override");
+        this._jvmTypesBuilder.<JvmAnnotationReference>operator_add(_annotations, _annotationRef);
+        StringConcatenationClient _client = new StringConcatenationClient() {
+          @Override
+          protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
+            _builder.append("return $inSupport(variance.get());");
+            _builder.newLine();
+          }
+        };
+        this._jvmTypesBuilder.setBody(it_1, _client);
+      };
+      JvmOperation _method = this._jvmTypesBuilder.toMethod(_expr, "inSupport", _typeRef_3, _function_3);
+      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_2, _method);
+      EList<JvmMember> _members_3 = it.getMembers();
+      XExpression _expr_1 = factor.getExpr();
+      JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(boolean.class);
+      final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
+        it_1.setVisibility(JvmVisibility.PRIVATE);
+        EList<JvmFormalParameter> _parameters = it_1.getParameters();
+        JvmTypeReference _typeRef_5 = this._typeReferenceBuilder.typeRef(Real.class);
+        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, "variance", _typeRef_5);
+        this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+        XExpression _expr_2 = factor.getExpr();
+        this._jvmTypesBuilder.setBody(it_1, _expr_2);
+      };
+      JvmOperation _method_1 = this._jvmTypesBuilder.toMethod(_expr_1, "$inSupport", _typeRef_4, _function_4);
+      this._jvmTypesBuilder.<JvmOperation>operator_add(_members_3, _method_1);
+    };
+    return this._jvmTypesBuilder.toClass(factor, ("$Generated_SetupSupport" + Integer.valueOf(modelCounter)), _function);
+  }
+  
   public void infer(final EObject model, final IJvmDeclaredTypeAcceptor acceptor, final boolean isPreIndexingPhase) {
     if (model instanceof BlangModel) {
       _infer((BlangModel)model, acceptor, isPreIndexingPhase);
@@ -527,6 +636,17 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(model, acceptor, isPreIndexingPhase).toString());
+    }
+  }
+  
+  public CharSequence generateModelComponentInit(final ModelComponent component, final int modelCounter) {
+    if (component instanceof ModelParam) {
+      return _generateModelComponentInit((ModelParam)component, modelCounter);
+    } else if (component instanceof SupportFactor) {
+      return _generateModelComponentInit((SupportFactor)component, modelCounter);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(component, modelCounter).toString());
     }
   }
 }

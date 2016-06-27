@@ -20,6 +20,9 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import ca.ubc.stat.blang.blangDsl.ConstParam
 import ca.ubc.stat.blang.blangDsl.LazyParam
 import org.eclipse.xtend2.lib.StringConcatenationClient
+import ca.ubc.stat.blang.blangDsl.ModelParam
+import ca.ubc.stat.blang.blangDsl.SupportFactor
+import blang.prototype3.Real
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -128,8 +131,14 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             
             for (componentCounter : 0..<model.laws.modelComponents.size) {
                 var component = model.laws.modelComponents.get(componentCounter)
-                for (paramCounter : 0 ..< component.right.param.size) {
-                        it.members += generateModelComponentParamSupplier(component, componentCounter, paramCounter)
+                switch(component) {
+                    ModelParam:
+                        for (paramCounter : 0 ..< component.right.param.size) {
+                                it.members += generateModelComponentParamSupplier(component, componentCounter, paramCounter)
+                        }
+                    SupportFactor:
+                        it.members += generateSupportFactor(component, componentCounter)
+                    //default: throw new Exception("What to do: " + component.class)
                 }
             }
             }
@@ -137,7 +146,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     }
     
     
-    def generateModelComponentInit(ModelComponent component, int modelCounter) {
+    def dispatch generateModelComponentInit(ModelParam component, int modelCounter) {
         '''
             new «component.right.clazz.type.identifier»(
                 «component.name»«
@@ -153,7 +162,11 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     }
     
     
-    def generateModelComponentParamSupplier(ModelComponent component,
+    def dispatch generateModelComponentInit(SupportFactor component, int modelCounter) {
+        '''new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«component.name»))'''
+    }
+    
+    def generateModelComponentParamSupplier(ModelParam component,
                                             int modelCounter,
                                             int paramCounter) {
         val dist = component.right.clazz.type
@@ -197,4 +210,35 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         ]
     }
 
+    def generateSupportFactor(SupportFactor factor,
+                              int modelCounter) {
+        factor.toClass("$Generated_SetupSupport" + modelCounter) [
+            it.superTypes += typeRef(blang.core.SupportFactor.Support)
+            it.static = true
+            
+            it.members += factor.toField(factor.name, typeRef(Supplier, typeRef(Real))) [
+                final = true
+            ]
+            
+            it.members += factor.toConstructor [
+                it.visibility = JvmVisibility.PUBLIC
+                parameters += factor.toParameter(factor.name, typeRef(Supplier, typeRef(Real)))
+                body = '''
+                this.«factor.name» = «factor.name»;
+                '''
+            ]
+            
+            it.members += factor.expr.toMethod("inSupport", typeRef(boolean)) [
+                annotations += annotationRef("java.lang.Override")
+                body = '''
+                return $inSupport(variance.get());
+                '''
+            ]
+            it.members += factor.expr.toMethod("$inSupport", typeRef(boolean)) [
+                visibility = JvmVisibility.PRIVATE
+                parameters += factor.toParameter("variance", typeRef(Real))
+                body = factor.expr
+            ]
+        ]
+    }
 }

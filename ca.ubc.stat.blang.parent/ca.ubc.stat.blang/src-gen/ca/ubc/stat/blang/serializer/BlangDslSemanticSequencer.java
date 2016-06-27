@@ -11,9 +11,10 @@ import ca.ubc.stat.blang.blangDsl.Dependency;
 import ca.ubc.stat.blang.blangDsl.Distribution;
 import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
-import ca.ubc.stat.blang.blangDsl.ModelComponent;
+import ca.ubc.stat.blang.blangDsl.ModelParam;
 import ca.ubc.stat.blang.blangDsl.ParamVar;
 import ca.ubc.stat.blang.blangDsl.Random;
+import ca.ubc.stat.blang.blangDsl.SupportFactor;
 import ca.ubc.stat.blang.blangDsl.VarDecl;
 import ca.ubc.stat.blang.blangDsl.Vars;
 import ca.ubc.stat.blang.services.BlangDslGrammarAccess;
@@ -109,14 +110,17 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 			case BlangDslPackage.LAZY_PARAM:
 				sequence_LazyParam(context, (LazyParam) semanticObject); 
 				return; 
-			case BlangDslPackage.MODEL_COMPONENT:
-				sequence_ModelComponent(context, (ModelComponent) semanticObject); 
+			case BlangDslPackage.MODEL_PARAM:
+				sequence_ModelParam(context, (ModelParam) semanticObject); 
 				return; 
 			case BlangDslPackage.PARAM_VAR:
 				sequence_ParamVar(context, (ParamVar) semanticObject); 
 				return; 
 			case BlangDslPackage.RANDOM:
 				sequence_Random(context, (Random) semanticObject); 
+				return; 
+			case BlangDslPackage.SUPPORT_FACTOR:
+				sequence_SupportFactor(context, (SupportFactor) semanticObject); 
 				return; 
 			case BlangDslPackage.VAR_DECL:
 				sequence_VarDecl(context, (VarDecl) semanticObject); 
@@ -492,12 +496,13 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	
 	/**
 	 * Contexts:
-	 *     ModelComponent returns ModelComponent
+	 *     ModelComponent returns ModelParam
+	 *     ModelParam returns ModelParam
 	 *
 	 * Constraint:
 	 *     (name=ValidID deps+=Dependency+ right=Distribution)
 	 */
-	protected void sequence_ModelComponent(ISerializationContext context, ModelComponent semanticObject) {
+	protected void sequence_ModelParam(ISerializationContext context, ModelParam semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -540,6 +545,28 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
 		feeder.accept(grammarAccess.getRandomAccess().getTypeJvmTypeReferenceParserRuleCall_1_0(), semanticObject.getType());
 		feeder.accept(grammarAccess.getRandomAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ModelComponent returns SupportFactor
+	 *     SupportFactor returns SupportFactor
+	 *
+	 * Constraint:
+	 *     (name=ValidID expr=XBlockExpression)
+	 */
+	protected void sequence_SupportFactor(ISerializationContext context, SupportFactor semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.MODEL_COMPONENT__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.MODEL_COMPONENT__NAME));
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__EXPR) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__EXPR));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getSupportFactorAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getSupportFactorAccess().getExprXBlockExpressionParserRuleCall_5_0(), semanticObject.getExpr());
 		feeder.finish();
 	}
 	

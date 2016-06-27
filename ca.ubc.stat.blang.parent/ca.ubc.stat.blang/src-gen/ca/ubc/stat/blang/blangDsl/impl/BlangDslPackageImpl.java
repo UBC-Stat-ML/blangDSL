@@ -13,9 +13,11 @@ import ca.ubc.stat.blang.blangDsl.Distribution;
 import ca.ubc.stat.blang.blangDsl.Laws;
 import ca.ubc.stat.blang.blangDsl.LazyParam;
 import ca.ubc.stat.blang.blangDsl.ModelComponent;
+import ca.ubc.stat.blang.blangDsl.ModelParam;
 import ca.ubc.stat.blang.blangDsl.Param;
 import ca.ubc.stat.blang.blangDsl.ParamVar;
 import ca.ubc.stat.blang.blangDsl.Random;
+import ca.ubc.stat.blang.blangDsl.SupportFactor;
 import ca.ubc.stat.blang.blangDsl.VarDecl;
 import ca.ubc.stat.blang.blangDsl.Vars;
 
@@ -95,6 +97,20 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * @generated
    */
   private EClass modelComponentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass supportFactorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass modelParamEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -473,9 +489,9 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModelComponent_Deps()
+  public EClass getSupportFactor()
   {
-    return (EReference)modelComponentEClass.getEStructuralFeatures().get(1);
+    return supportFactorEClass;
   }
 
   /**
@@ -483,9 +499,39 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModelComponent_Right()
+  public EReference getSupportFactor_Expr()
   {
-    return (EReference)modelComponentEClass.getEStructuralFeatures().get(2);
+    return (EReference)supportFactorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getModelParam()
+  {
+    return modelParamEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getModelParam_Deps()
+  {
+    return (EReference)modelParamEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getModelParam_Right()
+  {
+    return (EReference)modelParamEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -672,8 +718,13 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
 
     modelComponentEClass = createEClass(MODEL_COMPONENT);
     createEAttribute(modelComponentEClass, MODEL_COMPONENT__NAME);
-    createEReference(modelComponentEClass, MODEL_COMPONENT__DEPS);
-    createEReference(modelComponentEClass, MODEL_COMPONENT__RIGHT);
+
+    supportFactorEClass = createEClass(SUPPORT_FACTOR);
+    createEReference(supportFactorEClass, SUPPORT_FACTOR__EXPR);
+
+    modelParamEClass = createEClass(MODEL_PARAM);
+    createEReference(modelParamEClass, MODEL_PARAM__DEPS);
+    createEReference(modelParamEClass, MODEL_PARAM__RIGHT);
 
     dependencyEClass = createEClass(DEPENDENCY);
     createEReference(dependencyEClass, DEPENDENCY__TYPE);
@@ -727,6 +778,8 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
+    supportFactorEClass.getESuperTypes().add(this.getModelComponent());
+    modelParamEClass.getESuperTypes().add(this.getModelComponent());
     constParamEClass.getESuperTypes().add(this.getParam());
     lazyParamEClass.getESuperTypes().add(this.getParam());
 
@@ -765,8 +818,13 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
 
     initEClass(modelComponentEClass, ModelComponent.class, "ModelComponent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getModelComponent_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelComponent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getModelComponent_Deps(), this.getDependency(), null, "deps", null, 0, -1, ModelComponent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getModelComponent_Right(), this.getDistribution(), null, "right", null, 0, 1, ModelComponent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(supportFactorEClass, SupportFactor.class, "SupportFactor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getSupportFactor_Expr(), theXbasePackage.getXExpression(), null, "expr", null, 0, 1, SupportFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(modelParamEClass, ModelParam.class, "ModelParam", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getModelParam_Deps(), this.getDependency(), null, "deps", null, 0, -1, ModelParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModelParam_Right(), this.getDistribution(), null, "right", null, 0, 1, ModelParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(dependencyEClass, Dependency.class, "Dependency", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getDependency_Type(), theTypesPackage.getJvmTypeReference(), null, "type", null, 0, 1, Dependency.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

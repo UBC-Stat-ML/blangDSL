@@ -40,8 +40,17 @@ Laws:
 	'}'
 ;
 
-// y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
 ModelComponent:
+    SupportFactor | ModelParam
+;
+
+// indicator(variance) = variance.doubleValue > 0
+SupportFactor:
+    'indicator' '(' (name = ValidID) ')' '=' (expr = XBlockExpression)
+;
+
+// y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
+ModelParam:
 	(name = ValidID) '|' (deps += Dependency) + '~' (right = Distribution)
 ;
 

@@ -96,6 +96,24 @@ public interface BlangDslFactory extends EFactory
   ModelComponent createModelComponent();
 
   /**
+   * Returns a new object of class '<em>Support Factor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Support Factor</em>'.
+   * @generated
+   */
+  SupportFactor createSupportFactor();
+
+  /**
+   * Returns a new object of class '<em>Model Param</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Model Param</em>'.
+   * @generated
+   */
+  ModelParam createModelParam();
+
+  /**
    * Returns a new object of class '<em>Dependency</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

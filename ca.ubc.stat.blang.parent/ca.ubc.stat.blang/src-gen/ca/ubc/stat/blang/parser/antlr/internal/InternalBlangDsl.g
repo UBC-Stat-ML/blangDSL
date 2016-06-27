@@ -548,15 +548,124 @@ ruleModelComponent returns [EObject current=null]
 	leaveRule();
 }:
 	(
+		{
+			newCompositeNode(grammarAccess.getModelComponentAccess().getSupportFactorParserRuleCall_0());
+		}
+		this_SupportFactor_0=ruleSupportFactor
+		{
+			$current = $this_SupportFactor_0.current;
+			afterParserOrEnumRuleCall();
+		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getModelComponentAccess().getModelParamParserRuleCall_1());
+		}
+		this_ModelParam_1=ruleModelParam
+		{
+			$current = $this_ModelParam_1.current;
+			afterParserOrEnumRuleCall();
+		}
+	)
+;
+
+// Entry rule entryRuleSupportFactor
+entryRuleSupportFactor returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getSupportFactorRule()); }
+	iv_ruleSupportFactor=ruleSupportFactor
+	{ $current=$iv_ruleSupportFactor.current; }
+	EOF;
+
+// Rule SupportFactor
+ruleSupportFactor returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='indicator'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getSupportFactorAccess().getIndicatorKeyword_0());
+		}
+		otherlv_1='('
+		{
+			newLeafNode(otherlv_1, grammarAccess.getSupportFactorAccess().getLeftParenthesisKeyword_1());
+		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getModelComponentAccess().getNameValidIDParserRuleCall_0_0());
+					newCompositeNode(grammarAccess.getSupportFactorAccess().getNameValidIDParserRuleCall_2_0());
+				}
+				lv_name_2_0=ruleValidID
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getSupportFactorRule());
+					}
+					set(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.xbase.Xtype.ValidID");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_3=')'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getSupportFactorAccess().getRightParenthesisKeyword_3());
+		}
+		otherlv_4='='
+		{
+			newLeafNode(otherlv_4, grammarAccess.getSupportFactorAccess().getEqualsSignKeyword_4());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getSupportFactorAccess().getExprXBlockExpressionParserRuleCall_5_0());
+				}
+				lv_expr_5_0=ruleXBlockExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getSupportFactorRule());
+					}
+					set(
+						$current,
+						"expr",
+						lv_expr_5_0,
+						"org.eclipse.xtext.xbase.Xbase.XBlockExpression");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+	)
+;
+
+// Entry rule entryRuleModelParam
+entryRuleModelParam returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getModelParamRule()); }
+	iv_ruleModelParam=ruleModelParam
+	{ $current=$iv_ruleModelParam.current; }
+	EOF;
+
+// Rule ModelParam
+ruleModelParam returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getModelParamAccess().getNameValidIDParserRuleCall_0_0());
 				}
 				lv_name_0_0=ruleValidID
 				{
 					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getModelComponentRule());
+						$current = createModelElementForParent(grammarAccess.getModelParamRule());
 					}
 					set(
 						$current,
@@ -569,17 +678,17 @@ ruleModelComponent returns [EObject current=null]
 		)
 		otherlv_1='|'
 		{
-			newLeafNode(otherlv_1, grammarAccess.getModelComponentAccess().getVerticalLineKeyword_1());
+			newLeafNode(otherlv_1, grammarAccess.getModelParamAccess().getVerticalLineKeyword_1());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getModelComponentAccess().getDepsDependencyParserRuleCall_2_0());
+					newCompositeNode(grammarAccess.getModelParamAccess().getDepsDependencyParserRuleCall_2_0());
 				}
 				lv_deps_2_0=ruleDependency
 				{
 					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getModelComponentRule());
+						$current = createModelElementForParent(grammarAccess.getModelParamRule());
 					}
 					add(
 						$current,
@@ -592,17 +701,17 @@ ruleModelComponent returns [EObject current=null]
 		)+
 		otherlv_3='~'
 		{
-			newLeafNode(otherlv_3, grammarAccess.getModelComponentAccess().getTildeKeyword_3());
+			newLeafNode(otherlv_3, grammarAccess.getModelParamAccess().getTildeKeyword_3());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getModelComponentAccess().getRightDistributionParserRuleCall_4_0());
+					newCompositeNode(grammarAccess.getModelParamAccess().getRightDistributionParserRuleCall_4_0());
 				}
 				lv_right_4_0=ruleDistribution
 				{
 					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getModelComponentRule());
+						$current = createModelElementForParent(grammarAccess.getModelParamRule());
 					}
 					set(
 						$current,

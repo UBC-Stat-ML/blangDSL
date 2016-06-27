@@ -73,6 +73,8 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
       case BlangDslPackage.VAR_DECL: return createVarDecl();
       case BlangDslPackage.LAWS: return createLaws();
       case BlangDslPackage.MODEL_COMPONENT: return createModelComponent();
+      case BlangDslPackage.SUPPORT_FACTOR: return createSupportFactor();
+      case BlangDslPackage.MODEL_PARAM: return createModelParam();
       case BlangDslPackage.DEPENDENCY: return createDependency();
       case BlangDslPackage.DISTRIBUTION: return createDistribution();
       case BlangDslPackage.PARAM: return createParam();
@@ -169,6 +171,28 @@ public class BlangDslFactoryImpl extends EFactoryImpl implements BlangDslFactory
   {
     ModelComponentImpl modelComponent = new ModelComponentImpl();
     return modelComponent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public SupportFactor createSupportFactor()
+  {
+    SupportFactorImpl supportFactor = new SupportFactorImpl();
+    return supportFactor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ModelParam createModelParam()
+  {
+    ModelParamImpl modelParam = new ModelParamImpl();
+    return modelParam;
   }
 
   /**

@@ -56,4 +56,18 @@ class BlangDslParsingTest {
 		'''.parse
 		model.assertNoErrors;
 	}
+
+    @Test
+    def void supportFactor() {
+        val model = '''
+            model {
+                param Real variance
+                
+                laws {
+                    indicator(variance) = { variance.doubleValue > 0 }
+                }
+            }
+        '''.parse
+        model.assertNoErrors;
+    }
 }

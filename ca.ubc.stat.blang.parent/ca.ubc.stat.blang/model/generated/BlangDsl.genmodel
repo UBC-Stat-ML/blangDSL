@@ -40,8 +40,13 @@
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//ModelComponent">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ModelComponent/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelComponent/deps"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelComponent/right"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//SupportFactor">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//SupportFactor/expr"/>
+    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//ModelParam">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelParam/deps"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelParam/right"/>
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//Dependency">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Dependency/type"/>

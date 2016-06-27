@@ -326,6 +326,69 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	public class ModelComponentElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.ModelComponent");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cSupportFactorParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cModelParamParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
+		//ModelComponent:
+		//	SupportFactor | ModelParam;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//SupportFactor | ModelParam
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		//SupportFactor
+		public RuleCall getSupportFactorParserRuleCall_0() { return cSupportFactorParserRuleCall_0; }
+		
+		//ModelParam
+		public RuleCall getModelParamParserRuleCall_1() { return cModelParamParserRuleCall_1; }
+	}
+	public class SupportFactorElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.SupportFactor");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cIndicatorKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cLeftParenthesisKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameValidIDParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Keyword cEqualsSignKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cExprAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cExprXBlockExpressionParserRuleCall_5_0 = (RuleCall)cExprAssignment_5.eContents().get(0);
+		
+		//// indicator(variance) = variance.doubleValue > 0
+		//SupportFactor:
+		//	'indicator' '(' name=ValidID ')' '=' expr=XBlockExpression;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'indicator' '(' name=ValidID ')' '=' expr=XBlockExpression
+		public Group getGroup() { return cGroup; }
+		
+		//'indicator'
+		public Keyword getIndicatorKeyword_0() { return cIndicatorKeyword_0; }
+		
+		//'('
+		public Keyword getLeftParenthesisKeyword_1() { return cLeftParenthesisKeyword_1; }
+		
+		//name=ValidID
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//ValidID
+		public RuleCall getNameValidIDParserRuleCall_2_0() { return cNameValidIDParserRuleCall_2_0; }
+		
+		//')'
+		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
+		
+		//'='
+		public Keyword getEqualsSignKeyword_4() { return cEqualsSignKeyword_4; }
+		
+		//expr=XBlockExpression
+		public Assignment getExprAssignment_5() { return cExprAssignment_5; }
+		
+		//XBlockExpression
+		public RuleCall getExprXBlockExpressionParserRuleCall_5_0() { return cExprXBlockExpressionParserRuleCall_5_0; }
+	}
+	public class ModelParamElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.ModelParam");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cNameValidIDParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
@@ -337,7 +400,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cRightDistributionParserRuleCall_4_0 = (RuleCall)cRightAssignment_4.eContents().get(0);
 		
 		//// y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
-		//ModelComponent:
+		//ModelParam:
 		//	name=ValidID '|' deps+=Dependency+ '~' right=Distribution;
 		@Override public ParserRule getRule() { return rule; }
 		
@@ -519,6 +582,8 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	private final VarDeclElements pVarDecl;
 	private final LawsElements pLaws;
 	private final ModelComponentElements pModelComponent;
+	private final SupportFactorElements pSupportFactor;
+	private final ModelParamElements pModelParam;
 	private final DependencyElements pDependency;
 	private final DistributionElements pDistribution;
 	private final ParamElements pParam;
@@ -546,6 +611,8 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pVarDecl = new VarDeclElements();
 		this.pLaws = new LawsElements();
 		this.pModelComponent = new ModelComponentElements();
+		this.pSupportFactor = new SupportFactorElements();
+		this.pModelParam = new ModelParamElements();
 		this.pDependency = new DependencyElements();
 		this.pDistribution = new DistributionElements();
 		this.pParam = new ParamElements();
@@ -661,15 +728,36 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getLawsAccess().getRule();
 	}
 	
-	//// y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
 	//ModelComponent:
-	//	name=ValidID '|' deps+=Dependency+ '~' right=Distribution;
+	//	SupportFactor | ModelParam;
 	public ModelComponentElements getModelComponentAccess() {
 		return pModelComponent;
 	}
 	
 	public ParserRule getModelComponentRule() {
 		return getModelComponentAccess().getRule();
+	}
+	
+	//// indicator(variance) = variance.doubleValue > 0
+	//SupportFactor:
+	//	'indicator' '(' name=ValidID ')' '=' expr=XBlockExpression;
+	public SupportFactorElements getSupportFactorAccess() {
+		return pSupportFactor;
+	}
+	
+	public ParserRule getSupportFactorRule() {
+		return getSupportFactorAccess().getRule();
+	}
+	
+	//// y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
+	//ModelParam:
+	//	name=ValidID '|' deps+=Dependency+ '~' right=Distribution;
+	public ModelParamElements getModelParamAccess() {
+		return pModelParam;
+	}
+	
+	public ParserRule getModelParamRule() {
+		return getModelParamAccess().getRule();
 	}
 	
 	//Dependency:

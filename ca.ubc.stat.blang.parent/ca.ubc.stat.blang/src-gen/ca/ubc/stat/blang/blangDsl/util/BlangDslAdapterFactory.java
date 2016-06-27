@@ -116,6 +116,16 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
         return createModelComponentAdapter();
       }
       @Override
+      public Adapter caseSupportFactor(SupportFactor object)
+      {
+        return createSupportFactorAdapter();
+      }
+      @Override
+      public Adapter caseModelParam(ModelParam object)
+      {
+        return createModelParamAdapter();
+      }
+      @Override
       public Adapter caseDependency(Dependency object)
       {
         return createDependencyAdapter();
@@ -278,6 +288,36 @@ public class BlangDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createModelComponentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.SupportFactor <em>Support Factor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see ca.ubc.stat.blang.blangDsl.SupportFactor
+   * @generated
+   */
+  public Adapter createSupportFactorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link ca.ubc.stat.blang.blangDsl.ModelParam <em>Model Param</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see ca.ubc.stat.blang.blangDsl.ModelParam
+   * @generated
+   */
+  public Adapter createModelParamAdapter()
   {
     return null;
   }

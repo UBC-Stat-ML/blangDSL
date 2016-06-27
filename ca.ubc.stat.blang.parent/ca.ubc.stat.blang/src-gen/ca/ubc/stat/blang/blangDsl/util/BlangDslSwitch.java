@@ -129,6 +129,22 @@ public class BlangDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BlangDslPackage.SUPPORT_FACTOR:
+      {
+        SupportFactor supportFactor = (SupportFactor)theEObject;
+        T result = caseSupportFactor(supportFactor);
+        if (result == null) result = caseModelComponent(supportFactor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BlangDslPackage.MODEL_PARAM:
+      {
+        ModelParam modelParam = (ModelParam)theEObject;
+        T result = caseModelParam(modelParam);
+        if (result == null) result = caseModelComponent(modelParam);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BlangDslPackage.DEPENDENCY:
       {
         Dependency dependency = (Dependency)theEObject;
@@ -294,6 +310,38 @@ public class BlangDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseModelComponent(ModelComponent object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Support Factor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Support Factor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSupportFactor(SupportFactor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Model Param</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Model Param</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseModelParam(ModelParam object)
   {
     return null;
   }

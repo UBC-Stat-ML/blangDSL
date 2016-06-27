@@ -59,6 +59,66 @@ class BlangDslGeneratorTest {
 		)
 	}
 	
+	
+	@Test
+	def void supportFactor() {
+        '''
+            model {
+                param Real variance
+                
+                laws {
+                    indicator(variance) = variance.doubleValue > 0
+                }
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import blang.core.SupportFactor;
+        import blang.prototype3.Real;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        import java.util.function.Supplier;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          public final Supplier<Real> variance;
+          
+          public MyFile(final Supplier<Real> variance) {
+            this.variance = variance;
+          }
+          
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            components.add(new SupportFactor(new $Generated_SetupSupport0(variance)));
+            
+            return components;
+          }
+          
+          public static class $Generated_SetupSupport0 implements SupportFactor.Support {
+            private final Supplier<Real> variance;
+            
+            public $Generated_SetupSupport0(final Supplier<Real> variance) {
+              this.variance = variance;
+            }
+            
+            @Override
+            public boolean inSupport() {
+              return $inSupport(variance.get());
+            }
+            
+            private boolean $inSupport(final Real variance) {
+              double _doubleValue = variance.doubleValue();
+              return (_doubleValue > 0);
+            }
+          }
+        }
+        '''
+        )
+	}
+	
+	
     @Test
     def void simpleNormalModel() {
         '''
