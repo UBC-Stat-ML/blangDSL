@@ -236,12 +236,12 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += factor.expr.toMethod("inSupport", typeRef(boolean)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                return $inSupport(variance.get());
+                return $inSupport(«factor.name».get());
                 '''
             ]
             it.members += factor.expr.toMethod("$inSupport", typeRef(boolean)) [
                 visibility = JvmVisibility.PRIVATE
-                parameters += factor.toParameter("variance", typeRef(Real))
+                parameters += factor.toParameter(factor.name, typeRef(Real))
                 body = factor.expr
             ]
         ]
@@ -268,12 +268,12 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += factor.expr.toMethod("logDensity", typeRef(double)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                return $logDensity(variance.get());
+                return $logDensity(«factor.name».get());
                 '''
             ]
             it.members += factor.expr.toMethod("$logDensity", typeRef(double)) [
                 visibility = JvmVisibility.PRIVATE
-                parameters += factor.toParameter("variance", typeRef(Real))
+                parameters += factor.toParameter(factor.name, typeRef(Real))
                 body = factor.expr
             ]
         ]

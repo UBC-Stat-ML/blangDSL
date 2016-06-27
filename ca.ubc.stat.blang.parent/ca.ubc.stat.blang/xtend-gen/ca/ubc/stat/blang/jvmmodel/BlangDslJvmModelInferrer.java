@@ -620,8 +620,11 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         StringConcatenationClient _client = new StringConcatenationClient() {
           @Override
           protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            _builder.append("return $inSupport(variance.get());");
-            _builder.newLine();
+            _builder.append("return $inSupport(");
+            String _name = factor.getName();
+            _builder.append(_name, "");
+            _builder.append(".get());");
+            _builder.newLineIfNotEmpty();
           }
         };
         this._jvmTypesBuilder.setBody(it_1, _client);
@@ -634,8 +637,9 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
       final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
         it_1.setVisibility(JvmVisibility.PRIVATE);
         EList<JvmFormalParameter> _parameters = it_1.getParameters();
+        String _name_1 = factor.getName();
         JvmTypeReference _typeRef_5 = this._typeReferenceBuilder.typeRef(Real.class);
-        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, "variance", _typeRef_5);
+        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, _name_1, _typeRef_5);
         this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
         XExpression _expr_2 = factor.getExpr();
         this._jvmTypesBuilder.setBody(it_1, _expr_2);
@@ -697,8 +701,11 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         StringConcatenationClient _client = new StringConcatenationClient() {
           @Override
           protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            _builder.append("return $logDensity(variance.get());");
-            _builder.newLine();
+            _builder.append("return $logDensity(");
+            String _name = factor.getName();
+            _builder.append(_name, "");
+            _builder.append(".get());");
+            _builder.newLineIfNotEmpty();
           }
         };
         this._jvmTypesBuilder.setBody(it_1, _client);
@@ -711,8 +718,9 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
       final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
         it_1.setVisibility(JvmVisibility.PRIVATE);
         EList<JvmFormalParameter> _parameters = it_1.getParameters();
+        String _name_1 = factor.getName();
         JvmTypeReference _typeRef_5 = this._typeReferenceBuilder.typeRef(Real.class);
-        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, "variance", _typeRef_5);
+        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, _name_1, _typeRef_5);
         this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
         XExpression _expr_2 = factor.getExpr();
         this._jvmTypesBuilder.setBody(it_1, _expr_2);
