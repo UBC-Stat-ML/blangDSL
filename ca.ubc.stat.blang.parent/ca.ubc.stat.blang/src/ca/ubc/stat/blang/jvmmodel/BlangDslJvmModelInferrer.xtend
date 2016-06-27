@@ -168,7 +168,10 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     }
     
     def dispatch generateModelComponentInit(LogScaleFactor component, int modelCounter) {
-        '''new $Generated_LogScaleFactor«modelCounter»(«component.name»)'''
+        '''new $Generated_LogScaleFactor«modelCounter»(«
+            FOR p : component.params SEPARATOR ", "»«
+              p»«
+            ENDFOR»)'''
     }
     
     def generateModelComponentParamSupplier(ModelParam component,
@@ -253,27 +256,39 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.superTypes += typeRef(blang.factors.LogScaleFactor)
             it.static = true
             
-            it.members += factor.toField(factor.name, typeRef(Supplier, typeRef(Real))) [
-                final = true
-            ]
+            for (p : factor.params) {
+                it.members += factor.toField(p, typeRef(Supplier, typeRef(Real))) [
+                    final = true
+                ]
+            }
             
             it.members += factor.toConstructor [
                 it.visibility = JvmVisibility.PUBLIC
-                parameters += factor.toParameter(factor.name, typeRef(Supplier, typeRef(Real)))
+                for (p : factor.params) {
+                    parameters += factor.toParameter(p, typeRef(Supplier, typeRef(Real)))
+                }
                 body = '''
-                this.«factor.name» = «factor.name»;
+                «FOR p : factor.params»
+                this.«p» = «p»;
+                «ENDFOR»
                 '''
             ]
             
             it.members += factor.expr.toMethod("logDensity", typeRef(double)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                return $logDensity(«factor.name».get());
+                return $logDensity(«
+                    FOR p : factor.params SEPARATOR ", "»«
+                      p».get()«
+                    ENDFOR
+                »);
                 '''
             ]
             it.members += factor.expr.toMethod("$logDensity", typeRef(double)) [
                 visibility = JvmVisibility.PRIVATE
-                parameters += factor.toParameter(factor.name, typeRef(Real))
+                for (p : factor.params) {
+                    parameters += factor.toParameter(p, typeRef(Real))
+                }
                 body = factor.expr
             ]
         ]

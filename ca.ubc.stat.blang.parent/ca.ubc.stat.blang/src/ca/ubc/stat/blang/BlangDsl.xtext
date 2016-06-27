@@ -51,7 +51,7 @@ SupportFactor:
 
 // logf(variance) = -0.5 * ( log(variance.doubleValue) + LOG2PI )
 LogScaleFactor:
-    'logf' '(' (name = ValidID) ')' '=' (expr = XBlockExpression)
+    'logf' '(' (params += ValidID) (',' (params += ValidID))* ')' '=' (expr = XBlockExpression)
 ;
 
 // y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])

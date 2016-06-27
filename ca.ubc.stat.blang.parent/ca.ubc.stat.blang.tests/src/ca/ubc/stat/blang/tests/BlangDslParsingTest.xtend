@@ -75,12 +75,30 @@ class BlangDslParsingTest {
     def void logFactor() {
         val model = '''
             model {
+                param Real mean
+                
                 param Real variance
                 
                 const double LOG2PI = Math.log(2 * Math.PI)
                 
                 laws {
                     logf(variance) = { -0.5 * ( Math.log(variance.doubleValue) + LOG2PI ) }
+                }
+            }
+        '''.parse
+        model.assertNoErrors;
+    }
+
+    @Test
+    def void logFactorMultiParam() {
+        val model = '''
+            model {
+                param Real mean
+                
+                param Real variance
+                
+                laws {
+                    logf(variance, mean) = { -0.5 * mean.doubleValue / variance.doubleValue }
                 }
             }
         '''.parse

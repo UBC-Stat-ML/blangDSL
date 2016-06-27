@@ -125,6 +125,75 @@ class BlangDslGeneratorTest {
     
     
     @Test
+    def void logFactorMultiParam() {
+        '''
+            model {
+                param Real mean
+                
+                param Real variance
+                
+                laws {
+                    logf(variance, mean) = { -0.5 * mean.doubleValue / variance.doubleValue }
+                }
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import blang.factors.LogScaleFactor;
+        import blang.prototype3.Real;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        import java.util.function.Supplier;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          public final Supplier<Real> mean;
+          
+          public final Supplier<Real> variance;
+          
+          public MyFile(final Supplier<Real> mean, final Supplier<Real> variance) {
+            this.mean = mean;
+            this.variance = variance;
+          }
+          
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            components.add(new $Generated_LogScaleFactor0(variance, mean));
+            
+            return components;
+          }
+          
+          public static class $Generated_LogScaleFactor0 implements LogScaleFactor {
+            private final Supplier<Real> variance;
+            
+            private final Supplier<Real> mean;
+            
+            public $Generated_LogScaleFactor0(final Supplier<Real> variance, final Supplier<Real> mean) {
+              this.variance = variance;
+              this.mean = mean;
+            }
+            
+            @Override
+            public double logDensity() {
+              return $logDensity(variance.get(), mean.get());
+            }
+            
+            private double $logDensity(final Real variance, final Real mean) {
+              double _doubleValue = mean.doubleValue();
+              double _multiply = ((-0.5) * _doubleValue);
+              double _doubleValue_1 = variance.doubleValue();
+              return (_multiply / _doubleValue_1);
+            }
+          }
+        }
+        '''
+        )
+    }
+    
+    
+    @Test
     def void supportFactor() {
         '''
             model {

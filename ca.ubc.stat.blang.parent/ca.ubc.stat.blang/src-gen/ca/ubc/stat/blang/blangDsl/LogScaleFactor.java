@@ -3,6 +3,8 @@
  */
 package ca.ubc.stat.blang.blangDsl;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.xtext.xbase.XExpression;
 
 /**
@@ -14,6 +16,7 @@ import org.eclipse.xtext.xbase.XExpression;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.LogScaleFactor#getParams <em>Params</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.LogScaleFactor#getExpr <em>Expr</em>}</li>
  * </ul>
  *
@@ -23,6 +26,22 @@ import org.eclipse.xtext.xbase.XExpression;
  */
 public interface LogScaleFactor extends ModelComponent
 {
+  /**
+   * Returns the value of the '<em><b>Params</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Params</em>' attribute list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Params</em>' attribute list.
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getLogScaleFactor_Params()
+   * @model unique="false"
+   * @generated
+   */
+  EList<String> getParams();
+
   /**
    * Returns the value of the '<em><b>Expr</b></em>' containment reference.
    * <!-- begin-user-doc -->

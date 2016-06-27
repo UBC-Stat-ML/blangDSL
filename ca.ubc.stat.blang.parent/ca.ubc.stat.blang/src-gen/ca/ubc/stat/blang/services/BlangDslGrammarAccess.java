@@ -396,19 +396,23 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cLogfKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Keyword cLeftParenthesisKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cNameValidIDParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Keyword cEqualsSignKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Assignment cExprAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cExprXBlockExpressionParserRuleCall_5_0 = (RuleCall)cExprAssignment_5.eContents().get(0);
+		private final Assignment cParamsAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cParamsValidIDParserRuleCall_2_0 = (RuleCall)cParamsAssignment_2.eContents().get(0);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cCommaKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cParamsAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cParamsValidIDParserRuleCall_3_1_0 = (RuleCall)cParamsAssignment_3_1.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Keyword cEqualsSignKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cExprAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cExprXBlockExpressionParserRuleCall_6_0 = (RuleCall)cExprAssignment_6.eContents().get(0);
 		
 		//// logf(variance) = -0.5 * ( log(variance.doubleValue) + LOG2PI )
 		//LogScaleFactor:
-		//	'logf' '(' name=ValidID ')' '=' expr=XBlockExpression;
+		//	'logf' '(' params+=ValidID (',' params+=ValidID)* ')' '=' expr=XBlockExpression;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'logf' '(' name=ValidID ')' '=' expr=XBlockExpression
+		//'logf' '(' params+=ValidID (',' params+=ValidID)* ')' '=' expr=XBlockExpression
 		public Group getGroup() { return cGroup; }
 		
 		//'logf'
@@ -417,23 +421,35 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 		//'('
 		public Keyword getLeftParenthesisKeyword_1() { return cLeftParenthesisKeyword_1; }
 		
-		//name=ValidID
-		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		//params+=ValidID
+		public Assignment getParamsAssignment_2() { return cParamsAssignment_2; }
 		
 		//ValidID
-		public RuleCall getNameValidIDParserRuleCall_2_0() { return cNameValidIDParserRuleCall_2_0; }
+		public RuleCall getParamsValidIDParserRuleCall_2_0() { return cParamsValidIDParserRuleCall_2_0; }
+		
+		//(',' params+=ValidID)*
+		public Group getGroup_3() { return cGroup_3; }
+		
+		//','
+		public Keyword getCommaKeyword_3_0() { return cCommaKeyword_3_0; }
+		
+		//params+=ValidID
+		public Assignment getParamsAssignment_3_1() { return cParamsAssignment_3_1; }
+		
+		//ValidID
+		public RuleCall getParamsValidIDParserRuleCall_3_1_0() { return cParamsValidIDParserRuleCall_3_1_0; }
 		
 		//')'
-		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
+		public Keyword getRightParenthesisKeyword_4() { return cRightParenthesisKeyword_4; }
 		
 		//'='
-		public Keyword getEqualsSignKeyword_4() { return cEqualsSignKeyword_4; }
+		public Keyword getEqualsSignKeyword_5() { return cEqualsSignKeyword_5; }
 		
 		//expr=XBlockExpression
-		public Assignment getExprAssignment_5() { return cExprAssignment_5; }
+		public Assignment getExprAssignment_6() { return cExprAssignment_6; }
 		
 		//XBlockExpression
-		public RuleCall getExprXBlockExpressionParserRuleCall_5_0() { return cExprXBlockExpressionParserRuleCall_5_0; }
+		public RuleCall getExprXBlockExpressionParserRuleCall_6_0() { return cExprXBlockExpressionParserRuleCall_6_0; }
 	}
 	public class ModelParamElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ca.ubc.stat.blang.BlangDsl.ModelParam");
@@ -801,7 +817,7 @@ public class BlangDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//// logf(variance) = -0.5 * ( log(variance.doubleValue) + LOG2PI )
 	//LogScaleFactor:
-	//	'logf' '(' name=ValidID ')' '=' expr=XBlockExpression;
+	//	'logf' '(' params+=ValidID (',' params+=ValidID)* ')' '=' expr=XBlockExpression;
 	public LogScaleFactorElements getLogScaleFactorAccess() {
 		return pLogScaleFactor;
 	}

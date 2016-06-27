@@ -38,16 +38,17 @@
     <genClasses ecoreClass="BlangDsl.ecore#//Laws">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//Laws/modelComponents"/>
     </genClasses>
-    <genClasses ecoreClass="BlangDsl.ecore#//ModelComponent">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ModelComponent/name"/>
-    </genClasses>
+    <genClasses ecoreClass="BlangDsl.ecore#//ModelComponent"/>
     <genClasses ecoreClass="BlangDsl.ecore#//SupportFactor">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//SupportFactor/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//SupportFactor/expr"/>
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//LogScaleFactor">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//LogScaleFactor/params"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//LogScaleFactor/expr"/>
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//ModelParam">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//ModelParam/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelParam/deps"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//ModelParam/right"/>
     </genClasses>

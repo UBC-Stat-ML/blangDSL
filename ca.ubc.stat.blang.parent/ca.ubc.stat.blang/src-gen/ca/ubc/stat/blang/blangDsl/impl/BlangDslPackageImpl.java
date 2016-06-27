@@ -487,16 +487,6 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getModelComponent_Name()
-  {
-    return (EAttribute)modelComponentEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EClass getSupportFactor()
   {
     return supportFactorEClass;
@@ -507,9 +497,19 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getSupportFactor_Name()
+  {
+    return (EAttribute)supportFactorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getSupportFactor_Expr()
   {
-    return (EReference)supportFactorEClass.getEStructuralFeatures().get(0);
+    return (EReference)supportFactorEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -527,9 +527,19 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getLogScaleFactor_Params()
+  {
+    return (EAttribute)logScaleFactorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getLogScaleFactor_Expr()
   {
-    return (EReference)logScaleFactorEClass.getEStructuralFeatures().get(0);
+    return (EReference)logScaleFactorEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -547,9 +557,19 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getModelParam_Name()
+  {
+    return (EAttribute)modelParamEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getModelParam_Deps()
   {
-    return (EReference)modelParamEClass.getEStructuralFeatures().get(0);
+    return (EReference)modelParamEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -559,7 +579,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    */
   public EReference getModelParam_Right()
   {
-    return (EReference)modelParamEClass.getEStructuralFeatures().get(1);
+    return (EReference)modelParamEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -745,15 +765,17 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     createEReference(lawsEClass, LAWS__MODEL_COMPONENTS);
 
     modelComponentEClass = createEClass(MODEL_COMPONENT);
-    createEAttribute(modelComponentEClass, MODEL_COMPONENT__NAME);
 
     supportFactorEClass = createEClass(SUPPORT_FACTOR);
+    createEAttribute(supportFactorEClass, SUPPORT_FACTOR__NAME);
     createEReference(supportFactorEClass, SUPPORT_FACTOR__EXPR);
 
     logScaleFactorEClass = createEClass(LOG_SCALE_FACTOR);
+    createEAttribute(logScaleFactorEClass, LOG_SCALE_FACTOR__PARAMS);
     createEReference(logScaleFactorEClass, LOG_SCALE_FACTOR__EXPR);
 
     modelParamEClass = createEClass(MODEL_PARAM);
+    createEAttribute(modelParamEClass, MODEL_PARAM__NAME);
     createEReference(modelParamEClass, MODEL_PARAM__DEPS);
     createEReference(modelParamEClass, MODEL_PARAM__RIGHT);
 
@@ -849,15 +871,17 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     initEReference(getLaws_ModelComponents(), this.getModelComponent(), null, "modelComponents", null, 0, -1, Laws.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(modelComponentEClass, ModelComponent.class, "ModelComponent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getModelComponent_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelComponent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(supportFactorEClass, SupportFactor.class, "SupportFactor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSupportFactor_Name(), ecorePackage.getEString(), "name", null, 0, 1, SupportFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getSupportFactor_Expr(), theXbasePackage.getXExpression(), null, "expr", null, 0, 1, SupportFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(logScaleFactorEClass, LogScaleFactor.class, "LogScaleFactor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLogScaleFactor_Params(), ecorePackage.getEString(), "params", null, 0, -1, LogScaleFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getLogScaleFactor_Expr(), theXbasePackage.getXExpression(), null, "expr", null, 0, 1, LogScaleFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(modelParamEClass, ModelParam.class, "ModelParam", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getModelParam_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getModelParam_Deps(), this.getDependency(), null, "deps", null, 0, -1, ModelParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getModelParam_Right(), this.getDistribution(), null, "right", null, 0, 1, ModelParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

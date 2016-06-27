@@ -24,6 +24,7 @@ import org.eclipse.xtext.xbase.XExpression;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.SupportFactorImpl#getName <em>Name</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.SupportFactorImpl#getExpr <em>Expr</em>}</li>
  * </ul>
  *
@@ -31,6 +32,26 @@ import org.eclipse.xtext.xbase.XExpression;
  */
 public class SupportFactorImpl extends ModelComponentImpl implements SupportFactor
 {
+  /**
+   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected static final String NAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected String name = NAME_EDEFAULT;
+
   /**
    * The cached value of the '{@link #getExpr() <em>Expr</em>}' containment reference.
    * <!-- begin-user-doc -->
@@ -60,6 +81,29 @@ public class SupportFactorImpl extends ModelComponentImpl implements SupportFact
   protected EClass eStaticClass()
   {
     return BlangDslPackage.Literals.SUPPORT_FACTOR;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getName()
+  {
+    return name;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setName(String newName)
+  {
+    String oldName = name;
+    name = newName;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.SUPPORT_FACTOR__NAME, oldName, name));
   }
 
   /**
@@ -136,6 +180,8 @@ public class SupportFactorImpl extends ModelComponentImpl implements SupportFact
   {
     switch (featureID)
     {
+      case BlangDslPackage.SUPPORT_FACTOR__NAME:
+        return getName();
       case BlangDslPackage.SUPPORT_FACTOR__EXPR:
         return getExpr();
     }
@@ -152,6 +198,9 @@ public class SupportFactorImpl extends ModelComponentImpl implements SupportFact
   {
     switch (featureID)
     {
+      case BlangDslPackage.SUPPORT_FACTOR__NAME:
+        setName((String)newValue);
+        return;
       case BlangDslPackage.SUPPORT_FACTOR__EXPR:
         setExpr((XExpression)newValue);
         return;
@@ -169,6 +218,9 @@ public class SupportFactorImpl extends ModelComponentImpl implements SupportFact
   {
     switch (featureID)
     {
+      case BlangDslPackage.SUPPORT_FACTOR__NAME:
+        setName(NAME_EDEFAULT);
+        return;
       case BlangDslPackage.SUPPORT_FACTOR__EXPR:
         setExpr((XExpression)null);
         return;
@@ -186,10 +238,29 @@ public class SupportFactorImpl extends ModelComponentImpl implements SupportFact
   {
     switch (featureID)
     {
+      case BlangDslPackage.SUPPORT_FACTOR__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case BlangDslPackage.SUPPORT_FACTOR__EXPR:
         return expr != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (name: ");
+    result.append(name);
+    result.append(')');
+    return result.toString();
   }
 
 } //SupportFactorImpl

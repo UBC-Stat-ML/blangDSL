@@ -504,19 +504,10 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	 *     LogScaleFactor returns LogScaleFactor
 	 *
 	 * Constraint:
-	 *     (name=ValidID expr=XBlockExpression)
+	 *     (params+=ValidID params+=ValidID* expr=XBlockExpression)
 	 */
 	protected void sequence_LogScaleFactor(ISerializationContext context, LogScaleFactor semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.MODEL_COMPONENT__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.MODEL_COMPONENT__NAME));
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.LOG_SCALE_FACTOR__EXPR) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.LOG_SCALE_FACTOR__EXPR));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getLogScaleFactorAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
-		feeder.accept(grammarAccess.getLogScaleFactorAccess().getExprXBlockExpressionParserRuleCall_5_0(), semanticObject.getExpr());
-		feeder.finish();
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -585,8 +576,8 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	 */
 	protected void sequence_SupportFactor(ISerializationContext context, SupportFactor semanticObject) {
 		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.MODEL_COMPONENT__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.MODEL_COMPONENT__NAME));
+			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__NAME));
 			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__EXPR) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__EXPR));
 		}

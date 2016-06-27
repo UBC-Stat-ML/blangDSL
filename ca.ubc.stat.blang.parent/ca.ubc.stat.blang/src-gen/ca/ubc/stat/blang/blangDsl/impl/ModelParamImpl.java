@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl#getName <em>Name</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl#getDeps <em>Deps</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.impl.ModelParamImpl#getRight <em>Right</em>}</li>
  * </ul>
@@ -39,6 +40,26 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class ModelParamImpl extends ModelComponentImpl implements ModelParam
 {
+  /**
+   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected static final String NAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected String name = NAME_EDEFAULT;
+
   /**
    * The cached value of the '{@link #getDeps() <em>Deps</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -78,6 +99,29 @@ public class ModelParamImpl extends ModelComponentImpl implements ModelParam
   protected EClass eStaticClass()
   {
     return BlangDslPackage.Literals.MODEL_PARAM;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getName()
+  {
+    return name;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setName(String newName)
+  {
+    String oldName = name;
+    name = newName;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BlangDslPackage.MODEL_PARAM__NAME, oldName, name));
   }
 
   /**
@@ -170,6 +214,8 @@ public class ModelParamImpl extends ModelComponentImpl implements ModelParam
   {
     switch (featureID)
     {
+      case BlangDslPackage.MODEL_PARAM__NAME:
+        return getName();
       case BlangDslPackage.MODEL_PARAM__DEPS:
         return getDeps();
       case BlangDslPackage.MODEL_PARAM__RIGHT:
@@ -189,6 +235,9 @@ public class ModelParamImpl extends ModelComponentImpl implements ModelParam
   {
     switch (featureID)
     {
+      case BlangDslPackage.MODEL_PARAM__NAME:
+        setName((String)newValue);
+        return;
       case BlangDslPackage.MODEL_PARAM__DEPS:
         getDeps().clear();
         getDeps().addAll((Collection<? extends Dependency>)newValue);
@@ -210,6 +259,9 @@ public class ModelParamImpl extends ModelComponentImpl implements ModelParam
   {
     switch (featureID)
     {
+      case BlangDslPackage.MODEL_PARAM__NAME:
+        setName(NAME_EDEFAULT);
+        return;
       case BlangDslPackage.MODEL_PARAM__DEPS:
         getDeps().clear();
         return;
@@ -230,12 +282,31 @@ public class ModelParamImpl extends ModelComponentImpl implements ModelParam
   {
     switch (featureID)
     {
+      case BlangDslPackage.MODEL_PARAM__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case BlangDslPackage.MODEL_PARAM__DEPS:
         return deps != null && !deps.isEmpty();
       case BlangDslPackage.MODEL_PARAM__RIGHT:
         return right != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (name: ");
+    result.append(name);
+    result.append(')');
+    return result.toString();
   }
 
 } //ModelParamImpl

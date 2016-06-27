@@ -88,6 +88,7 @@ public class BlangDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLawsAccess().getGroup(), "rule__Laws__Group__0");
 					put(grammarAccess.getSupportFactorAccess().getGroup(), "rule__SupportFactor__Group__0");
 					put(grammarAccess.getLogScaleFactorAccess().getGroup(), "rule__LogScaleFactor__Group__0");
+					put(grammarAccess.getLogScaleFactorAccess().getGroup_3(), "rule__LogScaleFactor__Group_3__0");
 					put(grammarAccess.getModelParamAccess().getGroup(), "rule__ModelParam__Group__0");
 					put(grammarAccess.getDependencyAccess().getGroup(), "rule__Dependency__Group__0");
 					put(grammarAccess.getDistributionAccess().getGroup(), "rule__Distribution__Group__0");
@@ -291,8 +292,9 @@ public class BlangDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLawsAccess().getModelComponentsAssignment_3(), "rule__Laws__ModelComponentsAssignment_3");
 					put(grammarAccess.getSupportFactorAccess().getNameAssignment_2(), "rule__SupportFactor__NameAssignment_2");
 					put(grammarAccess.getSupportFactorAccess().getExprAssignment_5(), "rule__SupportFactor__ExprAssignment_5");
-					put(grammarAccess.getLogScaleFactorAccess().getNameAssignment_2(), "rule__LogScaleFactor__NameAssignment_2");
-					put(grammarAccess.getLogScaleFactorAccess().getExprAssignment_5(), "rule__LogScaleFactor__ExprAssignment_5");
+					put(grammarAccess.getLogScaleFactorAccess().getParamsAssignment_2(), "rule__LogScaleFactor__ParamsAssignment_2");
+					put(grammarAccess.getLogScaleFactorAccess().getParamsAssignment_3_1(), "rule__LogScaleFactor__ParamsAssignment_3_1");
+					put(grammarAccess.getLogScaleFactorAccess().getExprAssignment_6(), "rule__LogScaleFactor__ExprAssignment_6");
 					put(grammarAccess.getModelParamAccess().getNameAssignment_0(), "rule__ModelParam__NameAssignment_0");
 					put(grammarAccess.getModelParamAccess().getDepsAssignment_2(), "rule__ModelParam__DepsAssignment_2");
 					put(grammarAccess.getModelParamAccess().getRightAssignment_4(), "rule__ModelParam__RightAssignment_4");
