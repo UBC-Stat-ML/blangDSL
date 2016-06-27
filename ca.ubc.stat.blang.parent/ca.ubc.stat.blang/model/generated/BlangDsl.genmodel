@@ -40,7 +40,7 @@
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//ModelComponent"/>
     <genClasses ecoreClass="BlangDsl.ecore#//SupportFactor">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//SupportFactor/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BlangDsl.ecore#//SupportFactor/params"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BlangDsl.ecore#//SupportFactor/expr"/>
     </genClasses>
     <genClasses ecoreClass="BlangDsl.ecore#//LogScaleFactor">

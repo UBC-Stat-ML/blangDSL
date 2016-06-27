@@ -126,6 +126,39 @@ public class BlangDslParsingTest {
   }
   
   @Test
+  public void supportFactorMultiParam() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("model {");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("param Real mean");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("param Real variance");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("laws {");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("indicator(mean, variance) = { mean.doubleValue > 0.5 && variance.doubleValue > 0 }");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      final BlangModel model = this._parseHelper.parse(_builder);
+      this._validationTestHelper.assertNoErrors(model);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
   public void logFactor() {
     try {
       StringConcatenation _builder = new StringConcatenation();

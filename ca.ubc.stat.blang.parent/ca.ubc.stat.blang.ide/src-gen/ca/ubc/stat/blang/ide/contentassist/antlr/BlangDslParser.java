@@ -87,6 +87,7 @@ public class BlangDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getVarDeclAccess().getGroup(), "rule__VarDecl__Group__0");
 					put(grammarAccess.getLawsAccess().getGroup(), "rule__Laws__Group__0");
 					put(grammarAccess.getSupportFactorAccess().getGroup(), "rule__SupportFactor__Group__0");
+					put(grammarAccess.getSupportFactorAccess().getGroup_3(), "rule__SupportFactor__Group_3__0");
 					put(grammarAccess.getLogScaleFactorAccess().getGroup(), "rule__LogScaleFactor__Group__0");
 					put(grammarAccess.getLogScaleFactorAccess().getGroup_3(), "rule__LogScaleFactor__Group_3__0");
 					put(grammarAccess.getModelParamAccess().getGroup(), "rule__ModelParam__Group__0");
@@ -290,8 +291,9 @@ public class BlangDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getVarDeclAccess().getNameAssignment_1(), "rule__VarDecl__NameAssignment_1");
 					put(grammarAccess.getVarDeclAccess().getRightAssignment_3(), "rule__VarDecl__RightAssignment_3");
 					put(grammarAccess.getLawsAccess().getModelComponentsAssignment_3(), "rule__Laws__ModelComponentsAssignment_3");
-					put(grammarAccess.getSupportFactorAccess().getNameAssignment_2(), "rule__SupportFactor__NameAssignment_2");
-					put(grammarAccess.getSupportFactorAccess().getExprAssignment_5(), "rule__SupportFactor__ExprAssignment_5");
+					put(grammarAccess.getSupportFactorAccess().getParamsAssignment_2(), "rule__SupportFactor__ParamsAssignment_2");
+					put(grammarAccess.getSupportFactorAccess().getParamsAssignment_3_1(), "rule__SupportFactor__ParamsAssignment_3_1");
+					put(grammarAccess.getSupportFactorAccess().getExprAssignment_6(), "rule__SupportFactor__ExprAssignment_6");
 					put(grammarAccess.getLogScaleFactorAccess().getParamsAssignment_2(), "rule__LogScaleFactor__ParamsAssignment_2");
 					put(grammarAccess.getLogScaleFactorAccess().getParamsAssignment_3_1(), "rule__LogScaleFactor__ParamsAssignment_3_1");
 					put(grammarAccess.getLogScaleFactorAccess().getExprAssignment_6(), "rule__LogScaleFactor__ExprAssignment_6");

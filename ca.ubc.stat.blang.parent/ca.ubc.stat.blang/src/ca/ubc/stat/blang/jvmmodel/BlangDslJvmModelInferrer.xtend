@@ -164,7 +164,10 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     
     
     def dispatch generateModelComponentInit(SupportFactor component, int modelCounter) {
-        '''new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«component.name»))'''
+        '''new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«
+                    FOR p : component.params SEPARATOR ", "»«
+                      p»«
+                    ENDFOR»))'''
     }
     
     def dispatch generateModelComponentInit(LogScaleFactor component, int modelCounter) {
@@ -224,27 +227,39 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.superTypes += typeRef(blang.core.SupportFactor.Support)
             it.static = true
             
-            it.members += factor.toField(factor.name, typeRef(Supplier, typeRef(Real))) [
-                final = true
-            ]
-            
+            for (p : factor.params) {
+                it.members += factor.toField(p, typeRef(Supplier, typeRef(Real))) [
+                    final = true
+                ]
+            }
+                        
             it.members += factor.toConstructor [
                 it.visibility = JvmVisibility.PUBLIC
-                parameters += factor.toParameter(factor.name, typeRef(Supplier, typeRef(Real)))
+                for (p : factor.params) {
+                    parameters += factor.toParameter(p, typeRef(Supplier, typeRef(Real)))
+                }
                 body = '''
-                this.«factor.name» = «factor.name»;
+                «FOR p : factor.params»
+                this.«p» = «p»;
+                «ENDFOR»
                 '''
             ]
             
             it.members += factor.expr.toMethod("inSupport", typeRef(boolean)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                return $inSupport(«factor.name».get());
+                return $inSupport(«
+                    FOR p : factor.params SEPARATOR ", "»«
+                      p».get()«
+                    ENDFOR
+                »);
                 '''
             ]
             it.members += factor.expr.toMethod("$inSupport", typeRef(boolean)) [
                 visibility = JvmVisibility.PRIVATE
-                parameters += factor.toParameter(factor.name, typeRef(Real))
+                for (p : factor.params) {
+                    parameters += factor.toParameter(p, typeRef(Real))
+                }
                 body = factor.expr
             ]
         ]

@@ -250,6 +250,82 @@ class BlangDslGeneratorTest {
         '''
         )
     }
+    
+    
+    @Test
+    def void supportFactorMultiParam() {
+        '''
+            model {
+                param Real mean
+
+                param Real variance
+                
+                laws {
+                    indicator(mean, variance) = { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
+                }
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import blang.core.SupportFactor;
+        import blang.prototype3.Real;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        import java.util.function.Supplier;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          public final Supplier<Real> mean;
+          
+          public final Supplier<Real> variance;
+          
+          public MyFile(final Supplier<Real> mean, final Supplier<Real> variance) {
+            this.mean = mean;
+            this.variance = variance;
+          }
+          
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            components.add(new SupportFactor(new $Generated_SetupSupport0(mean, variance)));
+            
+            return components;
+          }
+          
+          public static class $Generated_SetupSupport0 implements SupportFactor.Support {
+            private final Supplier<Real> mean;
+            
+            private final Supplier<Real> variance;
+            
+            public $Generated_SetupSupport0(final Supplier<Real> mean, final Supplier<Real> variance) {
+              this.mean = mean;
+              this.variance = variance;
+            }
+            
+            @Override
+            public boolean inSupport() {
+              return $inSupport(mean.get(), variance.get());
+            }
+            
+            private boolean $inSupport(final Real mean, final Real variance) {
+              boolean _and = false;
+              double _doubleValue = mean.doubleValue();
+              boolean _greaterThan = (_doubleValue > 0.5);
+              if (!_greaterThan) {
+                _and = false;
+              } else {
+                double _doubleValue_1 = variance.doubleValue();
+                boolean _greaterThan_1 = (_doubleValue_1 > 0);
+                _and = _greaterThan_1;
+              }
+              return _and;
+            }
+          }
+        }
+        '''
+        )
+    }
 	
 	
     @Test

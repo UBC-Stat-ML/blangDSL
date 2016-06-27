@@ -497,7 +497,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getSupportFactor_Name()
+  public EAttribute getSupportFactor_Params()
   {
     return (EAttribute)supportFactorEClass.getEStructuralFeatures().get(0);
   }
@@ -767,7 +767,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     modelComponentEClass = createEClass(MODEL_COMPONENT);
 
     supportFactorEClass = createEClass(SUPPORT_FACTOR);
-    createEAttribute(supportFactorEClass, SUPPORT_FACTOR__NAME);
+    createEAttribute(supportFactorEClass, SUPPORT_FACTOR__PARAMS);
     createEReference(supportFactorEClass, SUPPORT_FACTOR__EXPR);
 
     logScaleFactorEClass = createEClass(LOG_SCALE_FACTOR);
@@ -873,7 +873,7 @@ public class BlangDslPackageImpl extends EPackageImpl implements BlangDslPackage
     initEClass(modelComponentEClass, ModelComponent.class, "ModelComponent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(supportFactorEClass, SupportFactor.class, "SupportFactor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getSupportFactor_Name(), ecorePackage.getEString(), "name", null, 0, 1, SupportFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSupportFactor_Params(), ecorePackage.getEString(), "params", null, 0, -1, SupportFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getSupportFactor_Expr(), theXbasePackage.getXExpression(), null, "expr", null, 0, 1, SupportFactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(logScaleFactorEClass, LogScaleFactor.class, "LogScaleFactor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

@@ -46,7 +46,7 @@ ModelComponent:
 
 // indicator(variance) = variance.doubleValue > 0
 SupportFactor:
-    'indicator' '(' (name = ValidID) ')' '=' (expr = XBlockExpression)
+    'indicator' '(' (params += ValidID) (',' (params += ValidID))* ')' '=' (expr = XBlockExpression)
 ;
 
 // logf(variance) = -0.5 * ( log(variance.doubleValue) + LOG2PI )

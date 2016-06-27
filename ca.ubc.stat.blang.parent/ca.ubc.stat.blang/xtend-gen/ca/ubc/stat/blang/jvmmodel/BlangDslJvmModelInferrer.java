@@ -436,8 +436,18 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     _builder.append("(new $Generated_SetupSupport");
     _builder.append(modelCounter, "");
     _builder.append("(");
-    String _name = component.getName();
-    _builder.append(_name, "");
+    {
+      EList<String> _params = component.getParams();
+      boolean _hasElements = false;
+      for(final String p : _params) {
+        if (!_hasElements) {
+          _hasElements = true;
+        } else {
+          _builder.appendImmediate(", ", "");
+        }
+        _builder.append(p, "");
+      }
+    }
     _builder.append("))");
     return _builder;
   }
@@ -585,35 +595,42 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
       JvmTypeReference _typeRef = this._typeReferenceBuilder.typeRef(blang.core.SupportFactor.Support.class);
       this._jvmTypesBuilder.<JvmTypeReference>operator_add(_superTypes, _typeRef);
       it.setStatic(true);
-      EList<JvmMember> _members = it.getMembers();
-      String _name = factor.getName();
-      JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Real.class);
-      JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_1);
-      final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
-        it_1.setFinal(true);
-      };
-      JvmField _field = this._jvmTypesBuilder.toField(factor, _name, _typeRef_2, _function_1);
-      this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
+      EList<String> _params = factor.getParams();
+      for (final String p : _params) {
+        EList<JvmMember> _members = it.getMembers();
+        JvmTypeReference _typeRef_1 = this._typeReferenceBuilder.typeRef(Real.class);
+        JvmTypeReference _typeRef_2 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_1);
+        final Procedure1<JvmField> _function_1 = (JvmField it_1) -> {
+          it_1.setFinal(true);
+        };
+        JvmField _field = this._jvmTypesBuilder.toField(factor, p, _typeRef_2, _function_1);
+        this._jvmTypesBuilder.<JvmField>operator_add(_members, _field);
+      }
       EList<JvmMember> _members_1 = it.getMembers();
       final Procedure1<JvmConstructor> _function_2 = (JvmConstructor it_1) -> {
         it_1.setVisibility(JvmVisibility.PUBLIC);
-        EList<JvmFormalParameter> _parameters = it_1.getParameters();
-        String _name_1 = factor.getName();
-        JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(Real.class);
-        JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_3);
-        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, _name_1, _typeRef_4);
-        this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+        EList<String> _params_1 = factor.getParams();
+        for (final String p_1 : _params_1) {
+          EList<JvmFormalParameter> _parameters = it_1.getParameters();
+          JvmTypeReference _typeRef_3 = this._typeReferenceBuilder.typeRef(Real.class);
+          JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(Supplier.class, _typeRef_3);
+          JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _typeRef_4);
+          this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+        }
         StringConcatenationClient _client = new StringConcatenationClient() {
           @Override
           protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
-            _builder.append("this.");
-            String _name = factor.getName();
-            _builder.append(_name, "");
-            _builder.append(" = ");
-            String _name_1 = factor.getName();
-            _builder.append(_name_1, "");
-            _builder.append(";");
-            _builder.newLineIfNotEmpty();
+            {
+              EList<String> _params = factor.getParams();
+              for(final String p : _params) {
+                _builder.append("this.");
+                _builder.append(p, "");
+                _builder.append(" = ");
+                _builder.append(p, "");
+                _builder.append(";");
+                _builder.newLineIfNotEmpty();
+              }
+            }
           }
         };
         this._jvmTypesBuilder.setBody(it_1, _client);
@@ -631,9 +648,20 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
           @Override
           protected void appendTo(StringConcatenationClient.TargetStringConcatenation _builder) {
             _builder.append("return $inSupport(");
-            String _name = factor.getName();
-            _builder.append(_name, "");
-            _builder.append(".get());");
+            {
+              EList<String> _params = factor.getParams();
+              boolean _hasElements = false;
+              for(final String p : _params) {
+                if (!_hasElements) {
+                  _hasElements = true;
+                } else {
+                  _builder.appendImmediate(", ", "");
+                }
+                _builder.append(p, "");
+                _builder.append(".get()");
+              }
+            }
+            _builder.append(");");
             _builder.newLineIfNotEmpty();
           }
         };
@@ -646,11 +674,13 @@ public class BlangDslJvmModelInferrer extends AbstractModelInferrer {
       JvmTypeReference _typeRef_4 = this._typeReferenceBuilder.typeRef(boolean.class);
       final Procedure1<JvmOperation> _function_4 = (JvmOperation it_1) -> {
         it_1.setVisibility(JvmVisibility.PRIVATE);
-        EList<JvmFormalParameter> _parameters = it_1.getParameters();
-        String _name_1 = factor.getName();
-        JvmTypeReference _typeRef_5 = this._typeReferenceBuilder.typeRef(Real.class);
-        JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, _name_1, _typeRef_5);
-        this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+        EList<String> _params_1 = factor.getParams();
+        for (final String p_1 : _params_1) {
+          EList<JvmFormalParameter> _parameters = it_1.getParameters();
+          JvmTypeReference _typeRef_5 = this._typeReferenceBuilder.typeRef(Real.class);
+          JvmFormalParameter _parameter = this._jvmTypesBuilder.toParameter(factor, p_1, _typeRef_5);
+          this._jvmTypesBuilder.<JvmFormalParameter>operator_add(_parameters, _parameter);
+        }
         XExpression _expr_2 = factor.getExpr();
         this._jvmTypesBuilder.setBody(it_1, _expr_2);
       };

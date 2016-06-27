@@ -572,19 +572,10 @@ public class BlangDslSemanticSequencer extends XbaseSemanticSequencer {
 	 *     SupportFactor returns SupportFactor
 	 *
 	 * Constraint:
-	 *     (name=ValidID expr=XBlockExpression)
+	 *     (params+=ValidID params+=ValidID* expr=XBlockExpression)
 	 */
 	protected void sequence_SupportFactor(ISerializationContext context, SupportFactor semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__NAME));
-			if (transientValues.isValueTransient(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__EXPR) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BlangDslPackage.Literals.SUPPORT_FACTOR__EXPR));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getSupportFactorAccess().getNameValidIDParserRuleCall_2_0(), semanticObject.getName());
-		feeder.accept(grammarAccess.getSupportFactorAccess().getExprXBlockExpressionParserRuleCall_5_0(), semanticObject.getExpr());
-		feeder.finish();
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	

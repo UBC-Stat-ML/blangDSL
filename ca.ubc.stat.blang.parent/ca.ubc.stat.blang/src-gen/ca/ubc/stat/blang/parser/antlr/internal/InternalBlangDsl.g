@@ -604,36 +604,61 @@ ruleSupportFactor returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getSupportFactorAccess().getNameValidIDParserRuleCall_2_0());
+					newCompositeNode(grammarAccess.getSupportFactorAccess().getParamsValidIDParserRuleCall_2_0());
 				}
-				lv_name_2_0=ruleValidID
+				lv_params_2_0=ruleValidID
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getSupportFactorRule());
 					}
-					set(
+					add(
 						$current,
-						"name",
-						lv_name_2_0,
+						"params",
+						lv_params_2_0,
 						"org.eclipse.xtext.xbase.Xtype.ValidID");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
-		otherlv_3=')'
+		(
+			otherlv_3=','
+			{
+				newLeafNode(otherlv_3, grammarAccess.getSupportFactorAccess().getCommaKeyword_3_0());
+			}
+			(
+				(
+					{
+						newCompositeNode(grammarAccess.getSupportFactorAccess().getParamsValidIDParserRuleCall_3_1_0());
+					}
+					lv_params_4_0=ruleValidID
+					{
+						if ($current==null) {
+							$current = createModelElementForParent(grammarAccess.getSupportFactorRule());
+						}
+						add(
+							$current,
+							"params",
+							lv_params_4_0,
+							"org.eclipse.xtext.xbase.Xtype.ValidID");
+						afterParserOrEnumRuleCall();
+					}
+				)
+			)
+		)*
+		otherlv_5=')'
 		{
-			newLeafNode(otherlv_3, grammarAccess.getSupportFactorAccess().getRightParenthesisKeyword_3());
+			newLeafNode(otherlv_5, grammarAccess.getSupportFactorAccess().getRightParenthesisKeyword_4());
 		}
-		otherlv_4='='
+		otherlv_6='='
 		{
-			newLeafNode(otherlv_4, grammarAccess.getSupportFactorAccess().getEqualsSignKeyword_4());
+			newLeafNode(otherlv_6, grammarAccess.getSupportFactorAccess().getEqualsSignKeyword_5());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getSupportFactorAccess().getExprXBlockExpressionParserRuleCall_5_0());
+					newCompositeNode(grammarAccess.getSupportFactorAccess().getExprXBlockExpressionParserRuleCall_6_0());
 				}
-				lv_expr_5_0=ruleXBlockExpression
+				lv_expr_7_0=ruleXBlockExpression
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getSupportFactorRule());
@@ -641,7 +666,7 @@ ruleSupportFactor returns [EObject current=null]
 					set(
 						$current,
 						"expr",
-						lv_expr_5_0,
+						lv_expr_7_0,
 						"org.eclipse.xtext.xbase.Xbase.XBlockExpression");
 					afterParserOrEnumRuleCall();
 				}

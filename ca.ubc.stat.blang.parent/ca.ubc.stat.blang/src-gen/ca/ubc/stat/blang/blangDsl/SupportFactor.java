@@ -3,6 +3,8 @@
  */
 package ca.ubc.stat.blang.blangDsl;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.xtext.xbase.XExpression;
 
 /**
@@ -14,7 +16,7 @@ import org.eclipse.xtext.xbase.XExpression;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link ca.ubc.stat.blang.blangDsl.SupportFactor#getName <em>Name</em>}</li>
+ *   <li>{@link ca.ubc.stat.blang.blangDsl.SupportFactor#getParams <em>Params</em>}</li>
  *   <li>{@link ca.ubc.stat.blang.blangDsl.SupportFactor#getExpr <em>Expr</em>}</li>
  * </ul>
  *
@@ -25,30 +27,20 @@ import org.eclipse.xtext.xbase.XExpression;
 public interface SupportFactor extends ModelComponent
 {
   /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
+   * Returns the value of the '<em><b>Params</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Name</em>' attribute isn't clear,
+   * If the meaning of the '<em>Params</em>' attribute list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getSupportFactor_Name()
-   * @model
+   * @return the value of the '<em>Params</em>' attribute list.
+   * @see ca.ubc.stat.blang.blangDsl.BlangDslPackage#getSupportFactor_Params()
+   * @model unique="false"
    * @generated
    */
-  String getName();
-
-  /**
-   * Sets the value of the '{@link ca.ubc.stat.blang.blangDsl.SupportFactor#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
+  EList<String> getParams();
 
   /**
    * Returns the value of the '<em><b>Expr</b></em>' containment reference.

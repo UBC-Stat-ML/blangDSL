@@ -72,6 +72,22 @@ class BlangDslParsingTest {
     }
 
     @Test
+    def void supportFactorMultiParam() {
+        val model = '''
+            model {
+                param Real mean
+
+                param Real variance
+                
+                laws {
+                    indicator(mean, variance) = { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
+                }
+            }
+        '''.parse
+        model.assertNoErrors;
+    }
+
+    @Test
     def void logFactor() {
         val model = '''
             model {

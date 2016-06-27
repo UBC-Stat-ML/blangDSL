@@ -382,13 +382,13 @@ public interface BlangDslPackage extends EPackage
   int SUPPORT_FACTOR = 8;
 
   /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * The feature id for the '<em><b>Params</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int SUPPORT_FACTOR__NAME = MODEL_COMPONENT_FEATURE_COUNT + 0;
+  int SUPPORT_FACTOR__PARAMS = MODEL_COMPONENT_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -939,15 +939,15 @@ public interface BlangDslPackage extends EPackage
   EClass getSupportFactor();
 
   /**
-   * Returns the meta object for the attribute '{@link ca.ubc.stat.blang.blangDsl.SupportFactor#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute list '{@link ca.ubc.stat.blang.blangDsl.SupportFactor#getParams <em>Params</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see ca.ubc.stat.blang.blangDsl.SupportFactor#getName()
+   * @return the meta object for the attribute list '<em>Params</em>'.
+   * @see ca.ubc.stat.blang.blangDsl.SupportFactor#getParams()
    * @see #getSupportFactor()
    * @generated
    */
-  EAttribute getSupportFactor_Name();
+  EAttribute getSupportFactor_Params();
 
   /**
    * Returns the meta object for the containment reference '{@link ca.ubc.stat.blang.blangDsl.SupportFactor#getExpr <em>Expr</em>}'.
@@ -1420,12 +1420,12 @@ public interface BlangDslPackage extends EPackage
     EClass SUPPORT_FACTOR = eINSTANCE.getSupportFactor();
 
     /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Params</b></em>' attribute list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute SUPPORT_FACTOR__NAME = eINSTANCE.getSupportFactor_Name();
+    EAttribute SUPPORT_FACTOR__PARAMS = eINSTANCE.getSupportFactor_Params();
 
     /**
      * The meta object literal for the '<em><b>Expr</b></em>' containment reference feature.
