@@ -224,7 +224,7 @@ class BlangDslGeneratorTest {
           public Collection<ModelComponent> components() {
             ArrayList<ModelComponent> components = new ArrayList();
             
-            components.add(new SupportFactor(new $Generated_SetupSupport0(variance)));
+            components.add(new blang.core.SupportFactor(new $Generated_SetupSupport0(variance)));
             
             return components;
           }
@@ -288,7 +288,7 @@ class BlangDslGeneratorTest {
           public Collection<ModelComponent> components() {
             ArrayList<ModelComponent> components = new ArrayList();
             
-            components.add(new SupportFactor(new $Generated_SetupSupport0(mean, variance)));
+            components.add(new blang.core.SupportFactor(new $Generated_SetupSupport0(mean, variance)));
             
             return components;
           }
@@ -362,7 +362,7 @@ class BlangDslGeneratorTest {
           public Collection<ModelComponent> components() {
             ArrayList<ModelComponent> components = new ArrayList();
             
-            components.add(new Normal(
+            components.add(new blang.prototype3.Normal(
                 y,
                 new $Generated_SupplierSubModel0Param0(mu),
                 new $Generated_SupplierSubModel0Param1(mu))
