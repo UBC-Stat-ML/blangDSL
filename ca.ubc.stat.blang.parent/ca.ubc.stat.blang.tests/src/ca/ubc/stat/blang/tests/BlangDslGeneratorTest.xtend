@@ -448,17 +448,7 @@ class BlangDslGeneratorTest {
             }
             
             private boolean $inSupport(final Real mean, final Real variance) {
-              boolean _and = false;
-              double _doubleValue = mean.doubleValue();
-              boolean _greaterThan = (_doubleValue > 0.5);
-              if (!_greaterThan) {
-                _and = false;
-              } else {
-                double _doubleValue_1 = variance.doubleValue();
-                boolean _greaterThan_1 = (_doubleValue_1 > 0);
-                _and = _greaterThan_1;
-              }
-              return _and;
+              return ((mean.doubleValue() > 0.5) && (variance.doubleValue() > 0));
             }
           }
         }
