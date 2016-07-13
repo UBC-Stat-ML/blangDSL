@@ -535,4 +535,67 @@ class BlangDslGeneratorTest {
         ''' 
         )
     }
+    
+    
+    @Test
+    def void forLoop() {
+        '''
+            model {
+                random java.util.Random rand
+                
+                laws {
+                    for (int i = 0; i < 3; i++) {
+                    	indicator(rand) = { rand.nextInt(4) > i }
+                    }
+                }
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import blang.core.SupportFactor;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        import java.util.Random;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          public final Random rand;
+          
+          public MyFile(final Random rand) {
+            this.rand = rand;
+          }
+          
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            for (int i = 0; i < 3; i++) {
+              components.add(new blang.core.SupportFactor(new $Generated_SetupSupport0(rand, i)));
+            }
+            
+            return components;
+          }
+          
+          public static class $Generated_SetupSupport0 implements SupportFactor.Support {
+            private final Random rand;
+            private final int i;
+            
+            public $Generated_SetupSupport0(final Random rand, final int i) {
+              this.rand = rand;
+              this.i = i;
+            }
+            
+            @Override
+            public boolean inSupport() {
+              return $inSupport(rand, i);
+            }
+            
+            private boolean $inSupport(final Random rand, final int i) {
+              return rand.nextInt(4) > i;
+            }
+          }
+        }
+        '''
+        )
+    }
 }

@@ -32,7 +32,18 @@ Laws:
 ;
 
 ModelComponent:
-    SupportFactor | LogScaleFactor | ModelParam
+    ForLoop | SupportFactor | LogScaleFactor | ModelParam
+;
+
+ForLoop:
+    {ForLoop}
+    'for' '('
+        (initExpression=VarDecl) ';'
+        (testExpression=XExpression) ';'
+        (updateExpression=XExpression)
+    ')' '{'
+        (body += ModelComponent)*
+    '}'
 ;
 
 // indicator(variance) = variance.doubleValue > 0

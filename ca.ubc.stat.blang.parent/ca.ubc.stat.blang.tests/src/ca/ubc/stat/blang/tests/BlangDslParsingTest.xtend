@@ -120,4 +120,20 @@ class BlangDslParsingTest {
         '''.parse
         model.assertNoErrors;
     }
+
+    @Test
+    def void forLoop() {
+    val model = '''
+        model {
+            random java.util.Random rand
+            
+            laws {
+                for (int i = 0; i < 3; i++) {
+                    indicator(rand) = { rand.nextInt(4) > i }
+                }
+            }
+        }
+    '''.parse
+    model.assertNoErrors;
+    }
 }

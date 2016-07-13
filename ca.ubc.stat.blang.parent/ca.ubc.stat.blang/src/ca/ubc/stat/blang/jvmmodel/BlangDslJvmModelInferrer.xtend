@@ -10,18 +10,26 @@ import com.google.inject.Inject
 import java.lang.reflect.ParameterizedType
 import java.util.ArrayList
 import java.util.Collection
+import java.util.HashMap
+import java.util.List
+import java.util.Map
 import java.util.function.Supplier
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.common.types.JvmDeclaredType
+import org.eclipse.xtext.common.types.JvmParameterizedTypeReference
+import org.eclipse.xtext.common.types.JvmTypeReference
 import org.eclipse.xtext.common.types.JvmVisibility
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer
 import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import ca.ubc.stat.blang.blangDsl.ConstParam
+import ca.ubc.stat.blang.blangDsl.ForLoop
 import ca.ubc.stat.blang.blangDsl.LazyParam
 import ca.ubc.stat.blang.blangDsl.LogScaleFactor
+import ca.ubc.stat.blang.blangDsl.ModelComponent
 import ca.ubc.stat.blang.blangDsl.ModelParam
 import ca.ubc.stat.blang.blangDsl.SupportFactor
-import blang.prototype3.Real
 import ca.ubc.stat.blang.blangDsl.ModelVar
 
 /**
@@ -105,21 +113,24 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             }
 
             if (model.laws?.modelComponents != null && !model.laws.modelComponents.empty) {
+                val map = collectModels(model.laws.modelComponents, new HashMap)
+                extendLoopModels(model.laws.modelComponents, new ArrayList)
                 it.members += model.toMethod("components", typeRef(Collection, typeRef(blang.core.ModelComponent))) [
                     visibility = JvmVisibility.PUBLIC
                     body = '''
                         «typeRef(ArrayList, typeRef(blang.core.ModelComponent))» components = new «typeRef(ArrayList)»();
                         
                         «FOR i : 0..<model.laws.modelComponents.size»
-                            components.add(«generateModelComponentInit(model.laws.modelComponents.get(i), i)»);
+                            «generateModelComponentInit(model.laws.modelComponents.get(i), i)»
                         «ENDFOR»
                         
                         return components;
                     '''
                 ]
 
-                for (componentCounter : 0 ..< model.laws.modelComponents.size) {
-                    var component = model.laws.modelComponents.get(componentCounter)
+                for (entry : map.entrySet) {
+                    val component = entry.key
+                    val componentCounter = entry.value
                     switch (component) {
                         ModelParam:
                             for (paramCounter : 0 ..< component.right.param.size) {
@@ -127,45 +138,87 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                                     generateModelComponentParamSupplier(component, componentCounter, paramCounter)
                             }
                         SupportFactor:
-                            it.members += generateSupportFactor(component, componentCounter)
+                            it.members += generateSupportFactor(model, component, componentCounter)
                         LogScaleFactor:
-                            it.members += generateLogScaleFactor(component, componentCounter)
-                    // default: throw new Exception("What to do: " + component.class)
+                            it.members += generateLogScaleFactor(model, component, componentCounter)
+                        default: throw new IllegalArgumentException("Cannot generate a supplier class for " + component.class)
                     }
                 }
             }
         ]
     }
 
-    def getVarType(ModelVar v) {
-        switch (v.qualType) {
-            case "random": v.type
-            case "param": typeRef(Supplier, v.type) 
+    def Map<ModelComponent, Integer> collectModels(List<ModelComponent> components, Map<ModelComponent, Integer> componentMap) {
+        for (c : components) {
+            switch (c) {
+                ForLoop: collectModels(c.body, componentMap)
+                default:
+                    if (componentMap.putIfAbsent(c, componentMap.size) != null) throw new Exception("Duplicate model component?")
+            }
+        }
+        componentMap
+    }
+    
+    def void extendLoopModels(List<ModelComponent> components, List<String> loopVars) {
+        for (c : components) {
+            switch (c) {
+                ForLoop: {
+                    loopVars.add(c.initExpression.name)
+                    extendLoopModels(c.body, loopVars)
+                    loopVars.remove(loopVars.size - 1)
+                }
+                SupportFactor:
+                    for (v : loopVars)
+                        c.params += v
+                LogScaleFactor:
+                    for (v : loopVars)
+                        c.params += v
+                default:
+                    print("Not sure what to do with " + c)
+            }
         }
     }
-
+    
+    def dispatch CharSequence generateModelComponentInit(ForLoop component, int modelCounter) {
+        '''
+          for («expressionText(component.initExpression)»; «expressionText(component.testExpression)»; «expressionText(component.updateExpression)») {
+            «FOR e : component.body»
+            «
+            switch (e) {
+            }
+            »
+            «generateModelComponentInit(e, modelCounter)»
+            «ENDFOR»
+          }
+        '''
+    }
+    
+    def expressionText(EObject ex) {
+        NodeModelUtils.getTokenText(NodeModelUtils.getNode(ex))
+    }
     
     def dispatch generateModelComponentInit(ModelParam component, int modelCounter) {
         '''
-            new «component.right.clazz.type.identifier»(
+            components.add(new «component.right.clazz.type.identifier»(
                 «component.name»«FOR i : 0..<component.right.param.size»,
                 new $Generated_SupplierSubModel«modelCounter»Param«i»(«
                     FOR j : 0..<component.deps.size SEPARATOR ", "»«
                         component.deps.get(j).init»«
                     ENDFOR
                     »)«ENDFOR»)
+            );
         '''
     }
 
     def dispatch generateModelComponentInit(SupportFactor component,
         int modelCounter) {
-        '''new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«FOR p : component.params SEPARATOR ", "»«
-                      p»«ENDFOR»))'''
+        '''components.add(new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«FOR p : component.params SEPARATOR ", "»«
+                      p»«ENDFOR»)));'''
     }
 
     def dispatch generateModelComponentInit(LogScaleFactor component, int modelCounter) {
-        '''new $Generated_LogScaleFactor«modelCounter»(«FOR p : component.params SEPARATOR ", "»«
-              p»«ENDFOR»)'''
+        '''components.add(new $Generated_LogScaleFactor«modelCounter»(«FOR p : component.params SEPARATOR ", "»«
+              p»«ENDFOR»));'''
     }
 
     def generateModelComponentParamSupplier(ModelParam component, int modelCounter, int paramCounter) {
@@ -210,14 +263,12 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         ]
     }
 
-    def generateSupportFactor(SupportFactor factor, int modelCounter) {
-        val model = factor.eContainer.eContainer as BlangModel;
-        
+    def generateSupportFactor(BlangModel model, SupportFactor factor, int modelCounter) {
         factor.toClass("$Generated_SetupSupport" + modelCounter) [
             it.superTypes += typeRef(blang.core.SupportFactor.Support)
             it.static = true
             for (p : factor.params) {
-                it.members += factor.toField(p, getVarType(model.vars.findFirst[name == p])) [
+                it.members += factor.toField(p, getVarType(factor, p)) [
                     final = true
                 ]
             }
@@ -225,7 +276,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += factor.toConstructor [
                 it.visibility = JvmVisibility.PUBLIC
                 for (p : factor.params) {
-                    parameters += factor.toParameter(p, getVarType(model.vars.findFirst[name == p]))
+                    parameters += factor.toParameter(p, getVarType(factor, p))
                 }
                 body = '''
                     «FOR p : factor.params»
@@ -239,29 +290,29 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 body = '''
                     return $inSupport(«
                     FOR p : factor.params SEPARATOR ", "»«p»«
-                      IF model.vars.findFirst[name == p].qualType == "param" ».get()« ENDIF»«
+                      IF isLazy(getVarType(factor, p)) ».get()« ENDIF»«
                     ENDFOR»);
                 '''
             ]
             it.members += factor.expr.toMethod("$inSupport", typeRef(boolean)) [
                 visibility = JvmVisibility.PRIVATE
                 for (p : factor.params) {
-                    parameters += factor.toParameter(p, model.vars.findFirst[name == p].type)
+                    var varType = getVarType(factor, p)
+                    if (isLazy(varType)) varType = (varType as JvmParameterizedTypeReference).getArguments().get(0)
+                    parameters += factor.toParameter(p,  varType)
                 }
                 body = factor.expr
             ]
         ]
     }
 
-    def generateLogScaleFactor(LogScaleFactor factor, int modelCounter) {
-        val model = factor.eContainer.eContainer as BlangModel;
-        
+    def generateLogScaleFactor(BlangModel model, LogScaleFactor factor, int modelCounter) {
         factor.toClass("$Generated_LogScaleFactor" + modelCounter) [
             it.superTypes += typeRef(blang.factors.LogScaleFactor)
             it.static = true
 
             for (p : factor.params) {
-                it.members += factor.toField(p, getVarType(model.vars.findFirst[name == p])) [
+                it.members += factor.toField(p, getVarType(factor, p)) [
                     final = true
                 ]
             }
@@ -269,7 +320,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.members += factor.toConstructor [
                 it.visibility = JvmVisibility.PUBLIC
                 for (p : factor.params) {
-                    parameters += factor.toParameter(p, getVarType(model.vars.findFirst[name == p]))
+                    parameters += factor.toParameter(p, getVarType(factor, p))
                 }
                 body = '''
                     «FOR p : factor.params»
@@ -283,7 +334,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 body = '''
                     return $logDensity(«
                     FOR p : factor.params SEPARATOR ", "»«p»«
-                      IF model.vars.findFirst[name == p].qualType == "param" ».get()« ENDIF»«
+                      IF isLazy(getVarType(factor, p)) ».get()« ENDIF»«
                     ENDFOR»);
                 '''
             ]
@@ -295,5 +346,36 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 body = factor.expr
             ]
         ]
+    }
+    
+    def JvmTypeReference getVarType(EObject container, String name) {
+        switch(container) {
+            ForLoop:
+                if (name.equals(container.initExpression?.name)) {
+                    return container.initExpression.type
+                }
+                else {
+                    return getVarType(container.eContainer, name)
+                }
+            BlangModel:
+                for (v : container.vars) {
+                    if (v.name.equals(name)) return getVarType(v)
+                }
+            default:
+                return getVarType(container.eContainer, name)
+        }
+        throw new RuntimeException("No such variable: " + name)
+        
+    }
+    
+    def getVarType(ModelVar v) {
+        switch (v.qualType) {
+            case "random": v.type
+            case "param": typeRef(Supplier, v.type)
+        }
+    }
+    
+    def isLazy(JvmTypeReference type) {
+        type.identifier.startsWith("java.util.function.Supplier")
     }
 }
