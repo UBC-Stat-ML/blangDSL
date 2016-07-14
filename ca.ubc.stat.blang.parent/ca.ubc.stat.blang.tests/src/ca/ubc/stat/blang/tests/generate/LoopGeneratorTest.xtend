@@ -144,4 +144,92 @@ class LoopGeneratorTest {
         }
         ''')
     }
+    
+    @Test
+    def void simpleNormalModel() {
+        '''
+            model {
+                random Real mu
+                random Real y
+                
+                laws {
+                    for (int i = 0; i < 4; i++) {
+                        y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
+                    }
+                }
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import blang.prototype3.Real;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        import java.util.function.Supplier;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          public final Real mu;
+          
+          public final Real y;
+          
+          public MyFile(final Real mu, final Real y) {
+            this.mu = mu;
+            this.y = y;
+          }
+          
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            for (int i = 0; i < 4; i++) {
+              components.add(new blang.prototype3.Normal(
+                  y,
+                  new $Generated_SupplierSubModel0Param0(mu, i),
+                  new $Generated_SupplierSubModel0Param1(mu, i))
+              );
+            }
+            
+            return components;
+          }
+          
+          public static class $Generated_SupplierSubModel0Param0 implements Supplier<Real> {
+            private final Real mean;
+            private final int i;
+            
+            public $Generated_SupplierSubModel0Param0(final Real mean, final int i) {
+              this.mean = mean;
+              this.i = i;
+            }
+            
+            @Override
+            public Real get() {
+              return mean;
+            }
+          }
+          
+          public static class $Generated_SupplierSubModel0Param1 implements Supplier<Real> {
+            private final Real mean;
+            private final int i;
+            
+            public $Generated_SupplierSubModel0Param1(final Real mean, final int i) {
+              this.mean = mean;
+              this.i = i;
+            }
+            
+            @Override
+            public Real get() {
+              final Real _function = new Real() {
+                public double doubleValue() {
+                  double _doubleValue = $Generated_SupplierSubModel0Param1.this.mean.doubleValue();
+                  return Math.pow(_doubleValue, 2);
+                }
+              };
+              return _function;
+            }
+          }
+        }
+        ''' 
+        )
+    }
+    
 }

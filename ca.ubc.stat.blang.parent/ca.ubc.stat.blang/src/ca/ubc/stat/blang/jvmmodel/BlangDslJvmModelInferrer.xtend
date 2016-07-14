@@ -31,6 +31,7 @@ import ca.ubc.stat.blang.blangDsl.ModelComponent
 import ca.ubc.stat.blang.blangDsl.ModelParam
 import ca.ubc.stat.blang.blangDsl.SupportFactor
 import ca.ubc.stat.blang.blangDsl.ModelVar
+import ca.ubc.stat.blang.blangDsl.impl.DependencyImpl
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -173,8 +174,16 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 LogScaleFactor:
                     for (v : loopVars)
                         c.params += v
+                ModelParam:
+                    for (v : loopVars) {
+                        c.deps += new DependencyImpl() {
+                            override getName() {
+                                v
+                            }
+                        }
+                    }
                 default:
-                    print("Not sure what to do with " + c)
+                    throw new IllegalArgumentException("Not sure how to extend loop model " + c)
             }
         }
     }
@@ -202,8 +211,8 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             components.add(new «component.right.clazz.type.identifier»(
                 «component.name»«FOR i : 0..<component.right.param.size»,
                 new $Generated_SupplierSubModel«modelCounter»Param«i»(«
-                    FOR j : 0..<component.deps.size SEPARATOR ", "»«
-                        component.deps.get(j).init»«
+                    FOR d : component.deps SEPARATOR ", "»«
+                      d.init ?: d.name»«
                     ENDFOR
                     »)«ENDFOR»)
             );
@@ -235,14 +244,14 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
             it.superTypes += paramSupplierTypeRef
             it.static = true
             for (dep : component.deps) {
-                it.members += param.toField(dep.name, dep.type) [
+                it.members += param.toField(dep.name, dep.type ?: getVarType(param, dep.name)) [
                     final = true
                 ]
             }
             it.members += param.toConstructor [
                 visibility = JvmVisibility.PUBLIC
                 for (dep : component.deps) {
-                    parameters += param.toParameter(dep.name, dep.type)
+                    parameters += param.toParameter(dep.name, dep.type ?: getVarType(param, dep.name))
                 }
                 body = '''
                     «FOR dep : component.deps»
