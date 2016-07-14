@@ -3,3 +3,7 @@ bin/
 target/
 *.java._trace
 *.xtendbin
+*.xml_gen
+src-gen/
+xtend-gen/
+generated/
