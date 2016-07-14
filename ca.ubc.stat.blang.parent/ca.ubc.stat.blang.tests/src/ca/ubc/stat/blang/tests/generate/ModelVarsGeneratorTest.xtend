@@ -1,12 +1,13 @@
-package ca.ubc.stat.blang.tests
+package ca.ubc.stat.blang.tests.generate
 
+import ca.ubc.stat.blang.tests.BlangDslInjectorProvider
 import com.google.inject.Inject
 import org.eclipse.xtext.junit4.InjectWith
+import org.eclipse.xtext.junit4.TemporaryFolder
 import org.eclipse.xtext.junit4.XtextRunner
 import org.eclipse.xtext.xbase.compiler.CompilationTestHelper
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.eclipse.xtext.junit4.TemporaryFolder
 
 @RunWith(XtextRunner)
 @InjectWith(BlangDslInjectorProvider)
