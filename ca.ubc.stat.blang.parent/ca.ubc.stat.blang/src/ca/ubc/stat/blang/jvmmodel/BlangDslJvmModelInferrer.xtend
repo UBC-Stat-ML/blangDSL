@@ -361,7 +361,8 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         switch(container) {
             ForLoop:
                 if (name.equals(container.initExpression?.name)) {
-                    return container.initExpression.type
+                    val JvmTypeReference type = container.initExpression.type
+                    return if (expressionText(type) == "int") typeRef("int") else type
                 }
                 else {
                     return getVarType(container.eContainer, name)
