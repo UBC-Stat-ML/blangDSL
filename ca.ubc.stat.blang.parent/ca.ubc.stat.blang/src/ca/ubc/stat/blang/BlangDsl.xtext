@@ -67,7 +67,7 @@ Dependency:
 
 Distribution:
 	(clazz = JvmTypeReference) '('
-		(param += Param) ( ',' param += Param)*
+		( (param += Param) ( ',' param += Param)* )?
 		')'
 ;
 
