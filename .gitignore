@@ -7,3 +7,8 @@ target/
 src-gen/
 xtend-gen/
 generated/
+ca.ubc.stat.blang.parent/.gradle
+.gradle
+ca.ubc.stat.blang.parent/ca.ubc.stat.blang.ide/build
+ca.ubc.stat.blang.parent/ca.ubc.stat.blang.tests/build
+ca.ubc.stat.blang.parent/ca.ubc.stat.blang/build
