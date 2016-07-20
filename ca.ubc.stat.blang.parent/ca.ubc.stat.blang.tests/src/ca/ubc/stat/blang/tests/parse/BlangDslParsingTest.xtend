@@ -33,6 +33,22 @@ class BlangDslParsingTest {
 		'''.parse
 		Assert.assertNotNull(model)
 	}
+	
+	@Test
+	/**
+	 * Weird problem: this works as a test, but not in a child eclipse run.
+	 */
+	def void arithmeticOperations() {
+	  val model = '''
+	    model {
+	      random Object test
+	      laws {
+	        logf(test) = { 1.0 + 1.0 }
+	      }
+	    }
+	  '''.parse
+	  model.assertNoErrors
+	}
 
 	@Test
 	def void emptyFile() {
