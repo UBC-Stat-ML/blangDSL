@@ -3,15 +3,15 @@ Running the code
 
 - import in eclipse as ``Existing project``
     - make sure to check the box for adding subprojects
-- delete .settings (might not be needed anymore)
+- initially, and when grammar changes, 
+    - right click on the grammar file
+    - run as ``Generate XText artefacts``
+    - will generate the generated files
 - right click on ``ca.ubc.stat.blang.tests`` pick run as JUnit
 
 Note: currently, bayonet is imported with a committed bin folder. 
 
-- when grammar changes, 
-    - right click on the grammar file
-    - run as ``Generate XText artefacts``
-    - will generate the generated files
+
 
 
 Organization of the code
