@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?>
-<target name="ca.ubc.stat.blang.target" sequenceNumber="1">
+<?pde version="3.8"?><target name="ca.ubc.stat.blang.target" sequenceNumber="2">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
@@ -18,8 +17,8 @@
 <repository location="http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.8.1/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.xtext.sdk.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.9.1/"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.10.0.v201605250459"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.10.0"/>
 </location>
 </locations>
 </target>
