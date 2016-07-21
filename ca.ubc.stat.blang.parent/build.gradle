@@ -27,7 +27,7 @@ subprojects {
 	apply plugin: 'idea'
 	
 	group = 'ca.ubc.stat.blang'
-	version = '3.0.1'
+	version = '3.0.2'
 	
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
@@ -38,5 +38,6 @@ subprojects {
 	
 	dependencies {
   	compile "javax.servlet:servlet-api:2.5"
+  	compile "org.eclipse.jdt:org.eclipse.jdt.core:3.10.0"
 	}
 }
