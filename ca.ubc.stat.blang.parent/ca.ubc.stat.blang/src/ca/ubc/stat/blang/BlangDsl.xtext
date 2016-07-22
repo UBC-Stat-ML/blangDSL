@@ -58,7 +58,7 @@ LogScaleFactor:
 
 // y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
 ModelParam:
-	(name = ValidID) '|' (deps += Dependency) + '~' (right = Distribution)
+	(name = ValidID) ( '|' (deps += Dependency) (',' deps += Dependency)* )? '~' (right = Distribution)
 ;
 
 Dependency:
