@@ -57,6 +57,7 @@ class LoopGeneratorTest {
           
           public static class $Generated_SetupSupport0 implements SupportFactor.Support {
             private final Random rand;
+            
             private final int i;
             
             public $Generated_SetupSupport0(final Random rand, final int i) {
@@ -65,12 +66,13 @@ class LoopGeneratorTest {
             }
             
             @Override
-            public boolean inSupport() {
-              return $inSupport(rand, i);
+            public boolean isInSupport() {
+              return $isInSupport(rand, i);
             }
             
-            private boolean $inSupport(final Random rand, final int i) {
-              return rand.nextInt(4) > i;
+            private boolean $isInSupport(final Random rand, final int i) {
+              int _nextInt = rand.nextInt(4);
+              return (_nextInt > i);
             }
           }
         }
@@ -123,7 +125,9 @@ class LoopGeneratorTest {
           
           public static class $Generated_SetupSupport0 implements SupportFactor.Support {
             private final Random rand;
+            
             private final int i;
+            
             private final int j;
             
             public $Generated_SetupSupport0(final Random rand, final int i, final int j) {
@@ -133,12 +137,13 @@ class LoopGeneratorTest {
             }
             
             @Override
-            public boolean inSupport() {
-              return $inSupport(rand, i, j);
+            public boolean isInSupport() {
+              return $isInSupport(rand, i, j);
             }
             
-            private boolean $inSupport(final Random rand, final int i, final int j) {
-              return rand.nextInt(4) > (i + j);
+            private boolean $isInSupport(final Random rand, final int i, final int j) {
+              int _nextInt = rand.nextInt(4);
+              return (_nextInt > (i + j));
             }
           }
         }
@@ -194,6 +199,7 @@ class LoopGeneratorTest {
           
           public static class $Generated_SupplierSubModel0Param0 implements Supplier<Real> {
             private final Real mean;
+            
             private final int i;
             
             public $Generated_SupplierSubModel0Param0(final Real mean, final int i) {
@@ -209,6 +215,7 @@ class LoopGeneratorTest {
           
           public static class $Generated_SupplierSubModel0Param1 implements Supplier<Real> {
             private final Real mean;
+            
             private final int i;
             
             public $Generated_SupplierSubModel0Param1(final Real mean, final int i) {

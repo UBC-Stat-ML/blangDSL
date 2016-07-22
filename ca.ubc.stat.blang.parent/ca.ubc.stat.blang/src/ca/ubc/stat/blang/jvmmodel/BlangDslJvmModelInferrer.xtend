@@ -291,16 +291,16 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
                 '''
             ]
 
-            it.members += factor.expr.toMethod("inSupport", typeRef(boolean)) [
+            it.members += factor.expr.toMethod("isInSupport", typeRef(boolean)) [
                 annotations += annotationRef("java.lang.Override")
                 body = '''
-                    return $inSupport(«
+                    return $isInSupport(«
                     FOR p : factor.params SEPARATOR ", "»«p»«
                       IF isLazy(getVarType(factor, p)) ».get()« ENDIF»«
                     ENDFOR»);
                 '''
             ]
-            it.members += factor.expr.toMethod("$inSupport", typeRef(boolean)) [
+            it.members += factor.expr.toMethod("$isInSupport", typeRef(boolean)) [
                 visibility = JvmVisibility.PRIVATE
                 for (p : factor.params) {
                     var varType = getVarType(factor, p)

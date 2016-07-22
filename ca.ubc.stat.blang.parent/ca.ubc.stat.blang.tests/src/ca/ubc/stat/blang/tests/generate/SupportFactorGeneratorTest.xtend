@@ -59,11 +59,11 @@ class SupportFactorGeneratorTest {
             }
             
             @Override
-            public boolean inSupport() {
-              return $inSupport(variance.get());
+            public boolean isInSupport() {
+              return $isInSupport(variance.get());
             }
             
-            private boolean $inSupport(final Real variance) {
+            private boolean $isInSupport(final Real variance) {
               double _doubleValue = variance.doubleValue();
               return (_doubleValue > 0);
             }
@@ -117,11 +117,11 @@ class SupportFactorGeneratorTest {
             }
             
             @Override
-            public boolean inSupport() {
-              return $inSupport(rand);
+            public boolean isInSupport() {
+              return $isInSupport(rand);
             }
             
-            private boolean $inSupport(final Random rand) {
+            private boolean $isInSupport(final Random rand) {
               return rand.nextBoolean();
             }
           }
@@ -183,11 +183,11 @@ class SupportFactorGeneratorTest {
             }
             
             @Override
-            public boolean inSupport() {
-              return $inSupport(mean.get(), variance.get());
+            public boolean isInSupport() {
+              return $isInSupport(mean.get(), variance.get());
             }
             
-            private boolean $inSupport(final Real mean, final Real variance) {
+            private boolean $isInSupport(final Real mean, final Real variance) {
               return ((mean.doubleValue() > 0.5) && (variance.doubleValue() > 0));
             }
           }
