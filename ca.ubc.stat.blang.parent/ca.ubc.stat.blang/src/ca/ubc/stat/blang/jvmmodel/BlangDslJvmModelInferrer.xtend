@@ -189,10 +189,6 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
         '''
           for («expressionText(component.initExpression)»; «expressionText(component.testExpression)»; «expressionText(component.updateExpression)») {
             «FOR e : component.body»
-            «
-            switch (e) {
-            }
-            »
             «generateModelComponentInit(e, modelCounter)»
             «ENDFOR»
           }
