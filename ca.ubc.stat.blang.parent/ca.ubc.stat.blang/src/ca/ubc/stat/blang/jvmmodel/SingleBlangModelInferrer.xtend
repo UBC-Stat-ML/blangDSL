@@ -45,13 +45,21 @@ class SingleBlangModelInferrer {
   extension JvmTypeReferenceBuilder _typeReferenceBuilder;
   
   def void infer() {
-
+    setupClass()
+    addFields()
+    addConstructor()
+    addImplementation()
+  }
+  
+  def private void setupClass() {
     if (model.packageName != null) {
       output.packageName = model.packageName;
     }
 
     output.superTypes += typeRef(Model)
-
+  }
+  
+  def private void addFields() {
     for (varDecl : model.vars) {
       output.members += varDecl.toField(varDecl.name, getVarType(varDecl)) [
         it.visibility = JvmVisibility.PUBLIC
@@ -66,8 +74,14 @@ class SingleBlangModelInferrer {
         initializer = varDecl.right
       ]
     }
-
-    if (model.vars != null && !model.vars.empty) {
+  }
+  
+  def private boolean hasVariables() {
+    return model.vars != null && !model.vars.empty
+  }
+  
+  def private void addConstructor() {
+    if (hasVariables()) {
       output.members += model.toConstructor [
         visibility = JvmVisibility.PUBLIC
         // Random variables show up earlier in the constructor parameters
@@ -84,7 +98,9 @@ class SingleBlangModelInferrer {
         '''
       ]
     }
-
+  }
+  
+  def private void addImplementation() {
     if (model.laws?.modelComponents != null && !model.laws.modelComponents.empty) {
       val map = collectModels(model.laws.modelComponents, new HashMap)
       extendLoopModels(model.laws.modelComponents, new ArrayList)
@@ -117,10 +133,10 @@ class SingleBlangModelInferrer {
             throw new IllegalArgumentException("Cannot generate a supplier class for " + component.class)
         }
       }
-    }
+    }    
   }
-
-  def Map<ModelComponent, Integer> collectModels(List<ModelComponent> components,
+  
+  def private Map<ModelComponent, Integer> collectModels(List<ModelComponent> components,
     Map<ModelComponent, Integer> componentMap) {
     for (c : components) {
       switch (c) {
@@ -133,7 +149,7 @@ class SingleBlangModelInferrer {
     componentMap
   }
 
-  def void extendLoopModels(List<ModelComponent> components, List<String> loopVars) {
+  def private void extendLoopModels(List<ModelComponent> components, List<String> loopVars) {
     for (c : components) {
       switch (c) {
         ForLoop: {
@@ -161,7 +177,7 @@ class SingleBlangModelInferrer {
     }
   }
 
-  def dispatch CharSequence generateModelComponentInit(ForLoop component,
+  def private dispatch CharSequence generateModelComponentInit(ForLoop component,
     int modelCounter) {
     '''
       for («expressionText(component.initExpression)»; «expressionText(component.testExpression)»; «expressionText(component.updateExpression)») {
@@ -172,11 +188,11 @@ class SingleBlangModelInferrer {
     '''
   }
 
-  def expressionText(EObject ex) {
+  def private expressionText(EObject ex) {
     NodeModelUtils.getTokenText(NodeModelUtils.getNode(ex))
   }
 
-  def dispatch generateModelComponentInit(ModelParam component, int modelCounter) {
+  def private dispatch generateModelComponentInit(ModelParam component, int modelCounter) {
     '''
       components.add(new «component.right.clazz.type.identifier»(
           «component.name»«FOR i : 0..<component.right.param.size»,
@@ -189,18 +205,18 @@ class SingleBlangModelInferrer {
     '''
   }
 
-  def dispatch generateModelComponentInit(SupportFactor component,
+  def private dispatch generateModelComponentInit(SupportFactor component,
     int modelCounter) {
     '''components.add(new «typeRef(blang.core.SupportFactor).identifier»(new $Generated_SetupSupport«modelCounter»(«FOR p : component.params SEPARATOR ", "»«
                       p»«ENDFOR»)));'''
   }
 
-  def dispatch generateModelComponentInit(LogScaleFactor component, int modelCounter) {
+  def private dispatch generateModelComponentInit(LogScaleFactor component, int modelCounter) {
     '''components.add(new $Generated_LogScaleFactor«modelCounter»(«FOR p : component.params SEPARATOR ", "»«
               p»«ENDFOR»));'''
   }
 
-  def generateModelComponentParamSupplier(ModelParam component, int modelCounter, int paramCounter) {
+  def private generateModelComponentParamSupplier(ModelParam component, int modelCounter, int paramCounter) {
     val dist = component.right.clazz.type
     val distClass = Class.forName(dist.identifier)
     val distCtors = distClass.constructors
@@ -242,7 +258,7 @@ class SingleBlangModelInferrer {
     ]
   }
 
-  def generateSupportFactor(BlangModel model, SupportFactor factor, int modelCounter) {
+  def private generateSupportFactor(BlangModel model, SupportFactor factor, int modelCounter) {
     factor.toClass("$Generated_SetupSupport" + modelCounter) [
       it.superTypes += typeRef(blang.core.SupportFactor.Support)
       it.static = true
@@ -283,7 +299,7 @@ class SingleBlangModelInferrer {
     ]
   }
 
-  def generateLogScaleFactor(BlangModel model, LogScaleFactor factor, int modelCounter) {
+  def private generateLogScaleFactor(BlangModel model, LogScaleFactor factor, int modelCounter) {
     factor.toClass("$Generated_LogScaleFactor" + modelCounter) [
       it.superTypes += typeRef(blang.factors.LogScaleFactor)
       it.static = true
@@ -323,7 +339,7 @@ class SingleBlangModelInferrer {
     ]
   }
 
-  def JvmTypeReference getVarType(EObject container, String name) {
+  def private JvmTypeReference getVarType(EObject container, String name) {
     switch (container) {
       ForLoop:
         if (name.equals(container.initExpression?.name)) {
@@ -343,14 +359,16 @@ class SingleBlangModelInferrer {
 
   }
 
-  def getVarType(ModelVar v) {
+  def private getVarType(ModelVar v) {
     switch (v.qualType) {
       case "random": v.type
       case "param": typeRef(Supplier, v.type)
+      default :
+        throw new RuntimeException
     }
   }
 
-  def isLazy(JvmTypeReference type) {
+  def private isLazy(JvmTypeReference type) {
     type.identifier.startsWith("java.util.function.Supplier")
   }
 

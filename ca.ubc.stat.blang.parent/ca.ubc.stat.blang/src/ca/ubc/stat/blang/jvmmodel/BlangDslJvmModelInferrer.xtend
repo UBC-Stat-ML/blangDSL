@@ -1,34 +1,11 @@
 package ca.ubc.stat.blang.jvmmodel
 
-import blang.core.Model
 import ca.ubc.stat.blang.blangDsl.BlangModel
-import ca.ubc.stat.blang.blangDsl.Param
 import com.google.inject.Inject
-import java.lang.reflect.ParameterizedType
-import java.util.ArrayList
-import java.util.Collection
-import java.util.HashMap
-import java.util.List
-import java.util.Map
-import java.util.function.Supplier
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.common.types.JvmDeclaredType
-import org.eclipse.xtext.common.types.JvmParameterizedTypeReference
-import org.eclipse.xtext.common.types.JvmTypeReference
-import org.eclipse.xtext.common.types.JvmVisibility
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer
 import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import ca.ubc.stat.blang.blangDsl.ConstParam
-import ca.ubc.stat.blang.blangDsl.ForLoop
-import ca.ubc.stat.blang.blangDsl.LazyParam
-import ca.ubc.stat.blang.blangDsl.LogScaleFactor
-import ca.ubc.stat.blang.blangDsl.ModelComponent
-import ca.ubc.stat.blang.blangDsl.ModelParam
-import ca.ubc.stat.blang.blangDsl.SupportFactor
-import ca.ubc.stat.blang.blangDsl.ModelVar
-import ca.ubc.stat.blang.blangDsl.impl.DependencyImpl
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -60,7 +37,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
      *            accept(..)} method takes the constructed empty type for the
      *            pre-indexing phase. This one is further initialized in the
      *            indexing phase using the closure you pass to the returned
-     *            {@link org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor.IPostIndexingInitializing#initializeLater(org.eclipse.xtext.xbase.lib.Procedures.Procedure1)
+     *            {@link IPostIndexingInitializing#initializeLater(org.eclipse.xtext.xbase.lib.Procedures.Procedure1)
      *            initializeLater(..)}.
      * @param isPreIndexingPhase
      *            whether the method is called in a pre-indexing phase, i.e.
@@ -71,7 +48,8 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     def dispatch void infer(BlangModel model, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
         val className = model.eResource.URI.trimFileExtension.lastSegment
         acceptor.accept(model.toClass(className)) [
-          new SingleBlangModelInferrer(model, it, _typeBuilder, _annotationTypesBuilder, _typeReferenceBuilder).infer()
+          val singleBlangModelInferrer = new SingleBlangModelInferrer(model, it, _typeBuilder, _annotationTypesBuilder, _typeReferenceBuilder)
+          singleBlangModelInferrer.infer()
         ]
     }
 }
