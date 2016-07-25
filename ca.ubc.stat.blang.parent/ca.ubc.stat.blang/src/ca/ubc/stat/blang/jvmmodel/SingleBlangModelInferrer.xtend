@@ -46,8 +46,8 @@ class SingleBlangModelInferrer {
   
   def void infer() {
 
-    if (model.name != null) {
-      output.packageName = model.name;
+    if (model.packageName != null) {
+      output.packageName = model.packageName;
     }
 
     output.superTypes += typeRef(Model)

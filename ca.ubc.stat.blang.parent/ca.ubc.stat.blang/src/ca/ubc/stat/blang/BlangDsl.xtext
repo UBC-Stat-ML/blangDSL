@@ -4,7 +4,7 @@ generate blangDsl "http://www.ubc.ca/stat/blang/BlangDsl"
 
 BlangModel:
 	{BlangModel}
-	('package' name=QualifiedName)?
+	('package' packageName=QualifiedName)?
 	importSection=XImportSection?
 	('model' '{'
 		((vars += ModelVar) | (consts += Const))*
