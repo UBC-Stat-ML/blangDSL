@@ -80,24 +80,33 @@ class SingleBlangModelInferrer {
     return model.vars != null && !model.vars.empty
   }
   
+  def private randomVariables() {
+    return model.vars.filter[qualType == 'random']
+  }
+  
+  def private paramVariables() {
+    return model.vars.filter[qualType == 'param']
+  }
+  
   def private void addConstructor() {
-    if (hasVariables()) {
-      output.members += model.toConstructor [
-        visibility = JvmVisibility.PUBLIC
-        // Random variables show up earlier in the constructor parameters
-        for (varDecl : model.vars.filter[qualType == 'random']) {
-          parameters += varDecl.toParameter(varDecl.name, getVarType(varDecl))
-        }
-        for (varDecl : model.vars.filter[qualType != 'random']) {
-          parameters += varDecl.toParameter(varDecl.name, getVarType(varDecl))
-        }
-        body = '''
-          «FOR varDecl : model.vars»
-            this.«varDecl.name» = «varDecl.name»;
-          «ENDFOR»
-        '''
-      ]
-    }
+    if (!hasVariables()) 
+      return; // simplifies code; nothing to do
+    output.members += model.toConstructor [
+      visibility = JvmVisibility.PUBLIC
+      // Random variables show up earlier in the constructor parameters
+      for (varDecl : randomVariables()) {
+        parameters += varDecl.toParameter(varDecl.name, getVarType(varDecl))
+      }
+      // Then, param variables
+      for (varDecl : paramVariables()) {
+        parameters += varDecl.toParameter(varDecl.name, getVarType(varDecl))
+      }
+      body = '''
+        «FOR varDecl : model.vars»
+          this.«varDecl.name» = «varDecl.name»;
+        «ENDFOR»
+      '''
+    ]
   }
   
   def private void addImplementation() {
@@ -126,9 +135,9 @@ class SingleBlangModelInferrer {
               output.members += generateModelComponentParamSupplier(component, componentCounter, paramCounter)
             }
           SupportFactor:
-            output.members += generateSupportFactor(model, component, componentCounter)
+            output.members += generateSupportFactor(component, componentCounter)
           LogScaleFactor:
-            output.members += generateLogScaleFactor(model, component, componentCounter)
+            output.members += generateLogScaleFactor(component, componentCounter)
           default:
             throw new IllegalArgumentException("Cannot generate a supplier class for " + component.class)
         }
@@ -136,6 +145,7 @@ class SingleBlangModelInferrer {
     }    
   }
   
+  // creates unique ids for model components
   def private Map<ModelComponent, Integer> collectModels(List<ModelComponent> components,
     Map<ModelComponent, Integer> componentMap) {
     for (c : components) {
@@ -149,6 +159,7 @@ class SingleBlangModelInferrer {
     componentMap
   }
 
+  // add iterator variables to component's scopes
   def private void extendLoopModels(List<ModelComponent> components, List<String> loopVars) {
     for (c : components) {
       switch (c) {
@@ -258,7 +269,7 @@ class SingleBlangModelInferrer {
     ]
   }
 
-  def private generateSupportFactor(BlangModel model, SupportFactor factor, int modelCounter) {
+  def private generateSupportFactor(SupportFactor factor, int modelCounter) {
     factor.toClass("$Generated_SetupSupport" + modelCounter) [
       it.superTypes += typeRef(blang.core.SupportFactor.Support)
       it.static = true
@@ -299,7 +310,7 @@ class SingleBlangModelInferrer {
     ]
   }
 
-  def private generateLogScaleFactor(BlangModel model, LogScaleFactor factor, int modelCounter) {
+  def private generateLogScaleFactor(LogScaleFactor factor, int modelCounter) {
     factor.toClass("$Generated_LogScaleFactor" + modelCounter) [
       it.superTypes += typeRef(blang.factors.LogScaleFactor)
       it.static = true
