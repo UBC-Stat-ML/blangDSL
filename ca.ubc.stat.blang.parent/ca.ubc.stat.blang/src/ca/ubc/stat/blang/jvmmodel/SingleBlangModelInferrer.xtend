@@ -18,6 +18,8 @@ import org.eclipse.xtext.common.types.JvmVisibility
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 @Data
 class SingleBlangModelInferrer {
@@ -54,9 +56,9 @@ class SingleBlangModelInferrer {
       // use it below
       output.members += variableDeclaration.toField(variableDeclaration.name, variableDeclaration.type) [
         documentation = '''
-          TODO: deal with random/param
+          TODO: this one is «variableDeclaration.variableType»
         '''
-        final = true
+        //final = true
       ]
     }
     return null
@@ -109,7 +111,7 @@ class SingleBlangModelInferrer {
 //    ]
   }
   
-  val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(ModelComponent)
+  val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model)
   val static final String COMPONENTS_LIST_NAME = "components"
   
   /**
@@ -141,21 +143,36 @@ class SingleBlangModelInferrer {
    * methods to workaround Xbase limitations.
    */
   
-  def private dispatch String translate(IndicatorDeclaration supportFactor, BlangScope scope) {
-    
+  def private dispatch String translate(IndicatorDeclaration indicator, BlangScope scope) {
+    return '''
+      // indicator(«indicator.contents.dependencies»)
+    '''
   }
   
   def private dispatch String translate(LogScaleFactorDeclaration logScaleFactor, BlangScope scope) {
     // create the auxiliary type and a scope containing only the constructed object's 
     // global scope
-    
+    return '''
+      // logf(«logScaleFactor.contents.dependencies»)
+    '''
     
   }
   
-  def private dispatch String translate(InstantiatedDistribution forLoop, BlangScope scope) {
+  def private dispatch String translate(InstantiatedDistribution instantiated, BlangScope scope) {
+    return '''
+      // instantiated: «instantiated.distributionType»
+    '''
   }
   
   def private dispatch String translate(ForLoop forLoop, BlangScope scope) {
+    
+    return '''
+      // for {
+        «FOR child : forLoop.loopBody»
+        «translate(child, scope)»
+        «ENDFOR»
+      //}
+    '''
     
 //    val BlangScope childScope = scope.child(new BlangVariable(forLoop.type, forLoop.name))
 //    return '''

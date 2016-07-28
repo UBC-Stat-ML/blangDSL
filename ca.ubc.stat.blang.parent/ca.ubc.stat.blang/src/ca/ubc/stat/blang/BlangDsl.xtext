@@ -22,15 +22,16 @@ LawNode:
 ;
 
 IndicatorDeclaration:
-  FactorDeclaration
+  {IndicatorDeclaration}
+  contents=FactorDeclaration
 ;
 
 LogScaleFactorDeclaration:
-  FactorDeclaration
+  {LogScaleFactorDeclaration}
+  contents=FactorDeclaration
 ;
 
 ForLoop:
-  {ForLoop}
   '('
     iteratorType = JvmTypeReference
     iteratorName = ValidID
