@@ -6,79 +6,69 @@ BlangModel:
 	{BlangModel}
 	('package' packageName=QualifiedName)?
 	importSection=XImportSection?
-	('model' '{'
-		((vars += ModelVar) | (consts += Const))*
-		laws = Laws?
-	'}')?
+	'model' '{'
+		(variableDeclarations += VariableDeclaration)*
+		'laws' '{' (lawNodes += LawNode)* '}'
+		(variableDeclarations += VariableDeclaration)*
+	'}'
 	;
 	
-ModelVar:
-	(qualType = ('random' | 'param')) type=JvmTypeReference name=ValidID
+VariableDeclaration:
+	(variableType = ('random' | 'param')) type=JvmTypeReference name=ValidID
 ;
 
-Const:
-    'const' type=JvmTypeReference name=ValidID '=' right=XExpression
+LawNode:
+  'for' ForLoop | 'indicator' IndicatorDeclaration | 'logf' LogScaleFactorDeclaration | => InstantiatedDistribution
 ;
 
-VarDecl:
-	type=JvmTypeReference? name=ValidID '=' right=XExpression
+IndicatorDeclaration:
+  FactorDeclaration
 ;
 
-Laws:
-	{Laws}
-	'laws' '{'
-	(modelComponents += ModelComponent)*
-	'}'
-;
-
-ModelComponent:
-    ForLoop | SupportFactor | LogScaleFactor | ModelParam
+LogScaleFactorDeclaration:
+  FactorDeclaration
 ;
 
 ForLoop:
-    {ForLoop}
-    'for' '('
-        (initExpression=VarDecl) ';'
-        (testExpression=XExpression) ';'
-        (updateExpression=XExpression)
-    ')' '{'
-        (body += ModelComponent)*
-    '}'
+  {ForLoop}
+  '('
+    iteratorType = JvmTypeReference
+    iteratorName = ValidID
+    ':'
+    iteratorRange = XExpression
+  ')' '{'
+    (loopBody += LawNode)*
+  '}'
 ;
 
 // indicator(variance) = variance.doubleValue > 0
-SupportFactor:
-    'indicator' '(' (params += ValidID) (',' (params += ValidID))* ')' '=' (expr = XBlockExpression)
+FactorDeclaration:
+  '(' ((dependencies += Dependency) (',' dependencies += Dependency)* )? ')' 
+  '=' (factorBody = XBlockExpression)
 ;
 
-// logf(variance) = -0.5 * ( log(variance.doubleValue) + LOG2PI )
-LogScaleFactor:
-    'logf' '(' (params += ValidID) (',' (params += ValidID))* ')' '=' (expr = XBlockExpression)
-;
-
-// y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
-ModelParam:
-	(name = ValidID) ( '|' (deps += Dependency) (',' deps += Dependency)* )? '~' (right = Distribution)
+// y1, y2 | Matrix mean = means.get(z), variance ~ BivariateNormal(mean, [variance ** 2])
+InstantiatedDistribution:
+  // random variables generated
+	( generatedVariables += XExpression  (',' generatedVariables += XExpression)* )?
+	// dependencies on other variables
+	('|' (dependencies += Dependency) (',' dependencies += Dependency)* )?  
+	// type of the distribution
+	'~' distributionType = JvmTypeReference 
+	// arguments in the constructor of the distribution
+	'('
+	  ( (arguments += XExpression) ( ',' arguments += XExpression)* )?
+	')'
 ;
 
 Dependency:
+  SimpleDependency | InitializerDependency
+;
+
+InitializerDependency:
 	(type = JvmTypeReference) (name = ValidID) '=' (init = ValidID)
 ;
 
-Distribution:
-	(clazz = JvmTypeReference) '('
-		( (param += Param) ( ',' param += Param)* )?
-		')'
-;
-
-Param:
-	LazyParam | ConstParam
-;
-
-ConstParam:
-    id = ValidID
-;
-
-LazyParam:
-	expr = XClosure
+SimpleDependency:
+  name = ValidID
 ;
