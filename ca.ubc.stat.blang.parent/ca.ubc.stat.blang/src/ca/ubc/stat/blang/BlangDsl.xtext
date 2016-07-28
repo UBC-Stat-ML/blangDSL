@@ -18,7 +18,7 @@ VariableDeclaration:
 ;
 
 LawNode:
-  'for' ForLoop | 'indicator' IndicatorDeclaration | 'logf' LogScaleFactorDeclaration | => InstantiatedDistribution
+  'for' ForLoop | 'indicator' IndicatorDeclaration | 'logf' LogScaleFactorDeclaration | (=> InstantiatedDistribution)
 ;
 
 IndicatorDeclaration:
@@ -63,11 +63,11 @@ InstantiatedDistribution:
 ;
 
 Dependency:
-  SimpleDependency | InitializerDependency
+  InitializerDependency | SimpleDependency
 ;
 
 InitializerDependency:
-	(type = JvmTypeReference) (name = ValidID) '=' (init = ValidID)
+	(type = JvmTypeReference) (name = ValidID) '=' (init = XExpression)
 ;
 
 SimpleDependency:
