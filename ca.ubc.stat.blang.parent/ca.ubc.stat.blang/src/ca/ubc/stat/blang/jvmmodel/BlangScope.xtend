@@ -8,22 +8,33 @@ import java.util.ArrayList
 import com.google.common.collect.Iterables
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import java.util.function.Supplier
+import org.eclipse.emf.common.util.EList
+import ca.ubc.stat.blang.blangDsl.Dependency
+import java.util.List
+import ca.ubc.stat.blang.blangDsl.SimpleDependency
+import java.util.LinkedHashMap
+import ca.ubc.stat.blang.blangDsl.InitializerDependency
 
 @Data
 class BlangScope {
   
   val BlangScope parent
-  val ArrayList<BlangVariable> topVariables
+  
+  /*
+   * variables on 'top' of this hierarchy, i.e. not 
+   * including those in the parent
+   */ 
+  val LinkedHashMap<String,BlangVariable> topVariables
   
   /**
    * Create an empty scope.
    */
   def static emptyScope() {
-    return new BlangScope(null, new ArrayList)
+    return new BlangScope(null, new LinkedHashMap)
   }
   
   def +=(BlangVariable newVariable) {
-    this.topVariables += newVariable
+    this.topVariables.put(newVariable.deboxedName, newVariable)
   }
   
   /**
@@ -31,61 +42,109 @@ class BlangScope {
    * variable.
    */
   def BlangScope child(BlangVariable variable) {
-    val BlangScope result = new BlangScope(this, new ArrayList)
+    val BlangScope result = new BlangScope(this, new LinkedHashMap)
     result += variable
     return result
+  }
+  
+  /**
+   * Return the variable with the given deboxed name or null otherwise.
+   */
+  def BlangVariable find(String deboxedName) {
+    val BlangVariable result = topVariables.get(deboxedName)
+    if (result !== null)
+      return result
+    if (parent !== null)
+      return parent.find(deboxedName)
+    else
+      return null // not found
   }
   
   /**
    * Returns the variables in this scope
    */
   def Iterable<BlangVariable> variables() {
-    if (parent == null) {
-      return topVariables
+    if (parent === null) {
+      return topVariables.values
     } else {
-      return Iterables.concat(topVariables, parent.variables())
+      return Iterables.concat(topVariables.values, parent.variables())
     }
   }
   
   /**
-   * These can be either param or random
-   * // Ignore constant for now as they can just be in separate Java/Xtend files
+   * These can be either param (boxed) or random (no boxing)
+   * 
+   * When there is no boxing, deboxed and boxed version are equal, 
+   * otherwise they differ.
    */
   static class BlangVariable {
-    val private JvmTypeReference type 
-    val private String name
+    val public JvmTypeReference deboxedType 
+    val public String deboxedName
     
     // if true, this means that the variable is not actually of type above,
     // but rather of type Supplier<type> unknowingly by the DSL user
     // the variable is also actually called name_supplier in this case.
     // therefore if true it needs to be deboxed just before
-    val private boolean enclosedBySupplier
+    val private boolean isBoxed
     
     def boolean isParam() {
-      return enclosedBySupplier
+      return isBoxed
+    }
+    
+    def String deboxingInvocationString() {
+      if (isBoxed) {
+        return '''«deboxedName».get()'''
+      } else {
+        return deboxedName
+      }
+    }
+    
+    new (JvmTypeReference deboxedType, String deboxedName, boolean isBoxed) {
+      this.deboxedType = deboxedType
+      this.deboxedName = deboxedName
+      this.isBoxed = isBoxed
     }
     
     new (VariableDeclaration variableDeclaration) {
-      this.type = variableDeclaration.type
-      this.name = variableDeclaration.name
-      this.enclosedBySupplier = StaticUtils::isParam(variableDeclaration.variableType)
+      this(variableDeclaration.type, variableDeclaration.name, StaticUtils::isParam(variableDeclaration.variableType))
     }
   
-    def String fieldName() {
-      if (enclosedBySupplier) {
-        return StaticUtils::generatedMethodName(name, "supplier")
+    def String boxedName() {
+      if (isBoxed) {
+        return StaticUtils::generatedMethodName(deboxedName, "supplier")
       } else {
-        return name
+        return deboxedName
       }
     }
   
-    def JvmTypeReference fieldType(extension JvmTypeReferenceBuilder _typeReferenceBuilder) {
-      if (enclosedBySupplier) {
-        return typeRef(Supplier, type)
+    def JvmTypeReference boxedType(extension JvmTypeReferenceBuilder _typeReferenceBuilder) {
+      if (isBoxed) {
+        return typeRef(Supplier, deboxedType)
       } else {
-        return type
+        return deboxedType
       }
     }
   
   }
+  
+  def BlangScope restrict(List<Dependency> dependencies) {
+    val BlangScope result = emptyScope
+    for (Dependency dependency : dependencies) {
+      switch dependency {
+        SimpleDependency : {
+          val BlangVariable additional = this.find(dependency.name)
+          if (additional !== null)
+            result += additional
+          // else
+          //   TODO: error message: dependency not found
+        }
+        InitializerDependency :
+          result += new BlangVariable(dependency.type, dependency.name, false)
+        default :
+          throw new RuntimeException
+      }
+    }
+    return result
+  }
+  
 }
