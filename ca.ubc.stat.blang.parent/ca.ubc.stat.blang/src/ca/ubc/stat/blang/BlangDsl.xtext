@@ -14,7 +14,11 @@ BlangModel:
 	;
 	
 VariableDeclaration:
-	(variableType = ('random' | 'param')) type=JvmTypeReference name=ValidID
+	(variableType = VariableType) type=JvmTypeReference name=ValidID
+;
+
+enum VariableType:
+  RANDOM = 'random' | PARAM = 'param'
 ;
 
 LawNode:
@@ -34,7 +38,7 @@ LogScaleFactorDeclaration:
 ForLoop:
   '('
     iteratorType = JvmTypeReference
-    iteratorName = ValidID
+    name = ValidID
     ':'
     iteratorRange = XExpression
   ')' '{'

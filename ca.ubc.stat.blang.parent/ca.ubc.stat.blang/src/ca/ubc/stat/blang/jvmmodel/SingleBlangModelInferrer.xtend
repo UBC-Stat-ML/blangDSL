@@ -20,6 +20,8 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import ca.ubc.stat.blang.jvmmodel.BlangScope.BlangVariable
+import blang.core.Param
 
 @Data
 class SingleBlangModelInferrer {
@@ -46,36 +48,20 @@ class SingleBlangModelInferrer {
     if (model.packageName != null) {
       output.packageName = model.packageName;
     }
-
     output.superTypes += typeRef(Model)
   }
   
   def private BlangScope setupVariables() {
+    val BlangScope result = BlangScope::emptyScope
     for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
-      // TODO: create BlangScope as you go,
-      // use it below
-      output.members += variableDeclaration.toField(variableDeclaration.name, variableDeclaration.type) [
-        documentation = '''
-          TODO: this one is «variableDeclaration.variableType»
-        '''
+      val BlangVariable blangVariable = new BlangVariable(variableDeclaration)
+      output.members += variableDeclaration.toField(blangVariable.fieldName(), blangVariable.fieldType(_typeReferenceBuilder)) [
         //final = true
+        if (blangVariable.isParam)
+          annotations += annotationRef(Param)
       ]
     }
-    return null
-//    for (varDecl : model.vars) {
-//      output.members += varDecl.toField(varDecl.name, getVarType(varDecl)) [
-//        it.visibility = JvmVisibility.PUBLIC
-//        it.final = true
-//      ]
-//    }
-//    for (varDecl : model.consts) {
-//      output.members += varDecl.toField(varDecl.name, varDecl.type) [
-//        visibility = JvmVisibility.DEFAULT
-//        it.final = true
-//        it.static = true
-//        initializer = varDecl.right
-//      ]
-//    }
+    return result
   }
   
 //  def private boolean hasVariables() {
