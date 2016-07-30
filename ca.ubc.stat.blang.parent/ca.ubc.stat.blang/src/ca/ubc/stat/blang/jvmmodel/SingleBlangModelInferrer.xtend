@@ -29,6 +29,8 @@ import org.eclipse.xtext.xbase.XExpression
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
+import java.util.Map
+import java.util.LinkedHashMap
 
 @Data
 class SingleBlangModelInferrer {
@@ -98,7 +100,7 @@ class SingleBlangModelInferrer {
   val static final String COMPONENTS_LIST_NAME = "components"
   
   def String xExpressionGeneratedMethodCall(XExpression xExpression, BlangScope scope, JvmTypeReference returnType) {
-      val String generatedName = StaticUtils::generatedMethodName(xExpression.hashCode)
+      val String generatedName = generatedMethodName(xExpression.hashCode)
       return '''«generatedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»)'''
   }
 
@@ -115,7 +117,7 @@ class SingleBlangModelInferrer {
   }
   
   def private dispatch StringConcatenationClient componentMethodBody(LogScaleFactorDeclaration logScaleFactor, BlangScope scope) {
-    val String generatedName = StaticUtils::generatedMethodName(logScaleFactor.hashCode)
+    val String generatedName = generatedMethodName(logScaleFactor.hashCode)
     val BlangScope restrictedScope = scope.restrict(logScaleFactor.contents.dependencies)
     return '''
     {
@@ -124,8 +126,6 @@ class SingleBlangModelInferrer {
     }
     '''
   }
-  
-  //// TODO: replace hashcode based by integers (to make tests deterministic)
   
   def private dispatch StringConcatenationClient componentMethodBody(List<Dependency> dependencies, BlangScope scope) {
     return '''
@@ -184,7 +184,7 @@ class SingleBlangModelInferrer {
   }
   
   def private dispatch void generateMethods(LogScaleFactorDeclaration logScaleFactor, BlangScope scope) {
-    val String generatedName = StaticUtils::generatedMethodName(logScaleFactor.hashCode)
+    val String generatedName = generatedMethodName(logScaleFactor.hashCode)
     val BlangScope restrictedScope = scope.restrict(logScaleFactor.contents.dependencies)
     output.members += logScaleFactor.toMethod(generatedName, typeRef(LogScaleFactor)) [
       static = true
@@ -221,7 +221,7 @@ class SingleBlangModelInferrer {
   }
   
   def private void generateXExpressionAuxMethod(XExpression xExpression, BlangScope scope, JvmTypeReference returnType) {
-    val String generatedName = StaticUtils::generatedMethodName(xExpression.hashCode)
+    val String generatedName = generatedMethodName(xExpression.hashCode)
     output.members += xExpression.toMethod(generatedName, returnType) [ 
       visibility = JvmVisibility.PRIVATE
       static = true
@@ -238,5 +238,15 @@ class SingleBlangModelInferrer {
   
   def private expressionText(EObject ex) {
     NodeModelUtils.getTokenText(NodeModelUtils.getNode(ex))
+  }
+  
+  val private Map<Integer, Integer> _generatedIds = new LinkedHashMap
+  def String generatedMethodName(Object object) {
+    val int hashCode = object.hashCode
+    if (_generatedIds.containsKey(hashCode))
+      return StaticUtils::generatedMethodName("" + _generatedIds.get(hashCode))
+    val int newSerialId = _generatedIds.size()
+    _generatedIds.put(hashCode, newSerialId)
+    return StaticUtils::generatedMethodName("" + newSerialId)
   }
 }

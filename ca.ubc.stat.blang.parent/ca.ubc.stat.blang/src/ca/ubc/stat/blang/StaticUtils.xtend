@@ -1,6 +1,9 @@
 package ca.ubc.stat.blang
 
 import ca.ubc.stat.blang.blangDsl.VariableType
+import java.util.Map
+import java.util.Collections
+import java.util.LinkedHashMap
 
 class StaticUtils {
   
@@ -24,8 +27,8 @@ class StaticUtils {
     }
   }
   
-  def static String generatedMethodName(Object name) {
-    return '''$generated__«name»'''
+  def static String generatedMethodName(String uniqueName) {
+    return '''$generated__«uniqueName»'''
   }
   
 }
