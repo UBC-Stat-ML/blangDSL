@@ -4,6 +4,10 @@ import ca.ubc.stat.blang.blangDsl.VariableType
 import java.util.Map
 import java.util.Collections
 import java.util.LinkedHashMap
+import java.util.List
+import ca.ubc.stat.blang.blangDsl.InitializerDependency
+import ca.ubc.stat.blang.blangDsl.Dependency
+import java.util.ArrayList
 
 class StaticUtils {
   
@@ -31,4 +35,13 @@ class StaticUtils {
     return '''$generated__«uniqueName»'''
   }
   
+  def static List<InitializerDependency> initializerDependencies(List<Dependency> dependencies) {
+    val List<InitializerDependency> result = new ArrayList
+    for (Dependency dependency : dependencies) {
+      switch (dependency) {
+        InitializerDependency : result.add(dependency)
+      }
+    }
+    return result
+  }
 }
