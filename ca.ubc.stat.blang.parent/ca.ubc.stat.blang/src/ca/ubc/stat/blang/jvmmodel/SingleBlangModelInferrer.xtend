@@ -112,9 +112,7 @@ class SingleBlangModelInferrer {
 
   def String xExpressionGeneratedMethodCall(XExpression xExpression, BlangScope scope, JvmTypeReference returnType) {
       val String generatedName = StaticUtils::generatedMethodName(xExpression.hashCode)
-      return '''
-        «generatedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»)
-      '''
+      return '''«generatedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»)'''
   }
 
   def private StringConcatenationClient componentMethodBody(BlangScope scope) {
@@ -141,14 +139,21 @@ class SingleBlangModelInferrer {
   }
   
   def private dispatch StringConcatenationClient componentMethodBody(List<Dependency> dependencies, BlangScope scope) {
-    val StringBuilder result = new StringBuilder
+    return '''
+      «FOR InitializerDependency dependency : initializerDependencies(dependencies)»
+      «dependency.type» «dependency.name» = «xExpressionGeneratedMethodCall(dependency.init, scope, dependency.type)»;
+      «ENDFOR»
+    '''
+  }
+  
+  def private List<InitializerDependency> initializerDependencies(List<Dependency> dependencies) {
+    val List<InitializerDependency> result = new ArrayList
     for (Dependency dependency : dependencies) {
       switch (dependency) {
-        InitializerDependency :
-          result.append(xExpressionGeneratedMethodCall(dependency.init, scope, dependency.type) + ";\n")
+        InitializerDependency : result.add(dependency)
       }
     }
-    return '''«result.toString()»'''
+    return result
   }
   
   def private dispatch StringConcatenationClient componentMethodBody(IndicatorDeclaration logScaleFactor, BlangScope scope) {
@@ -205,7 +210,7 @@ class SingleBlangModelInferrer {
     for (Dependency dependency : logScaleFactor.contents.dependencies) {
       switch (dependency) {
         InitializerDependency : {
-          generateXExpressionAuxMethod(dependency.init, restrictedScope, dependency.type)
+          generateXExpressionAuxMethod(dependency.init, scope, dependency.type)
         }
       }
     }
