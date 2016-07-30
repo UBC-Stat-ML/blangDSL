@@ -93,7 +93,7 @@ class BlangScope {
     
     def String deboxingInvocationString() {
       if (isBoxed) {
-        return '''«deboxedName».get()'''
+        return '''«boxedName()».get()'''
       } else {
         return deboxedName
       }
@@ -111,7 +111,7 @@ class BlangScope {
   
     def String boxedName() {
       if (isBoxed) {
-        return StaticUtils::generatedMethodName(deboxedName, "supplier")
+        return StaticUtils::generatedMethodName(deboxedName)
       } else {
         return deboxedName
       }

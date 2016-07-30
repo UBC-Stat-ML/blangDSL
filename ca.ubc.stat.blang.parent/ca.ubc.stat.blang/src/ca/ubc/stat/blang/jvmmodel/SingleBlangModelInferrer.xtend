@@ -30,6 +30,8 @@ import com.ibm.icu.impl.StringUCharacterIterator
 import blang.factors.LogScaleFactor
 import ca.ubc.stat.blang.blangDsl.InitializerDependency
 import org.eclipse.xtend2.lib.StringConcatenationClient
+import java.util.Map
+import java.util.LinkedHashMap
 
 @Data
 class SingleBlangModelInferrer {
@@ -48,8 +50,8 @@ class SingleBlangModelInferrer {
   def void infer() {
     setupClass()
     val BlangScope globalScope = setupVariables()
-    implementConstructor()
-    implementComponentsMethod(globalScope)
+    generateConstructor()
+    generateMethods(globalScope)
   }
   
   def private void setupClass() {
@@ -65,6 +67,7 @@ class SingleBlangModelInferrer {
       val BlangVariable blangVariable = new BlangVariable(variableDeclaration)
       result += blangVariable
       output.members += variableDeclaration.toField(blangVariable.boxedName(), blangVariable.boxedType(_typeReferenceBuilder)) [
+        // TODO: uncomment line below once constructor generation is setup
         //final = true
         if (blangVariable.isParam)
           annotations += annotationRef(Param)
@@ -73,7 +76,7 @@ class SingleBlangModelInferrer {
     return result
   }
   
-  def private void implementConstructor() {
+  def private void generateConstructor() {
 //    if (!hasVariables()) 
 //      return; // simplifies code; nothing to do
 //    output.members += model.toConstructor [
@@ -93,96 +96,133 @@ class SingleBlangModelInferrer {
 //      '''
 //    ]
   }
+//  
+//  def private StringConcatenationClient register(EObject key, StringConcatenationClient value) {
+//     generatedCode.put(key, value)
+//     // eagerly evaluate too
+//     val String temp = '''«value»'''
+//     temp.toString()
+//     return value
+//   }
   
   val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model)
   val static final String COMPONENTS_LIST_NAME = "components"
   
-  /**
-   * Implement the components() method by analyzing the
-   * laws { .. } block
-   */
-  def private void implementComponentsMethod(BlangScope scope) {
-    val StringConcatenationClient generatedBody = '''
+//  val private Map<EObject, StringConcatenationClient> generatedCode = new LinkedHashMap
+
+  def String xExpressionGeneratedMethodCall(XExpression xExpression, BlangScope scope, JvmTypeReference returnType) {
+      val String generatedName = StaticUtils::generatedMethodName(xExpression.hashCode)
+      return '''
+        «generatedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»)
+      '''
+  }
+
+  def private StringConcatenationClient componentMethodBody(BlangScope scope) {
+    return '''
       «typeRef(ArrayList, typeRef(ModelComponent))» «COMPONENTS_LIST_NAME» = new «typeRef(ArrayList)»();
       
       «FOR LawNode node : model.lawNodes»
-        «translate(node, scope)»
+        «componentMethodBody(node, scope)»
       «ENDFOR»
       
       return «COMPONENTS_LIST_NAME»;
     '''
+  }
+  
+  def private dispatch StringConcatenationClient componentMethodBody(LogScaleFactorDeclaration logScaleFactor, BlangScope scope) {
+    val String generatedName = StaticUtils::generatedMethodName(logScaleFactor.hashCode)
+    val BlangScope restrictedScope = scope.restrict(logScaleFactor.contents.dependencies)
+    return '''
+    {
+      «componentMethodBody(logScaleFactor.contents.dependencies, scope)»
+      «COMPONENTS_LIST_NAME».add(«generatedName»(«FOR BlangVariable variable : restrictedScope.variables() SEPARATOR ", "»«variable.boxedName()»«ENDFOR»));
+    }
+    '''
+  }
+  
+  def private dispatch StringConcatenationClient componentMethodBody(List<Dependency> dependencies, BlangScope scope) {
+    val StringBuilder result = new StringBuilder
+    for (Dependency dependency : dependencies) {
+      switch (dependency) {
+        InitializerDependency :
+          result.append(xExpressionGeneratedMethodCall(dependency.init, scope, dependency.type) + ";\n")
+      }
+    }
+    return '''«result.toString()»'''
+  }
+  
+  def private dispatch StringConcatenationClient componentMethodBody(IndicatorDeclaration logScaleFactor, BlangScope scope) {
+    return '''// TODO'''
+  }
+  
+  def private dispatch StringConcatenationClient componentMethodBody(ForLoop forLoop, BlangScope scope) {
+    val BlangVariable iteratorVariable = new BlangVariable(forLoop.iteratorType, forLoop.name, false)
+    val BlangScope childScope = scope.child(iteratorVariable)
+    return  '''
+      for («forLoop.iteratorType» «forLoop.name» : «xExpressionGeneratedMethodCall(forLoop.iteratorRange, scope, forLoop.iteratorType)») {
+        «FOR node : forLoop.loopBody»
+        «componentMethodBody(node, childScope)»
+        «ENDFOR»
+      }
+    '''
+  }
+  
+  def private dispatch StringConcatenationClient componentMethodBody(InstantiatedDistribution logScaleFactor, BlangScope scope) {
+    return '''// TODO'''
+  }
+  
+  def private void generateMethods(BlangScope scope) {
     output.members += model.toMethod(COMPONENTS_METHOD_NAME, typeRef(Collection, typeRef(ModelComponent))) [
       visibility = JvmVisibility.PUBLIC
       documentation = '''
         A component can be either a distribution, support constraint, or another model  
         which recursively defines additional components.
       '''
-      body = generatedBody
+      body = componentMethodBody(scope)
     ]
-  }
-  
-  /*
-   * Convention: functions of the form translate(..) return the Java string translation of 
-   * the node, however, they might also have side effects such as the creation of auxiliary 
-   * methods to workaround Xbase limitations.
-   */
-  
-  def private dispatch String translate(IndicatorDeclaration indicator, BlangScope scope) {
-    return '''
-      // indicator(«indicator.contents.dependencies»)
-    '''
-  }
-  
-  def private dispatch String translate(LogScaleFactorDeclaration logScaleFactor, BlangScope scope) {
-    val String generatedName = StaticUtils::generatedMethodName("generated", "" + logScaleFactor.hashCode)
-    val BlangScope restrictedScope = scope.restrict(logScaleFactor.contents.dependencies)
     
-    
-//    output.members += logScaleFactor.toMethod(generatedName, typeRef(LogScaleFactor)) [
-//      static = true
-//      for (BlangVariable variable : restrictedScope.variables()) {
-//        parameters += logScaleFactor.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder))
-//      }
-//      body = '''
-//        return () -> «translateXExpression(logScaleFactor.contents.factorBody, restrictedScope, typeRef(Double))»;
-//      '''
-//    ]
-    return '''
-    {
-«««      «translateInitializerDependencies(logScaleFactor.contents.dependencies, scope)»
-      «COMPONENTS_LIST_NAME».add(«generatedName»(«FOR BlangVariable variable : restrictedScope.variables() SEPARATOR ", "»«variable.boxedName()»«ENDFOR»));
+    for (LawNode node : model.lawNodes) {
+      generateMethods(node, scope)
     }
-    '''
-    
   }
   
-  def String translateInitializerDependencies(List<Dependency> dependencies, BlangScope scope) {
-    var StringBuilder result = new StringBuilder
-    for (Dependency dependency : dependencies) {
+  def private dispatch void generateMethods(IndicatorDeclaration indicator, BlangScope scope) {
+    // TODO
+  }
+  
+  def private dispatch void generateMethods(LogScaleFactorDeclaration logScaleFactor, BlangScope scope) {
+    val String generatedName = StaticUtils::generatedMethodName(logScaleFactor.hashCode)
+    val BlangScope restrictedScope = scope.restrict(logScaleFactor.contents.dependencies)
+    output.members += logScaleFactor.toMethod(generatedName, typeRef(LogScaleFactor)) [
+      static = true
+      for (BlangVariable variable : restrictedScope.variables()) {
+        parameters += logScaleFactor.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder))
+      }
+      body = '''
+        return () -> «xExpressionGeneratedMethodCall(logScaleFactor.contents.factorBody, restrictedScope, typeRef(Double))»;
+      '''
+    ]
+    for (Dependency dependency : logScaleFactor.contents.dependencies) {
       switch (dependency) {
-        InitializerDependency :
-          result.append(translateXExpression(dependency.init, scope, dependency.type) + ";\n")
+        InitializerDependency : {
+          generateXExpressionAuxMethod(dependency.init, restrictedScope, dependency.type)
+        }
       }
     }
-    return result.toString()
+    generateXExpressionAuxMethod(logScaleFactor.contents.factorBody, restrictedScope, typeRef(Double))
   }
   
-  def private dispatch String translate(InstantiatedDistribution instantiated, BlangScope scope) {
-    return '''
-      // instantiated: «instantiated.distributionType»
-    '''
+  def private dispatch void generateMethods(InstantiatedDistribution instantiated, BlangScope scope) {
+    // TODO
   }
   
-  def private dispatch String translate(ForLoop forLoop, BlangScope scope) {
+  def private dispatch void generateMethods(ForLoop forLoop, BlangScope scope) {
     val BlangVariable iteratorVariable = new BlangVariable(forLoop.iteratorType, forLoop.name, false)
     val BlangScope childScope = scope.child(iteratorVariable)
-    return '''
-      for («forLoop.iteratorType» «forLoop.name» : «translateXExpression(forLoop.iteratorRange, scope, forLoop.iteratorType)») {
-        «FOR e : forLoop.loopBody»
-        «translate(e, childScope)»
-        «ENDFOR»
-      }
-    '''
+    generateXExpressionAuxMethod(forLoop.iteratorRange, scope, typeRef(Iterable, forLoop.iteratorType))
+    for (LawNode node : forLoop.loopBody) {
+      generateMethods(node, childScope)
+    }
   }
   
 //  @Data
@@ -195,32 +235,20 @@ class SingleBlangModelInferrer {
 //    
 //  }
   
-  def private String translateXExpression(XExpression xExpression, BlangScope scope, JvmTypeReference returnType) {
-    return "";
-//    try {
-//      val String generatedName = StaticUtils::generatedMethodName("generated", "" + xExpression.hashCode)
-//      // find the local scope, use this to build the signature of the
-//      // generate method
-//      output.members += xExpression.toMethod(generatedName, returnType) [ 
-//        visibility = JvmVisibility.PRIVATE
-//        static = true
-//        documentation = '''
-//          Auxiliary method generated to translate:
-//          «expressionText(xExpression)»
-//        '''
-//        for (BlangVariable variable : scope.variables) {
-//          parameters += xExpression.toParameter(variable.deboxedName, variable.deboxedType)  
-//        }
-//        body = xExpression
-//      ]
-//      // return a call to that generated method
-//      return '''
-//        «generatedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»)
-//      '''
-//    } catch (Exception e) {
-//      println(e.message)
-//      return "";
-//    }
+  def private void generateXExpressionAuxMethod(XExpression xExpression, BlangScope scope, JvmTypeReference returnType) {
+    val String generatedName = StaticUtils::generatedMethodName(xExpression.hashCode)
+    output.members += xExpression.toMethod(generatedName, returnType) [ 
+      visibility = JvmVisibility.PRIVATE
+      static = true
+      documentation = '''
+        Auxiliary method generated to translate:
+        «expressionText(xExpression)»
+      '''
+      for (BlangVariable variable : scope.variables) {
+        parameters += xExpression.toParameter(variable.deboxedName, variable.deboxedType)  
+      }
+      body = xExpression
+    ]
   }
   
   def private expressionText(EObject ex) {

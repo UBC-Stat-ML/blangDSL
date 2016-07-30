@@ -24,8 +24,8 @@ class StaticUtils {
     }
   }
   
-  def static String generatedMethodName(String baseName, String generatedSuffix) {
-    return '''$«baseName»_«generatedSuffix»'''
+  def static String generatedMethodName(Object name) {
+    return '''$generated__«name»'''
   }
   
 }
