@@ -1,13 +1,10 @@
 package ca.ubc.stat.blang
 
-import ca.ubc.stat.blang.blangDsl.VariableType
-import java.util.Map
-import java.util.Collections
-import java.util.LinkedHashMap
-import java.util.List
-import ca.ubc.stat.blang.blangDsl.InitializerDependency
 import ca.ubc.stat.blang.blangDsl.Dependency
+import ca.ubc.stat.blang.blangDsl.InitializerDependency
+import ca.ubc.stat.blang.blangDsl.VariableType
 import java.util.ArrayList
+import java.util.List
 
 class StaticUtils {
   

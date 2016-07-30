@@ -33,20 +33,21 @@ import java.util.Map
 import java.util.LinkedHashMap
 import ca.ubc.stat.blang.blangDsl.FactorDeclaration
 import blang.core.SupportFactor
+import org.eclipse.xtext.common.types.JvmFormalParameter
 
 @Data
 class SingleBlangModelInferrer {
 
   // input: an AST for a single model
-  val BlangModel model
+  val private BlangModel model
 
   // output: a generated 
-  val JvmDeclaredType output
+  val private JvmDeclaredType output
 
   // extension facilities provided by xtext
-  extension JvmTypesBuilder _typeBuilder
-  extension JvmAnnotationReferenceBuilder _annotationTypesBuilder;
-  extension JvmTypeReferenceBuilder _typeReferenceBuilder;
+  extension private JvmTypesBuilder _typeBuilder
+  extension private JvmAnnotationReferenceBuilder _annotationTypesBuilder;
+  extension private JvmTypeReferenceBuilder _typeReferenceBuilder;
   
   def void infer() {
     setupClass()
@@ -83,7 +84,9 @@ class SingleBlangModelInferrer {
       val boolean [] variablesOrder = #[false, true]; // isParam == false, then, isParam == true
       for (boolean isParam : variablesOrder) {
         for (BlangVariable variable : scope.variables.filter[it.param === isParam]) {
-          parameters += model.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder)) 
+          val JvmFormalParameter param = model.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder)) 
+          param.annotations += annotationRef(Param) 
+          parameters += param
         }
       }
       body = '''
@@ -97,7 +100,7 @@ class SingleBlangModelInferrer {
   val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model)
   val static final String COMPONENTS_LIST_NAME = "components"
   
-  def String xExpressionGeneratedMethodCall(XExpression xExpression, BlangScope scope, JvmTypeReference returnType) {
+  def private String xExpressionGeneratedMethodCall(XExpression xExpression, BlangScope scope, JvmTypeReference returnType) {
       val String generatedName = generatedMethodName(xExpression)
       return '''«generatedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»)'''
   }
@@ -136,9 +139,23 @@ class SingleBlangModelInferrer {
       «dependency.type» «dependency.name» = «xExpressionGeneratedMethodCall(dependency.init, scope, dependency.type)»;
       «ENDFOR»
       // Construction and addition of the factor/model:
-      «COMPONENTS_LIST_NAME».add(«generatedName»(«FOR BlangVariable variable : restrictedScope.variables() SEPARATOR ", "»«variable.boxedName()»«ENDFOR»));
+      «COMPONENTS_LIST_NAME».add(
+        «IF node instanceof InstantiatedDistribution»
+        «distributionInstantiationString(node as InstantiatedDistribution, scope, dependencies)»
+        «ELSE»
+        «generatedName»(«FOR BlangVariable variable : restrictedScope.variables() SEPARATOR ", "»«variable.boxedName()»«ENDFOR»)
+        «ENDIF»
+      );
     }
     '''
+  }
+  
+  def private StringConcatenationClient distributionInstantiationString(
+    InstantiatedDistribution distribution, 
+    BlangScope scope, 
+    List<Dependency> dependencies
+  ) {
+//    xxx;
   }
   
   def private dispatch StringConcatenationClient componentMethodBody(ForLoop forLoop, BlangScope scope) {
