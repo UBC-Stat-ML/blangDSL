@@ -15,11 +15,13 @@ BlangModel:
 	'}'
 	;
 	
+	//// TODO: either warn or force user to put random first, or use random { .. } and param { .. } ?
+	
 VariableDeclaration:
 	(variableType = VariableType) type=JvmTypeReference name=ValidID
 ;
 
-enum VariableType:
+enum VariableType:   //// poor name: pick something else like randomnessStatus
   RANDOM = 'random' | PARAM = 'param'
 ;
 

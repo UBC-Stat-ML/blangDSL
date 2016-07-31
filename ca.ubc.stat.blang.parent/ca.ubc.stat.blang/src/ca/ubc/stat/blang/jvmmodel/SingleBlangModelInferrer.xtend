@@ -51,6 +51,7 @@ import org.eclipse.emf.ecore.impl.EClassImpl
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.common.util.URI
+import ca.ubc.stat.blang.blangDsl.VariableType
 
 @Data
 class SingleBlangModelInferrer {
@@ -173,17 +174,10 @@ class SingleBlangModelInferrer {
     BlangScope scope, 
     List<Dependency> dependencies
   ) {
-//    val rd = irdProvider.getResourceDescriptions(model.eResource.resourceSet)
-//    for (e : rd.getExportedObjects(distribution.distributionType.eClass, QualifiedName.create(distribution.distributionType.qualifiedName), false)) {
-//      println("--> " + (e.EObjectOrProxy as JvmDeclaredType).
-//    }
-//    val List<ConstructorArgument> arguments = StaticUtils::constructorParameters(distribution)
-//    '''
-//    new «distribution.distributionType»()
-//    '''
     val JvmType typeRef = distribution.distributionType
     val List<ConstructorArgument> arguments = constructorParameters(distribution)
-    val int nVars = arguments.filter[!param].size()
+    println("nArgs = " + arguments.size())
+//    val int nVars = arguments.filter[!param].size()
     return '''
       new «typeRef»(
       «FOR index : 0 ..< arguments.size() SEPARATOR ", "»
@@ -322,80 +316,44 @@ class SingleBlangModelInferrer {
   }
   
   def private List<ConstructorArgument> constructorParameters(InstantiatedDistribution distribution) {
-    try { return _constructorParametersFromXtextIndex(distribution) } catch (Exception e) { System.err.println(e) }
-    try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) { System.err.println(e) }
+    try { return _constructorParametersFromXtextIndex(distribution) } catch (Exception e) { e.printStackTrace }
+    try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) {  }
     return Collections.emptyList()   // TODO: error handling
+  }
+  
+  def private <T> T first(Iterable<T> iterable) {
+    if (iterable.size() != 1) {
+      System.err.println("Warning: n matches was expected to be 1, found: " + iterable.size()) // TODO: make this more robust
+      System.err.println(iterable)
+    }
+    return iterable.iterator().next()
   }
   
   def private List<ConstructorArgument> _constructorParametersFromXtextIndex(InstantiatedDistribution distribution) {
     val IResourceDescriptions descriptions = index.getResourceDescriptions(distribution.eResource.resourceSet)
-    var JvmDeclaredType type = null
     
-//    // DEBUG
-//    println("-- BEG --")
-//    for (IResourceDescription descr : descriptions.allResourceDescriptions) {
-//      println(descr)
-//      for (IEObjectDescription obj : descr.exportedObjects) {
-//        obj.EObjectOrProxy
-//      }
-//      println("*") 
-//    }
-//    println("-- END --")
-//    // END-DEBUG
-    //distribution.eResource.resourceSet.resources.map[it.allContents.filter(distribution.distributionType.)]
+    // get URI using the index
+    val IEObjectDescription objectDescription = first(descriptions.getExportedObjects(distribution.distributionType.eClass, QualifiedName.create(distribution.distributionType.qualifiedName), false))
+    val uri = URI.createURI(objectDescription.EObjectURI.toString().replaceFirst("[.]bl[#].*", ".bl"))
+    println("uri = " + uri)
     
-    println("new test")
-    for (Resource r : distribution.eResource.resourceSet.resources) {
-      println(r)
-      println(" " + r.contents)
-      println("*")
-    }
-    println("end new test")
+    // load object if possible
+    val Resource resource = distribution.eResource.resourceSet.getResource(uri, false)
+    println("res = " + resource)
+    println("res-contents = " + resource.contents.filter[it instanceof BlangModel])
+    val BlangModel model = first(resource.contents.filter[it instanceof BlangModel]) as BlangModel
+    println("nVars-in-index = " + model.variableDeclarations.size())
     
-    
-    
-    for (e : descriptions.getExportedObjects(distribution.distributionType.eClass, QualifiedName.create(distribution.distributionType.qualifiedName), false)) {
-      if (type !== null) {
-        System.err.println("Warning: more than one match in constructorParametersFromXtextIndex()")
-      }
-      val uri = URI.createURI(e.EObjectURI.toString().replaceFirst("[.]bl.*", ".bl"))
-      println("-->" + uri)
-      val Resource res = distribution.eResource.resourceSet.getResource(uri, false)
-      println("===>" + res)   //// looks good: org.eclipse.xtext.xbase.resource.BatchLinkableResource@3d457ed uri='platform:/resource/blangProjectTemplate/src/main/java/blangProjectTemplate/Bernoulli.bl'
-      
-      println("contents: " + res.contents)
-      val BlangModel model = res.contents.iterator.next() as BlangModel
-      println("law node size: " + model.lawNodes.size())   //// works! = 1
-      
-      val EClass eClass = e.EClass as EClass
-      // TODO: better warning if more than one match
-//      System.err.println( e. )
-      System.err.println("is proxy?" + eClass.eIsProxy)
-//      System.err.println( "# of declared constructors:" + type.declaredConstructors.size() )
-//      System.err.println( "# of declared fields:" + type.declaredFields.size() )
-    }
-    val JvmConstructor constructor = {
-      val Iterable<JvmConstructor> constructors = type.declaredConstructors
-      if (constructors.size() !== 1) {
-        throw new RuntimeException('''Expected size 1 but got «constructors.size()»''')
-      }
-      constructors.iterator.next()
-    }
-    
-    if (type === null)
-      throw new RuntimeException 
-    
+    // infer constructor ordering
     val List<ConstructorArgument> result = new ArrayList
-    for (JvmFormalParameter parameter : constructor.parameters) {
-      var isParam = false
-      for (JvmAnnotationReference annotation : parameter.annotations) {
-        if (annotation.annotation.simpleName === Param.simpleName) {
-          isParam = true
-        }
+    val VariableType[] order = #[VariableType.RANDOM, VariableType.PARAM]
+    for (varType : order) {
+      for (VariableDeclaration variableDecl : model.variableDeclarations.filter[it.variableType == varType]) {
+        val ConstructorArgument argument = new ConstructorArgument(variableDecl.type, variableDecl.variableType == VariableType.PARAM)
+        result.add(argument)
       }
-      val ConstructorArgument argument = new ConstructorArgument(typeRef(type), isParam)
-      result.add(argument)
     }
+    println("result-size = " + result.size())
     return result
   }
   
