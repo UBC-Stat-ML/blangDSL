@@ -363,6 +363,10 @@ class SingleBlangModelInferrer {
       val Resource res = distribution.eResource.resourceSet.getResource(uri, false)
       println("===>" + res)   //// looks good: org.eclipse.xtext.xbase.resource.BatchLinkableResource@3d457ed uri='platform:/resource/blangProjectTemplate/src/main/java/blangProjectTemplate/Bernoulli.bl'
       
+      println("contents: " + res.contents)
+      val BlangModel model = res.contents.iterator.next() as BlangModel
+      println("law node size: " + model.lawNodes.size())   //// works! = 1
+      
       val EClass eClass = e.EClass as EClass
       // TODO: better warning if more than one match
 //      System.err.println( e. )
