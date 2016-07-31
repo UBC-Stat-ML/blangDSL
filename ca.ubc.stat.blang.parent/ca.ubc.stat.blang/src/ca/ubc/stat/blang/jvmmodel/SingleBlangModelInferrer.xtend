@@ -34,8 +34,15 @@ import java.util.LinkedHashMap
 import ca.ubc.stat.blang.blangDsl.FactorDeclaration
 import blang.core.SupportFactor
 import org.eclipse.xtext.common.types.JvmFormalParameter
-import ca.ubc.stat.blang.StaticUtils.ConstructorArgument
 import org.eclipse.xtext.common.types.JvmType
+import org.eclipse.xtext.resource.IResourceDescriptionsProvider
+import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.common.types.JvmConstructor
+import org.eclipse.xtext.common.types.JvmAnnotationReference
+import java.lang.reflect.Constructor
+import java.lang.reflect.Parameter
+import java.lang.annotation.Annotation
+import java.util.Collections
 
 @Data
 class SingleBlangModelInferrer {
@@ -48,8 +55,9 @@ class SingleBlangModelInferrer {
 
   // extension facilities provided by xtext
   extension private JvmTypesBuilder _typeBuilder
-  extension private JvmAnnotationReferenceBuilder _annotationTypesBuilder;
-  extension private JvmTypeReferenceBuilder _typeReferenceBuilder;
+  extension private JvmAnnotationReferenceBuilder _annotationTypesBuilder
+  extension private JvmTypeReferenceBuilder _typeReferenceBuilder
+  extension private  IResourceDescriptionsProvider index
   
   def void infer() {
     setupClass()
@@ -157,17 +165,26 @@ class SingleBlangModelInferrer {
     BlangScope scope, 
     List<Dependency> dependencies
   ) {
+//    val rd = irdProvider.getResourceDescriptions(model.eResource.resourceSet)
+//    for (e : rd.getExportedObjects(distribution.distributionType.eClass, QualifiedName.create(distribution.distributionType.qualifiedName), false)) {
+//      println("--> " + (e.EObjectOrProxy as JvmDeclaredType).
+//    }
+//    val List<ConstructorArgument> arguments = StaticUtils::constructorParameters(distribution)
+//    '''
+//    new «distribution.distributionType»()
+//    '''
     val JvmType typeRef = distribution.distributionType
-    val List<ConstructorArgument> arguments = StaticUtils::constructorParameters(distribution)
+    val List<ConstructorArgument> arguments = constructorParameters(distribution)
     val int nVars = arguments.filter[!param].size()
     return '''
       new «typeRef»(
       «FOR index : 0 ..< arguments.size() SEPARATOR ", "»
-      «IF arguments.get(index).param»
-      null
-      «ELSE»
-      «distribution.generatedVariables.get(index)»    /////// /FIXME : THIS SHOULD BE XEXPRESSED!!!
-      «ENDIF»
+      /*«arguments.get(index)»*/
+«««      «IF arguments.get(index).param»
+«««      null
+«««      «ELSE»
+«««      «distribution.generatedVariables.get(index)»    /////// /FIXME : THIS SHOULD BE XEXPRESSED!!!
+«««      «ENDIF»
       «ENDFOR»
       )
     '''
@@ -294,5 +311,69 @@ class SingleBlangModelInferrer {
     val int newSerialId = _generatedIds.size()
     _generatedIds.put(hashCode, newSerialId)
     return StaticUtils::generatedMethodName("" + newSerialId)
+  }
+  
+  def private List<ConstructorArgument> constructorParameters(InstantiatedDistribution distribution) {
+    try { return _constructorParametersFromXtextIndex(distribution) } catch (Exception e) { System.err.println(e) }
+    try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) { System.err.println(e) }
+    return Collections.emptyList()   // TODO: error handling
+  }
+  
+  def private List<ConstructorArgument> _constructorParametersFromXtextIndex(InstantiatedDistribution distribution) {
+    val descriptions = index.getResourceDescriptions(distribution.eResource.resourceSet)
+    var JvmDeclaredType type = null
+    for (e : descriptions.getExportedObjects(distribution.distributionType.eClass, QualifiedName.create(distribution.distributionType.qualifiedName), false)) {
+      type = e.EObjectOrProxy as JvmDeclaredType
+      // TODO: better warning if more than one match
+      System.err.println("Warning: more than one match in constructorParametersFromXtextIndex()")
+    }
+    val JvmConstructor constructor = {
+      val Iterable<JvmConstructor> constructors = type.declaredConstructors
+      if (constructors.size() !== 1) {
+        throw new RuntimeException('''Expected size 1 but got «constructors.size()»''')
+      }
+      constructors.iterator.next()
+    }
+    val List<ConstructorArgument> result = new ArrayList
+    for (JvmFormalParameter parameter : constructor.parameters) {
+      var isParam = false
+      for (JvmAnnotationReference annotation : parameter.annotations) {
+        if (annotation.annotation.simpleName === Param.simpleName) {
+          isParam = true
+        }
+      }
+      val ConstructorArgument argument = new ConstructorArgument(typeRef(type), isParam)
+      result.add(argument)
+    }
+    return result
+  }
+  
+  def private List<ConstructorArgument> _constructorParametersFromJavaObject(InstantiatedDistribution distribution) {
+    val Class<?> distributionClass = Class.forName(distribution.distributionType.identifier)
+    val Constructor<?> constructor = {
+      val Constructor<?>[] constructors = distributionClass.constructors
+      if (constructors.size() !== 1) {
+        throw new RuntimeException
+      }
+      constructors.get(0)  
+    }
+    val List<ConstructorArgument> result = new ArrayList
+    for (Parameter parameter : constructor.parameters) {
+      var isParam = false
+      for (Annotation annotation : parameter.annotations) {
+        if (annotation.annotationType == Param) {
+          isParam = true
+        }
+      }
+      val ConstructorArgument argument = new ConstructorArgument(typeRef(parameter.getType()), isParam)
+      result.add(argument)
+    }
+    return result
+  }
+  
+  @Data
+  static class ConstructorArgument {
+    val JvmTypeReference boxedClass
+    val boolean isParam
   }
 }

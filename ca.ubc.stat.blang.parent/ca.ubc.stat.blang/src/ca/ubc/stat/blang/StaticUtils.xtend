@@ -11,6 +11,16 @@ import org.eclipse.xtend.lib.annotations.Data
 import java.lang.reflect.Parameter
 import java.lang.annotation.Annotation
 import blang.core.Param
+import org.eclipse.xtext.resource.IResourceDescriptionsProvider
+import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.common.types.JvmDeclaredType
+import org.eclipse.xtext.common.types.JvmConstructor
+import org.eclipse.xtext.common.types.JvmFormalParameter
+import org.eclipse.xtext.common.types.JvmAnnotationReference
+import org.eclipse.xtext.common.types.JvmType
+import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
+import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
+import org.eclipse.xtext.common.types.JvmTypeReference
 
 class StaticUtils {
   
@@ -47,34 +57,4 @@ class StaticUtils {
     }
     return result
   }
-  
-  def static List<ConstructorArgument> constructorParameters(InstantiatedDistribution distribution) {
-    val Class<?> distributionClass = Class.forName(distribution.distributionType.identifier)
-    val Constructor<?> constructor = {
-      val Constructor<?>[] constructors = distributionClass.constructors
-      if (constructors.size() !== 1) {
-        throw new RuntimeException
-      }
-      constructors.get(0)  
-    }
-    val List<ConstructorArgument> result = new ArrayList
-    for (Parameter parameter : constructor.parameters) {
-      var isParam = false
-      for (Annotation annotation : parameter.annotations) {
-        if (annotation.annotationType == Param) {
-          isParam = true
-        }
-      }
-      val ConstructorArgument argument = new ConstructorArgument(parameter.getType(), isParam)
-      result.add(argument)
-    }
-    return result
-  }
-  
-  @Data
-  static class ConstructorArgument {
-    val Class<?> boxedClass
-    val boolean isParam
-  }
-
 }

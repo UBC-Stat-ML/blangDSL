@@ -6,6 +6,11 @@ import org.eclipse.xtext.common.types.JvmDeclaredType
 import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer
 import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
+import org.eclipse.xtext.resource.IResourceDescriptions
+import org.eclipse.xtext.resource.IResourceDescriptionsProvider
+import org.eclipse.emf.common.util.URI
+import java.util.EventObject
+import org.eclipse.emf.ecore.EObject
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -19,6 +24,8 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
      * convenience API to build and initialize JVM types and their members.
      */
     @Inject extension JvmTypesBuilder _typeBuilder
+    
+    @Inject extension IResourceDescriptionsProvider _irdProvider
 
     /**
      * The dispatch method {@code infer} is called for each instance of the
@@ -46,10 +53,33 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
      *            <code>true</code>.
      */
     def dispatch void infer(BlangModel model, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
-        val className = model.eResource.URI.trimFileExtension.lastSegment
-        acceptor.accept(model.toClass(className)) [
-          val singleBlangModelInferrer = new SingleBlangModelInferrer(model, it, _typeBuilder, _annotationTypesBuilder, _typeReferenceBuilder)
-          singleBlangModelInferrer.infer()
-        ]
-    }
+      
+//      val rd = irdProvider.getResourceDescriptions(model.eResource.resourceSet)
+//      
+//      
+//      rd.getExportedObjectsByType(model.eClass)
+//      
+//      println("-- BEG --")
+//      for (e : rd.allResourceDescriptions)
+//        println(e)
+//      println("-- MID --")
+//      for (e : rd
+//        .getResourceDescription(URI.createURI("platform:/resource/blangProjectTemplate/src/main/java/blangProjectTemplate/Normal.bl"))
+//        .getExportedObjects()) {
+//        println(e)
+//        val EObject obj = e.EObjectOrProxy
+//        if (obj === null) {
+//          println("null eobj")
+//        } else {
+//          println(obj.class)
+//        }
+//      }
+//      println("-- END --")
+      
+      val className = model.eResource.URI.trimFileExtension.lastSegment
+      acceptor.accept(model.toClass(className)) [
+        val singleBlangModelInferrer = new SingleBlangModelInferrer(model, it, _typeBuilder, _annotationTypesBuilder, _typeReferenceBuilder, _irdProvider)
+        singleBlangModelInferrer.infer()
+      ]
+  }
 }
