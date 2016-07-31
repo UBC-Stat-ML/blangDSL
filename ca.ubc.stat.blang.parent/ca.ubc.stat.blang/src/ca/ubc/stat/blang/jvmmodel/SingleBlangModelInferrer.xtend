@@ -43,6 +43,14 @@ import java.lang.reflect.Constructor
 import java.lang.reflect.Parameter
 import java.lang.annotation.Annotation
 import java.util.Collections
+import org.eclipse.xtext.resource.IResourceDescription
+import org.eclipse.xtext.resource.IResourceDescriptions
+import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.emf.ecore.impl.EClassifierImpl
+import org.eclipse.emf.ecore.impl.EClassImpl
+import org.eclipse.emf.ecore.EClass
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.common.util.URI
 
 @Data
 class SingleBlangModelInferrer {
@@ -320,12 +328,47 @@ class SingleBlangModelInferrer {
   }
   
   def private List<ConstructorArgument> _constructorParametersFromXtextIndex(InstantiatedDistribution distribution) {
-    val descriptions = index.getResourceDescriptions(distribution.eResource.resourceSet)
+    val IResourceDescriptions descriptions = index.getResourceDescriptions(distribution.eResource.resourceSet)
     var JvmDeclaredType type = null
+    
+//    // DEBUG
+//    println("-- BEG --")
+//    for (IResourceDescription descr : descriptions.allResourceDescriptions) {
+//      println(descr)
+//      for (IEObjectDescription obj : descr.exportedObjects) {
+//        obj.EObjectOrProxy
+//      }
+//      println("*") 
+//    }
+//    println("-- END --")
+//    // END-DEBUG
+    //distribution.eResource.resourceSet.resources.map[it.allContents.filter(distribution.distributionType.)]
+    
+    println("new test")
+    for (Resource r : distribution.eResource.resourceSet.resources) {
+      println(r)
+      println(" " + r.contents)
+      println("*")
+    }
+    println("end new test")
+    
+    
+    
     for (e : descriptions.getExportedObjects(distribution.distributionType.eClass, QualifiedName.create(distribution.distributionType.qualifiedName), false)) {
-      type = e.EObjectOrProxy as JvmDeclaredType
+      if (type !== null) {
+        System.err.println("Warning: more than one match in constructorParametersFromXtextIndex()")
+      }
+      val uri = URI.createURI(e.EObjectURI.toString().replaceFirst("[.]bl.*", ".bl"))
+      println("-->" + uri)
+      val Resource res = distribution.eResource.resourceSet.getResource(uri, false)
+      println("===>" + res)   //// looks good: org.eclipse.xtext.xbase.resource.BatchLinkableResource@3d457ed uri='platform:/resource/blangProjectTemplate/src/main/java/blangProjectTemplate/Bernoulli.bl'
+      
+      val EClass eClass = e.EClass as EClass
       // TODO: better warning if more than one match
-      System.err.println("Warning: more than one match in constructorParametersFromXtextIndex()")
+//      System.err.println( e. )
+      System.err.println("is proxy?" + eClass.eIsProxy)
+//      System.err.println( "# of declared constructors:" + type.declaredConstructors.size() )
+//      System.err.println( "# of declared fields:" + type.declaredFields.size() )
     }
     val JvmConstructor constructor = {
       val Iterable<JvmConstructor> constructors = type.declaredConstructors
@@ -334,6 +377,10 @@ class SingleBlangModelInferrer {
       }
       constructors.iterator.next()
     }
+    
+    if (type === null)
+      throw new RuntimeException 
+    
     val List<ConstructorArgument> result = new ArrayList
     for (JvmFormalParameter parameter : constructor.parameters) {
       var isParam = false
