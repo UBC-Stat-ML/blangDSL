@@ -2,6 +2,8 @@ grammar ca.ubc.stat.blang.BlangDsl with org.eclipse.xtext.xbase.Xbase
 
 generate blangDsl "http://www.ubc.ca/stat/blang/BlangDsl"
 
+import "http://www.eclipse.org/xtext/common/JavaVMTypes" as jvmTypes
+
 BlangModel:
 	{BlangModel}
 	('package' packageName=QualifiedName)?
@@ -59,7 +61,7 @@ InstantiatedDistribution:
 	// dependencies on other variables
 	('|' (dependencies += Dependency) (',' dependencies += Dependency)* )?  
 	// type of the distribution
-	'~' distributionType = JvmTypeReference 
+	'~' distributionType = [jvmTypes::JvmType|QualifiedName] 
 	// arguments in the constructor of the distribution
 	'('
 	  ( (arguments += XExpression) ( ',' arguments += XExpression)* )?

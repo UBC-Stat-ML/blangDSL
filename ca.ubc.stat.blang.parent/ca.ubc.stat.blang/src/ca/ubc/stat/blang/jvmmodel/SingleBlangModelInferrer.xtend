@@ -34,6 +34,8 @@ import java.util.LinkedHashMap
 import ca.ubc.stat.blang.blangDsl.FactorDeclaration
 import blang.core.SupportFactor
 import org.eclipse.xtext.common.types.JvmFormalParameter
+import ca.ubc.stat.blang.StaticUtils.ConstructorArgument
+import org.eclipse.xtext.common.types.JvmType
 
 @Data
 class SingleBlangModelInferrer {
@@ -155,7 +157,20 @@ class SingleBlangModelInferrer {
     BlangScope scope, 
     List<Dependency> dependencies
   ) {
-//    xxx;
+    val JvmType typeRef = distribution.distributionType
+    val List<ConstructorArgument> arguments = StaticUtils::constructorParameters(distribution)
+    val int nVars = arguments.filter[!param].size()
+    return '''
+      new «typeRef»(
+      «FOR index : 0 ..< arguments.size() SEPARATOR ", "»
+      «IF arguments.get(index).param»
+      null
+      «ELSE»
+      «distribution.generatedVariables.get(index)»    /////// /FIXME : THIS SHOULD BE XEXPRESSED!!!
+      «ENDIF»
+      «ENDFOR»
+      )
+    '''
   }
   
   def private dispatch StringConcatenationClient componentMethodBody(ForLoop forLoop, BlangScope scope) {
@@ -222,7 +237,7 @@ class SingleBlangModelInferrer {
     val String generatedName = generatedMethodName(distribution)
     val BlangScope restrictedScope = scope.restrict(distribution.dependencies)
     
-    output.members += distribution.toMethod(generatedName, distribution.distributionType) [
+    output.members += distribution.toMethod(generatedName, typeRef(distribution.distributionType)) [
       static = true
       for (BlangVariable variable : restrictedScope.variables()) {
         parameters += distribution.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder))
