@@ -5,22 +5,10 @@ import ca.ubc.stat.blang.blangDsl.InitializerDependency
 import ca.ubc.stat.blang.blangDsl.VariableType
 import java.util.ArrayList
 import java.util.List
-import ca.ubc.stat.blang.blangDsl.InstantiatedDistribution
-import java.lang.reflect.Constructor
-import org.eclipse.xtend.lib.annotations.Data
-import java.lang.reflect.Parameter
-import java.lang.annotation.Annotation
-import blang.core.Param
-import org.eclipse.xtext.resource.IResourceDescriptionsProvider
-import org.eclipse.xtext.naming.QualifiedName
-import org.eclipse.xtext.common.types.JvmDeclaredType
-import org.eclipse.xtext.common.types.JvmConstructor
-import org.eclipse.xtext.common.types.JvmFormalParameter
-import org.eclipse.xtext.common.types.JvmAnnotationReference
-import org.eclipse.xtext.common.types.JvmType
-import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
-import org.eclipse.xtext.common.types.JvmTypeReference
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtend2.lib.StringConcatenationClient
+import org.eclipse.xtend2.lib.StringConcatenation
 
 class StaticUtils {
   
@@ -56,5 +44,14 @@ class StaticUtils {
       }
     }
     return result
+  }
+  
+  def static expressionText(EObject ex) {
+    NodeModelUtils.getTokenText(NodeModelUtils.getNode(ex))
+  }
+  
+  def static void eagerlyEvaluate(StringConcatenationClient lazyString) {
+    val StringConcatenation dummy = new StringConcatenation()
+    dummy.append(lazyString, "")
   }
 }
