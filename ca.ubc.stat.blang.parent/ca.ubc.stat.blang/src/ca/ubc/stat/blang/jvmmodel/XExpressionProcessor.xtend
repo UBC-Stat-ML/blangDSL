@@ -4,8 +4,6 @@ import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtend2.lib.StringConcatenationClient
 import org.eclipse.xtext.xbase.XExpression
 import org.eclipse.xtext.common.types.JvmTypeReference
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import java.util.Map
 import java.util.LinkedHashMap
 import ca.ubc.stat.blang.StaticUtils

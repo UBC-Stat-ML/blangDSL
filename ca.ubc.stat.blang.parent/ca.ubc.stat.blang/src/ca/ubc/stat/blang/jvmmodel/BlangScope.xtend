@@ -1,19 +1,17 @@
 package ca.ubc.stat.blang.jvmmodel
 
+import ca.ubc.stat.blang.StaticUtils
+import ca.ubc.stat.blang.blangDsl.Dependency
+import ca.ubc.stat.blang.blangDsl.InitializerDependency
+import ca.ubc.stat.blang.blangDsl.SimpleDependency
+import ca.ubc.stat.blang.blangDsl.VariableDeclaration
+import com.google.common.collect.Iterables
+import java.util.LinkedHashMap
+import java.util.List
+import java.util.function.Supplier
 import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtext.common.types.JvmTypeReference
-import ca.ubc.stat.blang.blangDsl.VariableDeclaration
-import ca.ubc.stat.blang.StaticUtils
-import java.util.ArrayList
-import com.google.common.collect.Iterables
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
-import java.util.function.Supplier
-import org.eclipse.emf.common.util.EList
-import ca.ubc.stat.blang.blangDsl.Dependency
-import java.util.List
-import ca.ubc.stat.blang.blangDsl.SimpleDependency
-import java.util.LinkedHashMap
-import ca.ubc.stat.blang.blangDsl.InitializerDependency
 
 @Data
 class BlangScope {

@@ -3,6 +3,7 @@ package ca.ubc.stat.blang.jvmmodel
 import blang.core.Model
 import blang.core.ModelComponent
 import blang.core.Param
+import blang.core.SupportFactor
 import blang.factors.LogScaleFactor
 import ca.ubc.stat.blang.StaticUtils
 import ca.ubc.stat.blang.blangDsl.BlangModel
@@ -14,47 +15,31 @@ import ca.ubc.stat.blang.blangDsl.InstantiatedDistribution
 import ca.ubc.stat.blang.blangDsl.LawNode
 import ca.ubc.stat.blang.blangDsl.LogScaleFactorDeclaration
 import ca.ubc.stat.blang.blangDsl.VariableDeclaration
+import ca.ubc.stat.blang.blangDsl.VariableType
 import ca.ubc.stat.blang.jvmmodel.BlangScope.BlangVariable
+import java.lang.annotation.Annotation
+import java.lang.reflect.Constructor
+import java.lang.reflect.Method
+import java.lang.reflect.Parameter
 import java.util.ArrayList
 import java.util.Collection
 import java.util.List
-import org.eclipse.emf.ecore.EObject
+import java.util.function.Supplier
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtend2.lib.StringConcatenationClient
 import org.eclipse.xtext.common.types.JvmDeclaredType
+import org.eclipse.xtext.common.types.JvmFormalParameter
 import org.eclipse.xtext.common.types.JvmTypeReference
 import org.eclipse.xtext.common.types.JvmVisibility
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.eclipse.xtext.xbase.XExpression
+import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.xtext.resource.IResourceDescriptions
+import org.eclipse.xtext.resource.IResourceDescriptionsProvider
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import java.util.Map
-import java.util.LinkedHashMap
-import ca.ubc.stat.blang.blangDsl.FactorDeclaration
-import blang.core.SupportFactor
-import org.eclipse.xtext.common.types.JvmFormalParameter
-import org.eclipse.xtext.common.types.JvmType
-import org.eclipse.xtext.resource.IResourceDescriptionsProvider
-import org.eclipse.xtext.naming.QualifiedName
-import org.eclipse.xtext.common.types.JvmConstructor
-import org.eclipse.xtext.common.types.JvmAnnotationReference
-import java.lang.reflect.Constructor
-import java.lang.reflect.Parameter
-import java.lang.annotation.Annotation
-import java.util.Collections
-import org.eclipse.xtext.resource.IResourceDescription
-import org.eclipse.xtext.resource.IResourceDescriptions
-import org.eclipse.xtext.resource.IEObjectDescription
-import org.eclipse.emf.ecore.impl.EClassifierImpl
-import org.eclipse.emf.ecore.impl.EClassImpl
-import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.common.util.URI
-import ca.ubc.stat.blang.blangDsl.VariableType
-import java.util.function.Supplier
-import java.lang.reflect.TypeVariable
-import java.lang.reflect.Method
 
 class SingleBlangModelInferrer {
 
@@ -175,27 +160,18 @@ class SingleBlangModelInferrer {
   def private dispatch StringConcatenationClient instantiateFactor(InstantiatedDistribution distribution, BlangScope scope, BlangScope parentScope) {
     // TODO: check # args match!!!
     val List<ConstructorArgument> constructorArguments = constructorParameters(distribution)
-    println(constructorArguments)
-    return '''null'''
-//    if (constructorArguments === null) {
-//      return '''
-//        // throw new RuntimeException("invokation of «distribution.distributionType» failed");"
-//      '''
-//    }
-//    val int nRandom = constructorArguments.filter[!param].size()
-//    return '''
-//      new «distribution.distributionType»(
-//        «FOR int index : 0 ..< constructorArguments.size() SEPARATOR ", "»
-//        «IF constructorArguments.get(index).param»
-//«««        null /* case = first, index = «index - nRandom», size = «distribution.arguments.size()»  */
-//        «xExpressions.process_via_functionalInterface(distribution.arguments.get(index - nRandom), scope, constructorArguments.get(index).deboxedType, typeRef(Supplier, constructorArguments.get(index).deboxedType))»
-//        «ELSE»
-//«««        null /* case = second, index = «index», size = «distribution.generatedVariables.size()»  */
-//        «xExpressions.process(distribution.generatedVariables.get(index), parentScope, constructorArguments.get(index).deboxedType)»
-//        «ENDIF»
-//        «ENDFOR»
-//      )
-//    '''
+    val int nRandom = constructorArguments.filter[!param].size()
+    return '''
+      new «distribution.distributionType»(
+        «FOR int index : 0 ..< constructorArguments.size() SEPARATOR ", "»
+        «IF constructorArguments.get(index).param»
+        «xExpressions.process_via_functionalInterface(distribution.arguments.get(index - nRandom), scope, constructorArguments.get(index).deboxedType, typeRef(Supplier, constructorArguments.get(index).deboxedType))»
+        «ELSE»
+        «xExpressions.process(distribution.generatedVariables.get(index), parentScope, constructorArguments.get(index).deboxedType)»
+        «ENDIF»
+        «ENDFOR»
+      )
+    '''
   }
   
   def private dispatch StringConcatenationClient componentMethodBody(ForLoop forLoop, BlangScope scope) {
