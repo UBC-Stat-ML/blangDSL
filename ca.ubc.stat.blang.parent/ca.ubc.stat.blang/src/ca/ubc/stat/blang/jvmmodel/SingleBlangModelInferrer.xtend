@@ -41,14 +41,19 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 
+/**
+ * SingleBlangModelInferrer gets instantiated for each model being inferred.
+ */
 class SingleBlangModelInferrer {
 
   // input: an AST for a single model
   val private BlangModel model
 
-  // output: a generated 
+  // output: a generated type
   val private JvmDeclaredType output
   
+  // used to work around some xText limitations when
+  // working with XExpressions 
   val private XExpressionProcessor xExpressions
 
   // extension facilities provided by xtext
