@@ -23,7 +23,7 @@ class XExpressionProcessor {
   val extension private JvmTypesBuilder _typeBuilder
   val extension private JvmTypeReferenceBuilder _typeReferenceBuilder
   
-  def void endMethodGenerationPhase() {
+  def void endAuxiliaryMethodGenerationPhase() {
     phaseTracker.endMethodGenerationPhase()
   }
   
