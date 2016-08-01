@@ -53,6 +53,8 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.common.util.URI
 import ca.ubc.stat.blang.blangDsl.VariableType
 import java.util.function.Supplier
+import java.lang.reflect.TypeVariable
+import java.lang.reflect.Method
 
 class SingleBlangModelInferrer {
 
@@ -106,7 +108,9 @@ class SingleBlangModelInferrer {
       for (boolean isParam : variablesOrder) {
         for (BlangVariable variable : scope.variables.filter[it.param === isParam]) {
           val JvmFormalParameter param = model.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder)) 
-          param.annotations += annotationRef(Param) 
+          if (isParam === true) {
+            param.annotations += annotationRef(Param) 
+          }
           parameters += param
         }
       }
@@ -154,41 +158,43 @@ class SingleBlangModelInferrer {
       «ENDFOR»
       // Construction and addition of the factor/model:
       «COMPONENTS_LIST_NAME».add(
-        «IF node instanceof InstantiatedDistribution»
-        null // TODO
-«««        «distributionInstantiationString(node as InstantiatedDistribution, scope, dependencies)»
-        «ELSE»
-        null // TODO
-«««        «generatedName»(«FOR BlangVariable variable : restrictedScope.variables() SEPARATOR ", "»«variable.boxedName()»«ENDFOR»)
-        «ENDIF»
+        «instantiateFactor(node, scope.restrict(dependencies), scope)»
       );
     }
     '''
   }
   
-//  def private StringConcatenationClient distributionInstantiationString(
-//    InstantiatedDistribution distribution, 
-//    BlangScope scope, 
-//    List<Dependency> dependencies
-//  ) {
-//    val JvmType typeRef = distribution.distributionType
-//    val List<ConstructorArgument> arguments = constructorParameters(distribution)
-//    val BlangScope restrictedScope = scope.restrict(distribution.dependencies)
-//    val int nRandom = arguments.filter[!param].size()
-//    return '''
-//      new «typeRef»(
-//      «FOR index : 0 ..< arguments.size() SEPARATOR ", "»
-//      «IF arguments.get(index).param»
-//      // Parameter xExpressions are evaluated lazily
-//      «generatedMethodName(distribution, index - nRandom)»(«FOR BlangVariable variable : restrictedScope.variables() SEPARATOR ", "»«variable.boxedName()»«ENDFOR»)
-//      «ELSE»
-//      // Random variable xExpressions are evaluated at initialization
-//      «xExpressionGeneratedMethodCall(distribution.generatedVariables.get(index), scope, arguments.get(index).boxedType)»
-//      «ENDIF»
-//      «ENDFOR»
-//      )
-//    '''
-//  }
+  def private dispatch StringConcatenationClient instantiateFactor(LogScaleFactorDeclaration logScaleFactor, BlangScope scope, BlangScope parentScope) {
+    return '''«xExpressions.process_via_functionalInterface(logScaleFactor.contents.factorBody, scope, typeRef(Double), typeRef(LogScaleFactor))»'''
+  }
+  
+  def private dispatch StringConcatenationClient instantiateFactor(IndicatorDeclaration indic, BlangScope scope, BlangScope parentScope) {
+    return '''«xExpressions.process_via_constructionOfAnotherType(indic.contents.factorBody, scope, typeRef(Boolean), typeRef(SupportFactor))»'''
+  }
+  
+  def private dispatch StringConcatenationClient instantiateFactor(InstantiatedDistribution distribution, BlangScope scope, BlangScope parentScope) {
+    // TODO: check # args match!!!
+    val List<ConstructorArgument> constructorArguments = constructorParameters(distribution)
+    if (constructorArguments === null) {
+      return '''
+        // throw new RuntimeException("invokation of «distribution.distributionType» failed");"
+      '''
+    }
+    val int nRandom = constructorArguments.filter[!param].size()
+    return '''
+      new «distribution.distributionType»(
+        «FOR int index : 0 ..< constructorArguments.size() SEPARATOR ", "»
+        «IF constructorArguments.get(index).param»
+«««        null /* case = first, index = «index - nRandom», size = «distribution.arguments.size()»  */
+        «xExpressions.process_via_functionalInterface(distribution.arguments.get(index - nRandom), scope, constructorArguments.get(index).deboxedType, typeRef(Supplier, constructorArguments.get(index).deboxedType))»
+        «ELSE»
+«««        null /* case = second, index = «index», size = «distribution.generatedVariables.size()»  */
+        «xExpressions.process(distribution.generatedVariables.get(index), parentScope, constructorArguments.get(index).deboxedType)»
+        «ENDIF»
+        «ENDFOR»
+      )
+    '''
+  }
   
   def private dispatch StringConcatenationClient componentMethodBody(ForLoop forLoop, BlangScope scope) {
     val BlangVariable iteratorVariable = new BlangVariable(forLoop.iteratorType, forLoop.name, false)
@@ -218,8 +224,9 @@ class SingleBlangModelInferrer {
   
   def private List<ConstructorArgument> constructorParameters(InstantiatedDistribution distribution) {
     try { return _constructorParametersFromXtextIndex(distribution) } catch (Exception e) { e.printStackTrace }
-    try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) {  }
-    return Collections.emptyList()   // TODO: error handling
+    System.err.println("Note: backing up to loading from the class path")
+    try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) { e.printStackTrace }
+    return null   // TODO: error handling
   }
   
   def private <T> T first(Iterable<T> iterable) {
@@ -236,32 +243,21 @@ class SingleBlangModelInferrer {
     // get URI using the index
     val IEObjectDescription objectDescription = first(descriptions.getExportedObjects(distribution.distributionType.eClass, QualifiedName.create(distribution.distributionType.qualifiedName), false))
     val uri = URI.createURI(objectDescription.EObjectURI.toString().replaceFirst("[.]bl[#].*", ".bl"))
-//    println("uri = " + uri)
     
     // load object if possible
     val Resource resource = distribution.eResource.resourceSet.getResource(uri, false)
-//    println("res = " + resource)
-//    println("res-contents = " + resource.contents.filter[it instanceof BlangModel])
     val BlangModel model = first(resource.contents.filter[it instanceof BlangModel]) as BlangModel
-//    println("nVars-in-index = " + model.variableDeclarations.size())
     
     // infer constructor ordering
     val List<ConstructorArgument> result = new ArrayList
     val VariableType[] order = #[VariableType.RANDOM, VariableType.PARAM]
     for (varType : order) {
       for (VariableDeclaration variableDecl : model.variableDeclarations.filter[it.variableType == varType]) {
-        val boolean isParam = variableDecl.variableType == VariableType.PARAM
-        val JvmTypeReference typeRef = 
-          if (isParam) {
-            typeRef(Supplier, variableDecl.type)
-          } else {
-            variableDecl.type
-          }
-        val ConstructorArgument argument = new ConstructorArgument(typeRef, isParam)
+        val boolean isParam = StaticUtils::isParam(variableDecl.variableType)
+        val ConstructorArgument argument = new ConstructorArgument(variableDecl.type, isParam)
         result.add(argument)
       }
     }
-//    println("result-size = " + result.size())
     return result
   }
   
@@ -272,7 +268,7 @@ class SingleBlangModelInferrer {
       if (constructors.size() !== 1) {
         throw new RuntimeException
       }
-      constructors.get(0)  
+      constructors.get(0)
     }
     val List<ConstructorArgument> result = new ArrayList
     for (Parameter parameter : constructor.parameters) {
@@ -282,15 +278,33 @@ class SingleBlangModelInferrer {
           isParam = true
         }
       }
-      val ConstructorArgument argument = new ConstructorArgument(typeRef(parameter.getType()), isParam)
+      val JvmTypeReference typeRef = 
+        if (isParam)
+          extractSupplierType(parameter.getType())
+        else 
+          typeRef(parameter.getType())
+          
+      val ConstructorArgument argument = new ConstructorArgument(typeRef, isParam)
       result.add(argument)
     }
     return result
   }
   
+  def JvmTypeReference extractSupplierType(Class<?> supplier) {
+    if (!Supplier.isAssignableFrom(supplier)) {
+      throw new RuntimeException
+    }
+    for (Method method : supplier.methods) {
+      if (method.name === "get") {
+        return typeRef(method.returnType)
+      }
+    }
+    throw new RuntimeException
+  }
+  
   @Data
   static class ConstructorArgument {
-    val JvmTypeReference boxedType
+    val JvmTypeReference deboxedType
     val boolean isParam
   }
   
