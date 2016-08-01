@@ -175,25 +175,27 @@ class SingleBlangModelInferrer {
   def private dispatch StringConcatenationClient instantiateFactor(InstantiatedDistribution distribution, BlangScope scope, BlangScope parentScope) {
     // TODO: check # args match!!!
     val List<ConstructorArgument> constructorArguments = constructorParameters(distribution)
-    if (constructorArguments === null) {
-      return '''
-        // throw new RuntimeException("invokation of «distribution.distributionType» failed");"
-      '''
-    }
-    val int nRandom = constructorArguments.filter[!param].size()
-    return '''
-      new «distribution.distributionType»(
-        «FOR int index : 0 ..< constructorArguments.size() SEPARATOR ", "»
-        «IF constructorArguments.get(index).param»
-«««        null /* case = first, index = «index - nRandom», size = «distribution.arguments.size()»  */
-        «xExpressions.process_via_functionalInterface(distribution.arguments.get(index - nRandom), scope, constructorArguments.get(index).deboxedType, typeRef(Supplier, constructorArguments.get(index).deboxedType))»
-        «ELSE»
-«««        null /* case = second, index = «index», size = «distribution.generatedVariables.size()»  */
-        «xExpressions.process(distribution.generatedVariables.get(index), parentScope, constructorArguments.get(index).deboxedType)»
-        «ENDIF»
-        «ENDFOR»
-      )
-    '''
+    println(constructorArguments)
+    return '''null'''
+//    if (constructorArguments === null) {
+//      return '''
+//        // throw new RuntimeException("invokation of «distribution.distributionType» failed");"
+//      '''
+//    }
+//    val int nRandom = constructorArguments.filter[!param].size()
+//    return '''
+//      new «distribution.distributionType»(
+//        «FOR int index : 0 ..< constructorArguments.size() SEPARATOR ", "»
+//        «IF constructorArguments.get(index).param»
+//«««        null /* case = first, index = «index - nRandom», size = «distribution.arguments.size()»  */
+//        «xExpressions.process_via_functionalInterface(distribution.arguments.get(index - nRandom), scope, constructorArguments.get(index).deboxedType, typeRef(Supplier, constructorArguments.get(index).deboxedType))»
+//        «ELSE»
+//«««        null /* case = second, index = «index», size = «distribution.generatedVariables.size()»  */
+//        «xExpressions.process(distribution.generatedVariables.get(index), parentScope, constructorArguments.get(index).deboxedType)»
+//        «ENDIF»
+//        «ENDFOR»
+//      )
+//    '''
   }
   
   def private dispatch StringConcatenationClient componentMethodBody(ForLoop forLoop, BlangScope scope) {
