@@ -1,5 +1,5 @@
 package blang.annotations
 
-annotation BlangVariable {
+annotation DeboxedName {
   String value
 }

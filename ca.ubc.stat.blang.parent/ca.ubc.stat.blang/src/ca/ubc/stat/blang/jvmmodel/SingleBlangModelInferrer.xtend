@@ -41,6 +41,7 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.eclipse.xtext.common.types.JvmAnnotationReference
+import blang.annotations.DeboxedName
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -102,7 +103,7 @@ class SingleBlangModelInferrer {
           if (isParam === true) {
             param.annotations += annotationRef(Param) 
           }
-          param.annotations += annotationRef(BlangVariable, variable.deboxedName)
+          param.annotations += annotationRef(DeboxedName, variable.deboxedName)
           parameters += param
         }
       }
