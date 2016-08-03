@@ -2,7 +2,7 @@ package ca.ubc.stat.blang.jvmmodel
 
 import blang.core.Model
 import blang.core.ModelComponent
-import blang.core.Param
+import blang.annotations.Param
 import blang.core.SupportFactor
 import blang.factors.LogScaleFactor
 import ca.ubc.stat.blang.StaticUtils
@@ -40,6 +40,7 @@ import org.eclipse.xtext.resource.IResourceDescriptionsProvider
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
+import org.eclipse.xtext.common.types.JvmAnnotationReference
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -101,6 +102,7 @@ class SingleBlangModelInferrer {
           if (isParam === true) {
             param.annotations += annotationRef(Param) 
           }
+          param.annotations += annotationRef(BlangVariable, variable.deboxedName)
           parameters += param
         }
       }
@@ -108,6 +110,14 @@ class SingleBlangModelInferrer {
         «FOR BlangVariable variable : scope.variables»
         this.«variable.boxedName» = «variable.boxedName»;
         «ENDFOR»
+      '''
+      documentation = '''
+        Note: the generated code has the following properties used at runtime:
+          - all arguments are annotated with with BlangVariable annotation
+          - params have @Param also
+          - the order of the arguments is as follows:
+            - first, all the random variables in the order they occur in the blang file
+            - second, all the params in the order they occur in the blang file
       '''
     ]
   }

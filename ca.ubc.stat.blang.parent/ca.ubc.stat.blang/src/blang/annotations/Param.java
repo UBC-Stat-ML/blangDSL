@@ -1,4 +1,4 @@
-package blang.core;
+package blang.annotations;
 
 public @interface Param
 {
