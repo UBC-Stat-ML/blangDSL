@@ -27,7 +27,7 @@ subprojects {
 	apply plugin: 'idea'
 	
 	group = 'ca.ubc.stat.blang'
-	version = '3.2.3'
+	version = '3.2.4'
 	
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
