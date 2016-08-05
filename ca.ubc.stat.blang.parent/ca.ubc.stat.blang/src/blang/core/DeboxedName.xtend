@@ -1,4 +1,4 @@
-package blang.annotations
+package blang.core
 
 import java.lang.annotation.Target
 import java.lang.annotation.ElementType

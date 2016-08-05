@@ -1,4 +1,4 @@
-package blang.annotations;
+package blang.core;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

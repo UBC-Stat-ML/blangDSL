@@ -2,9 +2,7 @@ package ca.ubc.stat.blang.jvmmodel
 
 import blang.core.Model
 import blang.core.ModelComponent
-import blang.annotations.Param
 import blang.core.SupportFactor
-import blang.factors.LogScaleFactor
 import ca.ubc.stat.blang.StaticUtils
 import ca.ubc.stat.blang.blangDsl.BlangModel
 import ca.ubc.stat.blang.blangDsl.Dependency
@@ -40,7 +38,9 @@ import org.eclipse.xtext.resource.IResourceDescriptionsProvider
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import blang.annotations.DeboxedName
+import blang.core.DeboxedName
+import blang.core.Param
+import blang.core.LogScaleFactor
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.

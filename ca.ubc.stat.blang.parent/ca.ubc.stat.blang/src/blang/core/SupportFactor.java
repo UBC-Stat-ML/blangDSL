@@ -1,8 +1,5 @@
 package blang.core;
 
-import blang.factors.LogScaleFactor;
-
-
 /**
  * 
  * It is useful to differentiate support factor from standard factor for at least two reasons:

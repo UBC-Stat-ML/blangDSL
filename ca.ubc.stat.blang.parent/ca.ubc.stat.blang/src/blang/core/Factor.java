@@ -1,7 +1,4 @@
-package blang.factors;
-
-import blang.core.ModelComponent;
-
+package blang.core;
 
 /**
  * A factor in a factor graph.
