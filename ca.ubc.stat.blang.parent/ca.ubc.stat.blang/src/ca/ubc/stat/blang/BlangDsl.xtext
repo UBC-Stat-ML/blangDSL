@@ -51,7 +51,7 @@ ForLoop:
 // indicator(variance) = variance.doubleValue > 0
 FactorDeclaration:
   '(' ((dependencies += Dependency) (',' dependencies += Dependency)* )? ')' 
-  '=' (factorBody = XBlockExpression)
+  (factorBody = XBlockExpression)
 ;
 
 // y1, y2 | Matrix mean = means.get(z), variance ~ BivariateNormal(mean, [variance ** 2])
