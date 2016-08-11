@@ -18,6 +18,9 @@ class SimpleNormalModelGeneratorTest {
     @Test
     def void simpleNormalModel() {
         '''
+            import ca.ubc.stat.blang.tests.types.Real
+            import ca.ubc.stat.blang.tests.types.Normal
+            
             model {
                 random Real mu
                 random Real y
@@ -30,7 +33,7 @@ class SimpleNormalModelGeneratorTest {
         '''
         import blang.core.Model;
         import blang.core.ModelComponent;
-        import blang.prototype3.Real;
+        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;

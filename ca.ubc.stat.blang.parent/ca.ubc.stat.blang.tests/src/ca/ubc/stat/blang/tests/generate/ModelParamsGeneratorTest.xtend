@@ -12,71 +12,125 @@ import org.junit.runner.RunWith
 @RunWith(XtextRunner)
 @InjectWith(BlangDslInjectorProvider)
 class ModelParamsGeneratorTest {
-	@Inject public TemporaryFolder temporaryFolder
-	@Inject extension CompilationTestHelper
-	
-	@Test
-	def void emptyParams() {
-		'''
-			model {
-			}
-		'''.assertCompilesTo(
-		'''
-		import blang.core.Model;
-		
-		@SuppressWarnings("all")
-		public class MyFile implements Model {
-		}
-		'''
-		)
-	}
-	
+    @Inject public TemporaryFolder temporaryFolder
+    @Inject extension CompilationTestHelper
+    
+    @Test
+    def void emptyParams() {
+        '''
+            model {
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with with BlangVariable annotation
+           *   - params have @Param also
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile() {
+            
+          }
+          
+          /**
+           * A component can be either a distribution, support constraint, or another model  
+           * which recursively defines additional components.
+           */
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            
+            return components;
+          }
+        }
+        '''
+        )
+    }
+    
 
-	
-	@Test
-	def void randomParams() {
-		'''
-			model {
-				random Real mu
-				random Real y
-			}
-		'''.assertCompilesTo(
-		'''
-		import blang.core.Model;
-		import blang.prototype3.Real;
-		
-		@SuppressWarnings("all")
-		public class MyFile implements Model {
-		  public final Real mu;
-		  
-		  public final Real y;
-		  
-		  public MyFile(final Real mu, final Real y) {
-		    this.mu = mu;
-		    this.y = y;
-		  }
-		}
-		'''	
-		)
-	}
-	
-	
+    
+    @Test
+    def void randomParams() {
+        '''
+            import ca.ubc.stat.blang.tests.types.Real
+            
+            model {
+                random Real mu
+                random Real y
+            }
+        '''.assertCompilesTo(
+        '''
+        import blang.core.DeboxedName;
+        import blang.core.Model;
+        import blang.core.ModelComponent;
+        import ca.ubc.stat.blang.tests.types.Real;
+        import java.util.ArrayList;
+        import java.util.Collection;
+        
+        @SuppressWarnings("all")
+        public class MyFile implements Model {
+          private final Real mu;
+          
+          private final Real y;
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with with BlangVariable annotation
+           *   - params have @Param also
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("mu") final Real mu, @DeboxedName("y") final Real y) {
+            this.mu = mu;
+            this.y = y;
+          }
+          
+          /**
+           * A component can be either a distribution, support constraint, or another model  
+           * which recursively defines additional components.
+           */
+          public Collection<ModelComponent> components() {
+            ArrayList<ModelComponent> components = new ArrayList();
+            
+            
+            return components;
+          }
+        }
+        '''    
+        )
+    }
+    
+    
     @Test
     def void simpleNormalModel() {
         '''
+            import ca.ubc.stat.blang.tests.types.Real
+            
             model {
                 random Real mu
                 random Real y
                 
                 laws {
-                	y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
+                    y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
                 }
             }
         '''.assertCompilesTo(
         '''
         import blang.core.Model;
         import blang.core.ModelComponent;
-        import blang.prototype3.Real;
+        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;

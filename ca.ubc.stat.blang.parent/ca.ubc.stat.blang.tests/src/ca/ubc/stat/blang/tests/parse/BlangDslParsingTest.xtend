@@ -59,6 +59,9 @@ class BlangDslParsingTest {
 	@Test
 	def void randomNoDependencies() {
 		val model = '''
+			import ca.ubc.stat.blang.tests.types.Real
+			import ca.ubc.stat.blang.tests.types.Normal
+			
 			model {
 				random Real mu
 				random Real y
@@ -74,6 +77,9 @@ class BlangDslParsingTest {
     @Test
     def void randomOneDependency() {
         val model = '''
+            import ca.ubc.stat.blang.tests.types.Real
+            import ca.ubc.stat.blang.tests.types.Normal
+            
             model {
                 random Real mu
                 random Real y
@@ -89,6 +95,9 @@ class BlangDslParsingTest {
     @Test
     def void randomMultiDependencies() {
         val model = '''
+            import ca.ubc.stat.blang.tests.types.Real
+            import ca.ubc.stat.blang.tests.types.Normal
+            
             model {
                 random Real y
                 param Real test1
@@ -105,7 +114,7 @@ class BlangDslParsingTest {
     @Test
     def void supportFactor() {
         val model = '''
-            import blang.prototype3.Real
+            import ca.ubc.stat.blang.tests.types.Real
             
             model {
                 param Real variance
@@ -121,6 +130,8 @@ class BlangDslParsingTest {
     @Test
     def void supportFactorMultiParam() {
         val model = '''
+            import ca.ubc.stat.blang.tests.types.Real
+            
             model {
                 param Real mean
 
@@ -137,15 +148,17 @@ class BlangDslParsingTest {
     @Test
     def void logFactor() {
         val model = '''
+            import ca.ubc.stat.blang.tests.types.Real
+            
             model {
                 param Real mean
                 
                 param Real variance
                 
-                const double LOG2PI = Math.log(2 * Math.PI)
+                // const double LOG2PI = Math.log(2 * Math.PI)
                 
                 laws {
-                    logf(variance) = { -0.5 * ( Math.log(variance.doubleValue) + LOG2PI ) }
+                    logf(variance) = { -0.5 * ( Math.log(variance.doubleValue) + /* LOG2PI */ Math.log(2 * Math.PI)) }
                 }
             }
         '''.parse
@@ -155,6 +168,8 @@ class BlangDslParsingTest {
     @Test
     def void logFactorMultiParam() {
         val model = '''
+            import ca.ubc.stat.blang.tests.types.Real
+            
             model {
                 param Real mean
                 
