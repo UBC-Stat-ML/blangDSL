@@ -57,14 +57,14 @@ class BlangDslParsingTest {
 	}
 
 	@Test
-	def void randomParams() {
+	def void randomNoDependencies() {
 		val model = '''
 			model {
 				random Real mu
 				random Real y
 				
 				laws {
-					y | Real mean = mu ~ Normal(mean, [mean.doubleValue * 2])
+					y ~ Normal(0, 1)
 				}
 			}
 		'''.parse
@@ -72,8 +72,41 @@ class BlangDslParsingTest {
 	}
 
     @Test
+    def void randomOneDependency() {
+        val model = '''
+            model {
+                random Real mu
+                random Real y
+                
+                laws {
+                    y | Real mean = mu ~ Normal(mean, [mean.doubleValue * 2])
+                }
+            }
+        '''.parse
+        model.assertNoErrors;
+    }
+
+    @Test
+    def void randomMultiDependencies() {
+        val model = '''
+            model {
+                random Real y
+                param Real test1
+                param Real test2
+                
+                laws {
+                    y | Real t1 = test1, Real t2 = test2 ~ Normal(t1, t2)
+                }
+            }
+        '''.parse
+        model.assertNoErrors;
+    }
+
+    @Test
     def void supportFactor() {
         val model = '''
+            import blang.prototype3.Real
+            
             model {
                 param Real variance
                 
