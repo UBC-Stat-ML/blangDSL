@@ -41,6 +41,8 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import blang.core.DeboxedName
 import blang.core.Param
 import blang.core.LogScaleFactor
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
+import org.eclipse.xtext.common.types.JvmOperation
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -92,7 +94,12 @@ class SingleBlangModelInferrer {
   }
   
   def private void generateConstructor(BlangScope scope) {
-    output.members += model.toConstructor [
+    generateConstructor(scope, false)
+    generateConstructor(scope, true)
+  }
+  
+  def private void generateConstructor(BlangScope scope, boolean withConstantParams) {
+    val Procedure1<? super JvmOperation> memberBuilder = [
       visibility = JvmVisibility.PUBLIC
       // Random variables show up earlier in the constructor parameters, then params
       val boolean [] variablesOrder = #[false, true]; // isParam == false, then, isParam == true
@@ -113,13 +120,18 @@ class SingleBlangModelInferrer {
       '''
       documentation = '''
         Note: the generated code has the following properties used at runtime:
-          - all arguments are annotated with with BlangVariable annotation
-          - params have @Param also
+          - all arguments are annotated with a BlangVariable annotation
+          - params additionally have a Param annotation
           - the order of the arguments is as follows:
             - first, all the random variables in the order they occur in the blang file
             - second, all the params in the order they occur in the blang file
       '''
     ]
+    if (withConstantParams)
+      output.members += model.toMethod(BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME, typeRef(output), memberBuilder)
+      
+    else
+      output.members += model.toConstructor(memberBuilder as Procedure1)
   }
   
   def private void generateMethods(BlangScope scope) {
@@ -370,4 +382,6 @@ class SingleBlangModelInferrer {
   
   val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model) // = "components", but robust to re-factoring
   val static final String COMPONENTS_LIST_NAME = "components"
+  
+  val static final String BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME = "buildWithConstantParams"
 }

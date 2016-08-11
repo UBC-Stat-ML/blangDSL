@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtend2.lib.StringConcatenationClient
 import org.eclipse.xtend2.lib.StringConcatenation
+import java.lang.reflect.Field
 
 class StaticUtils {
   
@@ -54,4 +55,11 @@ class StaticUtils {
     val StringConcatenation dummy = new StringConcatenation()
     dummy.append(lazyString, "")
   }
+  
+  def static void setFieldValue(Field f, Object instance, Object value) {
+		var boolean isAccessible=f.isAccessible() 
+		if (!isAccessible) f.setAccessible(true) 
+		f.set(instance, value) 
+		if (!isAccessible) f.setAccessible(false) 
+	}
 }
