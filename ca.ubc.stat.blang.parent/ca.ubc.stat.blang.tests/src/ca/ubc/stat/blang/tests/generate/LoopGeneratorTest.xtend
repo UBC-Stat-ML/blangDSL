@@ -207,90 +207,134 @@ class LoopGeneratorTest {
     }
     
     @Test
-    def void simpleNormalModel() {
+    def void instantiatedDistribution() {
         '''
             import ca.ubc.stat.blang.tests.types.Real
+            import ca.ubc.stat.blang.tests.types.Normal
+            import java.util.List
             
             model {
-                random Real mu
-                random Real y
+                param Real m
+                param Real v
+                random List<Real> means
+
                 
                 laws {
                     for (int i : 0..<2) {
-                        y | Real mean = mu ~ Normal(mean, [mean.doubleValue ** 2])
+                        means.get(i) | m, v ~ Normal(m, v)
                     }
                 }
             }
         '''.assertCompilesTo(
         '''
+        import blang.core.DeboxedName;
         import blang.core.Model;
         import blang.core.ModelComponent;
+        import blang.core.Param;
+        import ca.ubc.stat.blang.tests.types.Normal;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
+        import java.util.List;
         import java.util.function.Supplier;
+        import org.eclipse.xtext.xbase.lib.ExclusiveRange;
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public final Real mu;
+          @Param
+          private final Supplier<Real> $generated__m;
           
-          public final Real y;
+          @Param
+          private final Supplier<Real> $generated__v;
           
-          public MyFile(final Real mu, final Real y) {
-            this.mu = mu;
-            this.y = y;
+          private final List<Real> means;
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with with BlangVariable annotation
+           *   - params have @Param also
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("means") final List<Real> means, @Param @DeboxedName("m") final Supplier<Real> $generated__m, @Param @DeboxedName("v") final Supplier<Real> $generated__v) {
+            this.$generated__m = $generated__m;
+            this.$generated__v = $generated__v;
+            this.means = means;
           }
           
+          /**
+           * Auxiliary method generated to translate:
+           * 0..<2
+           */
+          private static Iterable<Integer> $generated__0(final Real m, final Real v, final List<Real> means) {
+            ExclusiveRange _doubleDotLessThan = new ExclusiveRange(0, 2, true);
+            return _doubleDotLessThan;
+          }
+          
+          /**
+           * Auxiliary method generated to translate:
+           * means.get(i)
+           */
+          private static Real $generated__(final int i, final Real m, final List<Real> means) {
+            Real _get = means.get(i);
+            return _get;
+          }
+          
+          /**
+           * Auxiliary method generated to translate:
+           * m
+           */
+          private static Real $generated__2(final Real m, final Real v) {
+            return m;
+          }
+          
+          /**
+           * Auxiliary method generated to translate:
+           * m
+           */
+          private static Supplier<Real> $generated__2_lazy(final Supplier<Real> $generated__m, final Supplier<Real> $generated__v) {
+            return () -> $generated__2($generated__m.get(), $generated__v.get());
+          }
+          
+          /**
+           * Auxiliary method generated to translate:
+           * v
+           */
+          private static Real $generated__3(final Real m, final Real v) {
+            return v;
+          }
+          
+          /**
+           * Auxiliary method generated to translate:
+           * v
+           */
+          private static Supplier<Real> $generated__3_lazy(final Supplier<Real> $generated__m, final Supplier<Real> $generated__v) {
+            return () -> $generated__3($generated__m.get(), $generated__v.get());
+          }
+          
+          /**
+           * A component can be either a distribution, support constraint, or another model  
+           * which recursively defines additional components.
+           */
           public Collection<ModelComponent> components() {
             ArrayList<ModelComponent> components = new ArrayList();
             
-            for (int i = 0; i < 4; i++) {
-              components.add(new blang.prototype3.Normal(
-                  y,
-                  new $Generated_SupplierSubModel0Param0(mu, i),
-                  new $Generated_SupplierSubModel0Param1(mu, i))
-              );
+            for (int i : $generated__0($generated__m.get(), $generated__v.get(), means)) {
+              { // Code generated by: means.get(i) | m, v ~ Normal(m, v)
+                // Construction and addition of the factor/model:
+                components.add(
+                  new Normal(
+                    $generated__1(i, $generated__m.get(), $generated__v.get(), means), 
+                    $generated__2_lazy($generated__m, $generated__v), 
+                    $generated__3_lazy($generated__m, $generated__v)
+                  )
+                );
+              }
             }
             
             return components;
-          }
-          
-          public static class $Generated_SupplierSubModel0Param0 implements Supplier<Real> {
-            private final Real mean;
-            
-            private final int i;
-            
-            public $Generated_SupplierSubModel0Param0(final Real mean, final int i) {
-              this.mean = mean;
-              this.i = i;
-            }
-            
-            @Override
-            public Real get() {
-              return mean;
-            }
-          }
-          
-          public static class $Generated_SupplierSubModel0Param1 implements Supplier<Real> {
-            private final Real mean;
-            
-            private final int i;
-            
-            public $Generated_SupplierSubModel0Param1(final Real mean, final int i) {
-              this.mean = mean;
-              this.i = i;
-            }
-            
-            @Override
-            public Real get() {
-              final Real _function = new Real() {
-                public double doubleValue() {
-                  double _doubleValue = $Generated_SupplierSubModel0Param1.this.mean.doubleValue();
-                  return Math.pow(_doubleValue, 2);
-                }
-              };
-              return _function;
-            }
           }
         }
         ''' 
