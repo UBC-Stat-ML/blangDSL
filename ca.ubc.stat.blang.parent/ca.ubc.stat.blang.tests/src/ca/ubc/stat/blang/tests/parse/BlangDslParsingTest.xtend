@@ -38,9 +38,9 @@ class BlangDslParsingTest {
 	def void arithmeticOperations() {
 	  val model = '''
 	    model {
-	      random Object test
+	      param Object test
 	      laws {
-	        logf(test) = { 1.0 + 1.0 }
+	        logf(test) { 1.0 + 1.0 }
 	      }
 	    }
 	  '''.parse
@@ -120,7 +120,7 @@ class BlangDslParsingTest {
                 param Real variance
                 
                 laws {
-                    indicator(variance) = { variance.doubleValue > 0 }
+                    indicator(variance) { variance.doubleValue > 0 }
                 }
             }
         '''.parse
@@ -138,7 +138,7 @@ class BlangDslParsingTest {
                 param Real variance
                 
                 laws {
-                    indicator(mean, variance) = { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
+                    indicator(mean, variance) { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
                 }
             }
         '''.parse
@@ -158,7 +158,7 @@ class BlangDslParsingTest {
                 // const double LOG2PI = Math.log(2 * Math.PI)
                 
                 laws {
-                    logf(variance) = { -0.5 * ( Math.log(variance.doubleValue) + /* LOG2PI */ Math.log(2 * Math.PI)) }
+                    logf(variance) { -0.5 * ( Math.log(variance.doubleValue) + /* LOG2PI */ Math.log(2 * Math.PI)) }
                 }
             }
         '''.parse
@@ -176,7 +176,7 @@ class BlangDslParsingTest {
                 param Real variance
                 
                 laws {
-                    logf(variance, mean) = { -0.5 * mean.doubleValue / variance.doubleValue }
+                    logf(variance, mean) { -0.5 * mean.doubleValue / variance.doubleValue }
                 }
             }
         '''.parse
@@ -191,7 +191,7 @@ class BlangDslParsingTest {
             
             laws {
                 for (int i : 0..<3) {
-                    indicator(rand) = { rand.nextInt(4) > /* i */ 2 }
+                    indicator(rand) { rand.nextInt(4) > /* i */ 2 }
                 }
             }
         }
