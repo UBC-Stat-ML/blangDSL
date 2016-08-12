@@ -190,8 +190,8 @@ class BlangDslParsingTest {
             random java.util.Random rand
             
             laws {
-                for (int i = 0; i < 3; i++) {
-                    indicator(rand) = { rand.nextInt(4) > i }
+                for (int i : 0..<3) {
+                    indicator(rand) = { rand.nextInt(4) > /* i */ 2 }
                 }
             }
         }
