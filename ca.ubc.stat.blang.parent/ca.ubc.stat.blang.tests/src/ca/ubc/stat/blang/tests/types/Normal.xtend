@@ -1,11 +1,12 @@
 package ca.ubc.stat.blang.tests.types
 
 import blang.core.Model
+import blang.core.Param
 import java.util.function.Supplier
 
 public abstract class Normal implements Model {
     
-    def public Normal(Real y, Supplier<Real> mean, Supplier<Real> variance) {
+    new(Real y, @Param Supplier<Real> mean, @Param Supplier<Real> variance) {
         
     }
 }
