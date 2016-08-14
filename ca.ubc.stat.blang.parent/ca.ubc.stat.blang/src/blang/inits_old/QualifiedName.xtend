@@ -11,8 +11,6 @@ class QualifiedName {
   val List<String> items
   val static final String SEPARATOR = "."
   
-  
-  
   override String toString() {
     return Joiner.on(SEPARATOR).join(items)
   }

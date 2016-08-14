@@ -1,0 +1,66 @@
+package inits.strategies
+
+import inits.InstantiationStrategy
+import inits.Instantiator.InstantiationContext
+import java.util.Optional
+import inits.ArgumentSpecification
+import java.util.LinkedHashMap
+import java.util.Map
+import java.util.Set
+import inits.InitResult
+import java.lang.reflect.Field
+import inits.Arg
+import java.lang.reflect.Type
+import inits.Default
+import inits.Defaults
+import inits.Arguments
+import inits.Arguments.ArgumentItem
+import java.util.List
+import java.util.ArrayList
+import ca.ubc.stat.blang.StaticUtils
+
+class FeatureAnnotation<T> implements InstantiationStrategy<T> {
+  
+  override Optional<String> formatDescription(InstantiationContext context) {
+    return Optional.empty
+  }
+  
+  // TODO: add support for setter method calls as well
+  
+  override LinkedHashMap<String, ArgumentSpecification> childrenSpecifications(InstantiationContext context, Set<String> providedChildrenKeys) {
+    val LinkedHashMap<String, ArgumentSpecification> result = new LinkedHashMap
+    // TODO: later could do better than that by not going right away to raw type
+    val Class<?> type = context.rawType
+    for (Field field : type.declaredFields.filter[!it.getAnnotationsByType(Arg).isEmpty]) {
+      val Arg arg = field.getAnnotationsByType(Arg).get(0)
+      val Type childType = field.genericType
+      val ArgumentSpecification spec = new ArgumentSpecification(childType, readDefault(field.getAnnotationsByType(Defaults)), arg.description)
+      val String name = field.name
+      result.put(name, spec)
+    }
+    return result
+  }
+  
+  def Optional<Arguments> readDefault(Defaults [] defaultss) {
+    if (defaultss.isEmpty) {
+      return Optional.empty
+    }
+    val List<ArgumentItem> items = new ArrayList
+    for (Defaults defaults : defaultss) {
+      for (Default d : defaults.value) {
+        items.add(new ArgumentItem(d.key, d.name))
+      }
+    }
+    return Optional.of(Arguments.parse(items))
+  }
+  
+  override InitResult<T> instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
+    val Class<?> rawType = context.rawType
+    val T result = rawType.newInstance as T
+    for (Field field : rawType.declaredFields.filter[!it.getAnnotationsByType(Arg).isEmpty]) {
+      StaticUtils::setFieldValue(field, result, instantiatedChildren.get(field.name))
+    }
+    return InitResult.success(result)
+  }
+  
+}

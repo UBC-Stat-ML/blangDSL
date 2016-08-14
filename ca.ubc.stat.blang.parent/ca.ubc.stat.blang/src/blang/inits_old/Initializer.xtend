@@ -9,10 +9,10 @@ class Initializer {
   val InitializationStrategy<?> defaultInitializationStrategy
   val Map<Class<?>,InitializationStrategy<?>> strategies
   
-//  def <T> T init(ParsedArguments parsed, Class<T> typeToInitialize) {
-//    val InitializationStrategy<T> strategy = getInitializationStrategy(typeToInitialize) as InitializationStrategy<T>
-//    return strategy.init(parsed, typeToInitialize, this)
-//  }
+  def <T> T init(ParsedArguments parsed, Class<T> typeToInitialize) {
+    val InitializationStrategy<T> strategy = getInitializationStrategy(typeToInitialize) as InitializationStrategy<T>
+    return strategy.init(parsed, typeToInitialize, this)
+  }
   
   def private InitializationStrategy<?> getInitializationStrategy(Class<?> typeToInitialize) {
     // 1 - check in DB
