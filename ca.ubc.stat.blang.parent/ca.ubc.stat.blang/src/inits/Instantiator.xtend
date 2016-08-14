@@ -15,6 +15,8 @@ import java.util.HashSet
 import org.eclipse.xtend.lib.annotations.Accessors
 import inits.strategies.FeatureAnnotation
 import java.util.Optional
+import java.util.ArrayList
+import com.google.common.base.Joiner
 
 class Instantiator<T> {
   
@@ -38,6 +40,29 @@ class Instantiator<T> {
     lastInitTree = init(rootSpec, _arguments) as InitTree<T>
     return lastInitTree.initResult.result
   }
+  
+//  def public String lastInitReport() {
+//    val StringBuilder result = new StringBuilder
+//    lastInitReport(result, lastInitTree, new ArrayList)
+//    return result.toString
+//  }
+//  
+//  def private void lastInitReport(StringBuilder builder, InitTree<?> current, List<String> qualifiedName) {
+//    val currentType = current.specification.type
+//    val InstantiationStrategy<?> strategy = getInstantiationStrategy(currentType)
+//    if (strategy.acceptsInput) {
+//      builder.append(qualifiedNameToString(qualifiedName))
+//    }
+//    for (String key : current.children.)
+//  }
+//  
+//  def private String qualifiedNameToString(List<String> prefix) {
+//    if (prefix.empty) {
+//      return "<root>"
+//    } else {
+//      return "--" + Joiner.on(".").join(prefix)
+//    }
+//  }
   
   static class InitChildren {
     // null when it was missing
