@@ -26,6 +26,8 @@ class Instantiator<T> {
   val Map<String, Object> globals = new HashMap
   
   val InstantiationStrategy<?> defaultInitializationStrategy
+  
+  @Accessors(PUBLIC_GETTER)
   val Map<Class<?>,InstantiationStrategy<?>> strategies = new HashMap
   
   new(Type _type, Arguments _arguments) {
@@ -36,45 +38,64 @@ class Instantiator<T> {
   
   var InitTree<T> lastInitTree = null
   def Optional<T> init() {
-    val ArgumentSpecification rootSpec = new ArgumentSpecification(_type, Optional.empty, "")
-    lastInitTree = init(rootSpec, _arguments) as InitTree<T>
+    lastInitTree = init(_type, _arguments) as InitTree<T>
     return lastInitTree.initResult.result
   }
   
-//  def public String lastInitReport() {
-//    val StringBuilder result = new StringBuilder
-//    lastInitReport(result, lastInitTree, new ArrayList)
-//    return result.toString
-//  }
-//  
-//  def private void lastInitReport(StringBuilder builder, InitTree<?> current, List<String> qualifiedName) {
-//    val currentType = current.specification.type
-//    val InstantiationStrategy<?> strategy = getInstantiationStrategy(currentType)
-//    if (strategy.acceptsInput) {
-//      builder.append(qualifiedNameToString(qualifiedName))
-//    }
-//    for (String key : current.children.)
-//  }
-//  
-//  def private String qualifiedNameToString(List<String> prefix) {
-//    if (prefix.empty) {
-//      return "<root>"
-//    } else {
-//      return "--" + Joiner.on(".").join(prefix)
-//    }
-//  }
+  def public String lastInitReport() {
+    val StringBuilder result = new StringBuilder
+    val ArgumentSpecification rootSpec = new ArgumentSpecification(_type, Optional.empty, "")
+    lastInitReport(result, rootSpec, new ArrayList, _arguments)
+    return result.toString
+  }
+  
+  def private void lastInitReport(
+    StringBuilder builder, 
+    ArgumentSpecification specifications, 
+    List<String> qualifiedName,
+    Arguments currentArguments
+  ) {
+    val currentType = specifications.type
+    val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
+    val InstantiationStrategy<?> strategy = getInstantiationStrategy(currentType)
+    if (strategy.acceptsInput) {
+      builder.append(qualifiedNameToString(qualifiedName) + " <" + currentType.typeName + " : " + strategy.formatDescription(context) + ">\n")
+      builder.append("  description: " + specifications.description + "\n")
+      if (specifications.defaultArguments.present) {
+        builder.append("  not mandatory, default is: " + specifications.defaultArguments.get)
+      } else {
+        builder.append("  mandatory")
+      }
+    }
+    val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
+      strategy.childrenSpecifications(context, currentArguments.childrenKeys)
+    for (String childName : childrenSpecifications.keySet) {
+      lastInitReport(builder, childrenSpecifications.get(childName), qualName(qualifiedName, childName), currentArguments.child(childName))
+    }
+  }
+  
+  def private List<String> qualName(List<String> prefix, String name) {
+    val List<String> result = new ArrayList
+    result.addAll(prefix)
+    result.add(name)
+    return result
+  }
+  
+  def private String qualifiedNameToString(List<String> prefix) {
+    if (prefix.empty) {
+      return "<root>"
+    } else {
+      return "--" + Joiner.on(".").join(prefix)
+    }
+  }
   
   static class InitChildren {
     // null when it was missing
     val Map<String, InitTree<?>> children = new HashMap
-    val Set<String> fromDefaults = new HashSet // subset of above that are based on default values (or global objects)
     val Set<String> missings = new HashSet
     
-    def private addChild(String childName, InitTree<?> child, boolean fromDefault) {
+    def private addChild(String childName, InitTree<?> child) {
       children.put(childName, child)
-      if (fromDefault) {
-        fromDefaults.add(childName)
-      }
     }
     def private addMissing(String childName) {
       missings.add(childName)
@@ -101,15 +122,12 @@ class Instantiator<T> {
   static class InitTree<T> {
     val InitResult<T> initResult
     val InitChildren children
-    val ArgumentSpecification specification
-    val Optional<String> format // null when built from global
   }
   
   def private InitTree<?> init(
-    ArgumentSpecification currentSpec, 
+    Type currentType, 
     Arguments currentArguments
   ) {
-    val currentType = currentSpec.type
     val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
     val InitChildren children = new InitChildren
     val InstantiationStrategy<?> strategy = getInstantiationStrategy(currentType)
@@ -120,16 +138,16 @@ class Instantiator<T> {
       // check if subtree of Argument has anything at all (contents or further children)
       if (currentArguments.childrenKeys.contains(childName)) {
         // if so, recurse
-        children.addChild(childName, init(childSpec, currentArguments.child(childName)), false)
+        children.addChild(childName, init(childSpec.type, currentArguments.child(childName)))
       } else if (globals.containsKey(childName)) {
-        children.addChild(childName, new InitTree(InitResult.success(globals.get(childName)), new InitChildren, childSpec, Optional.empty), true)
+        children.addChild(childName, new InitTree(InitResult.success(globals.get(childName)), new InitChildren))
       } else {
         // if not, check if default is provided
         if (childSpec.defaultArguments.isPresent()) {
-           val InitTree<?> fromDefault = init(childSpec, childSpec.defaultArguments.get())
+           val InitTree<?> fromDefault = init(childSpec.type, childSpec.defaultArguments.get())
            if (fromDefault.initResult.isSuccess) {
              // use the default value
-             children.addChild(childName, fromDefault, true)
+             children.addChild(childName, fromDefault)
            } else {
              // throw an exception if a default value is faulty
              throw new RuntimeException("Faulty initialization: " + fromDefault.initResult.errorMessage) // TODO: implement and use InitResult.toString
@@ -149,10 +167,9 @@ class Instantiator<T> {
         InitResult.failure(UNKNOWN_ARGUMENTS)  // TODO: print the culpits 
       }
       else if (children.childComplete) {
-        // TODO: if argument value provided, check it's actually needed via format()..
         try {
           val InitResult<?> initResult = strategy.instantiate(context, children.instantiatedChildren)
-          val boolean hasArgValue = !currentArguments.argumentValue.empty
+          val boolean hasArgValue = currentArguments.argumentValue.present
           val boolean acceptsInput = strategy.acceptsInput
           if (hasArgValue && !acceptsInput) {
             InitResult.failure(UN_NECESSARY_VALUE)
@@ -166,7 +183,7 @@ class Instantiator<T> {
         InitResult.failure(MISSING_CHILD)
       }
     
-    return new InitTree(initResult, children, currentSpec, Optional.of(strategy.formatDescription(context)))
+    return new InitTree(initResult, children)
   }
   
   val public static String MISSING_CHILD = "Failed to initialize child object(s)"
@@ -206,14 +223,17 @@ class Instantiator<T> {
     @Accessors(PUBLIC_GETTER)
     val Type requestedType
     
+    /**
+     * null if the switch key was not provided
+     */
     @Accessors(PUBLIC_GETTER)
-    val List<String> argumentValue
+    val Optional<List<String>> argumentValue
     
     def public getInstantiationStrategy(Type type) {
       return instantiator.getInstantiationStrategy(type)
     }
     
-    def public InstantiationContext newInstance(Type requestedType, List<String> argumentValue) {
+    def public InstantiationContext newInstance(Type requestedType, Optional<List<String>> argumentValue) {
       return new InstantiationContext(instantiator, requestedType, argumentValue)
     }
     

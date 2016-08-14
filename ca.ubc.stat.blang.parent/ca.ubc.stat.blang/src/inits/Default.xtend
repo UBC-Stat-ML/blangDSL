@@ -11,6 +11,6 @@ import java.lang.annotation.Repeatable
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD, ElementType.PARAMETER)
 annotation Default {
-  val String [] name  // value
+  val String [] value 
   val String [] key = #[]
 }

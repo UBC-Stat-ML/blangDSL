@@ -17,7 +17,8 @@ class QuickTests {
   
   @InitVia(FeatureAnnotation)
   static class AnotherOne {
-    @Arg
+    @Arg(description = "Some explanations")
+    @Default("pirates")
     var String myString
   }
   
@@ -25,12 +26,15 @@ class QuickTests {
   def public static void main(String [] args) {
     
     val Arguments parsed = PosixParser.parse("--myString", "it worked!")
-    
+//    
     val Instantiator<AnotherOne> inst = new Instantiator(AnotherOne, parsed)
-    
+    inst.strategies.put(String, new StringConstructor)
+//    
     inst.init
     
-    println("done")
+    println(inst.lastInitReport)
+//    
+//    println("done")
     
 //    val Arguments parsed = PosixParser.parse("contents")
 //    
@@ -38,8 +42,10 @@ class QuickTests {
 //    
 //    val MyClass product = inst.init().get()
 //    
-    
-    
+
+//    println("---")
+//    
+//    
 //    val Arguments parsed = PosixParser.parse("test", "--suboption", "my subopt value", "asdf", "--suboption.child", "subchi", "--a.b.c", "asdf", "--a.b", "asssss") 
 //    println(parsed)
     

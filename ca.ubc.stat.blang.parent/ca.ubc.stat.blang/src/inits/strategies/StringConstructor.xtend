@@ -23,7 +23,7 @@ class StringConstructor<T> implements InstantiationStrategy<T> {
   
   override InitResult<T> instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
     val Constructor<T> constructor = context.rawType.getConstructor(String) as Constructor<T>
-    val String argument = Joiner.on(" ").join(context.argumentValue)
+    val String argument = Joiner.on(" ").join(context.argumentValue.get)
     return InitResult.success(constructor.newInstance(#[argument]))
   }
   

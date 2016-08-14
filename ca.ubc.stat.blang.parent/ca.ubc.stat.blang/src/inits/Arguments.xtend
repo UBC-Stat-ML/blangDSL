@@ -8,6 +8,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import java.util.ArrayList
 import java.util.HashSet
 import com.google.common.base.Joiner
+import java.util.Optional
 
 /**
  * A tree of arguments. E.g. --node is parent of --node.child
@@ -15,14 +16,15 @@ import com.google.common.base.Joiner
  * Each node has a unique argument key, and optionally, an argument value, e.g. --key value.
  */
 class Arguments {
-  
-  val List<String> argumentValue
+  /**
+   * The optional is non-null if and only if the switch --name appears in the command line.
+   * Note that the node might still be needed in the tree when it does not occur, e.g. if the 
+   * node has descendants that do appear in the command line.
+   */
+  var Optional<List<String>> argumentValue
   val Map<String, Arguments> children = new HashMap
   
-  private new(List<String> argumentValue) {
-    if (argumentValue === null) {
-      throw new RuntimeException
-    }
+  private new(Optional<List<String>> argumentValue) {
     this.argumentValue = argumentValue
   }
   
@@ -33,7 +35,7 @@ class Arguments {
       if (result.childrenKeys.contains(currentChildName)) {
         result = result.child(currentChildName)
       } else {
-        val Arguments child = new Arguments(new ArrayList)
+        val Arguments child = new Arguments(Optional.empty)
         result.addChild(currentChildName, child)
         result = child
       }
@@ -43,17 +45,17 @@ class Arguments {
   
   def static Arguments parse(List<ArgumentItem> items) {
     val Set<List<String>> visitedKeys = new HashSet
-    val Arguments root = new Arguments(new ArrayList)
+    val Arguments root = new Arguments(Optional.empty)
     
     for (ArgumentItem item : items) {
       if (visitedKeys.contains(item.fullyQualifiedName)) {
         throw new RuntimeException // TODO: show culpit
       }
       val Arguments node = root.getOrCreateDesc(item.fullyQualifiedName)
-      if (!node.argumentValue.empty) {
+      if (node.argumentValue.present) {
         throw new RuntimeException
       }
-      node.argumentValue.addAll(item.value)
+      node.argumentValue = Optional.of(item.value)
     }
     return root
   }
@@ -77,12 +79,26 @@ class Arguments {
   def Arguments child(String string) {
     val Arguments result = children.get(string)
     if (result === null) {
-      throw new RuntimeException
+      return NULL
+    } else {
+      return result
     }
-    return result
   }
   
-  def List<String> argumentValue() {
+  val static final Arguments NULL = new Arguments(Optional.empty)
+  
+  /**
+   * We say the tree is null the corresponding switch did not occur, nor
+   * any of its descendent
+   */
+  def boolean isNull() {
+    return children.empty && !argumentValue.present
+  }
+  
+  /**
+   * null if the key was not inserted
+   */
+  def Optional<List<String>> argumentValue() {
     return argumentValue
   }
   
@@ -90,14 +106,16 @@ class Arguments {
     return children.keySet
   }
   
-    override String toString() {
+  override String toString() {
     val List<String> result = new ArrayList
     toString("", result)
     return "<root>" + Joiner.on("\n").join(result)
   }
   
   def private void toString(String fullyQual, List<String> result) {
-    result.add(fullyQual + "\t" +  Joiner.on(" ").join(argumentValue))
+    if (argumentValue.present) {
+      result.add(fullyQual + "\t" +  argumentValue.get)
+    }
     for (String key : children.keySet) {
       val String fullName = if (fullyQual == "") key else fullyQual + "." + key
       children.get(key).toString(fullName, result)
