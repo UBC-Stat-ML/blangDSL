@@ -21,8 +21,8 @@ import ca.ubc.stat.blang.StaticUtils
 
 class FeatureAnnotation<T> implements InstantiationStrategy<T> {
   
-  override Optional<String> formatDescription(InstantiationContext context) {
-    return Optional.empty
+  override String formatDescription(InstantiationContext context) {
+    return ""
   }
   
   // TODO: add support for setter method calls as well
@@ -61,6 +61,10 @@ class FeatureAnnotation<T> implements InstantiationStrategy<T> {
       StaticUtils::setFieldValue(field, result, instantiatedChildren.get(field.name))
     }
     return InitResult.success(result)
+  }
+  
+  override boolean acceptsInput() {
+    return false
   }
   
 }

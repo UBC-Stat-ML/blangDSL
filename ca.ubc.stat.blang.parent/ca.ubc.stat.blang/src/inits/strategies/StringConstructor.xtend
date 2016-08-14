@@ -13,8 +13,8 @@ import com.google.common.base.Joiner
 
 class StringConstructor<T> implements InstantiationStrategy<T> {
   
-  override Optional<String> formatDescription(InstantiationContext context) {
-    return Optional.of("Any string")
+  override String formatDescription(InstantiationContext context) {
+    return "Any string(s)"
   }
   
   override LinkedHashMap<String, ArgumentSpecification> childrenSpecifications(InstantiationContext context, Set<String> providedChildrenKeys) {
@@ -25,6 +25,10 @@ class StringConstructor<T> implements InstantiationStrategy<T> {
     val Constructor<T> constructor = context.rawType.getConstructor(String) as Constructor<T>
     val String argument = Joiner.on(" ").join(context.argumentValue)
     return InitResult.success(constructor.newInstance(#[argument]))
+  }
+  
+  override boolean acceptsInput() {
+    return true
   }
   
 }

@@ -34,7 +34,8 @@ class Instantiator<T> {
   
   var InitTree<T> lastInitTree = null
   def Optional<T> init() {
-    lastInitTree = init(_type, _arguments) as InitTree<T>
+    val ArgumentSpecification rootSpec = new ArgumentSpecification(_type, Optional.empty, "")
+    lastInitTree = init(rootSpec, _arguments) as InitTree<T>
     return lastInitTree.initResult.result
   }
   
@@ -75,29 +76,32 @@ class Instantiator<T> {
   static class InitTree<T> {
     val InitResult<T> initResult
     val InitChildren children
+    val ArgumentSpecification specification
+    val Optional<String> format // null when built from global
   }
   
   def private InitTree<?> init(
-    Type currentType, 
+    ArgumentSpecification currentSpec, 
     Arguments currentArguments
   ) {
+    val currentType = currentSpec.type
     val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
     val InitChildren children = new InitChildren
     val InstantiationStrategy<?> strategy = getInstantiationStrategy(currentType)
     val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
       strategy.childrenSpecifications(context, currentArguments.childrenKeys)
     for (String childName : childrenSpecifications.keySet) {
-      val ArgumentSpecification argSpec = childrenSpecifications.get(childName)
+      val ArgumentSpecification childSpec = childrenSpecifications.get(childName)
       // check if subtree of Argument has anything at all (contents or further children)
       if (currentArguments.childrenKeys.contains(childName)) {
         // if so, recurse
-        children.addChild(childName, init(argSpec.type, currentArguments.child(childName)), false)
+        children.addChild(childName, init(childSpec, currentArguments.child(childName)), false)
       } else if (globals.containsKey(childName)) {
-        children.addChild(childName, new InitTree(InitResult.success(globals.get(childName)), new InitChildren), true)
+        children.addChild(childName, new InitTree(InitResult.success(globals.get(childName)), new InitChildren, childSpec, Optional.empty), true)
       } else {
         // if not, check if default is provided
-        if (argSpec.defaultArguments.isPresent()) {
-           val InitTree<?> fromDefault = init(argSpec.type, argSpec.defaultArguments.get())
+        if (childSpec.defaultArguments.isPresent()) {
+           val InitTree<?> fromDefault = init(childSpec, childSpec.defaultArguments.get())
            if (fromDefault.initResult.isSuccess) {
              // use the default value
              children.addChild(childName, fromDefault, true)
@@ -112,7 +116,7 @@ class Instantiator<T> {
       }
     } // end for
     
-    // check all parsed child names are in the spec
+    // check all parsed child names are in the specs
     val boolean allChildNamesRecognized = childrenSpecifications.keySet.containsAll(currentArguments.childrenKeys)
     
     val InitResult<?> initResult = 
@@ -124,8 +128,8 @@ class Instantiator<T> {
         try {
           val InitResult<?> initResult = strategy.instantiate(context, children.instantiatedChildren)
           val boolean hasArgValue = !currentArguments.argumentValue.empty
-          val boolean mayNeedArg = strategy.formatDescription(context).present
-          if (hasArgValue && !mayNeedArg) {
+          val boolean acceptsInput = strategy.acceptsInput
+          if (hasArgValue && !acceptsInput) {
             InitResult.failure(UN_NECESSARY_VALUE)
           } else {
             initResult
@@ -137,7 +141,7 @@ class Instantiator<T> {
         InitResult.failure(MISSING_CHILD)
       }
     
-    return new InitTree(initResult, children)
+    return new InitTree(initResult, children, currentSpec, Optional.of(strategy.formatDescription(context)))
   }
   
   val public static String MISSING_CHILD = "Failed to initialize child object(s)"

@@ -8,7 +8,6 @@ import org.eclipse.xtend.lib.annotations.Data
 import java.util.ArrayList
 import java.util.HashSet
 import com.google.common.base.Joiner
-import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A tree of arguments. E.g. --node is parent of --node.child
@@ -19,23 +18,6 @@ class Arguments {
   
   val List<String> argumentValue
   val Map<String, Arguments> children = new HashMap
-  
-//  @Accessors(PUBLIC_GETTER)
-//  var int accessCount = 0
-  
-  override String toString() {
-    val List<String> result = new ArrayList
-    toString("", result)
-    return "<root>" + Joiner.on("\n").join(result)
-  }
-  
-  def private void toString(String fullyQual, List<String> result) {
-    result.add(fullyQual + "\t" +  Joiner.on(" ").join(argumentValue))
-    for (String key : children.keySet) {
-      val String fullName = if (fullyQual == "") key else fullyQual + "." + key
-      children.get(key).toString(fullName, result)
-    }
-  }
   
   private new(List<String> argumentValue) {
     if (argumentValue === null) {
@@ -101,12 +83,25 @@ class Arguments {
   }
   
   def List<String> argumentValue() {
-//    accessCount++
     return argumentValue
   }
   
   def Set<String> childrenKeys() {
     return children.keySet
+  }
+  
+    override String toString() {
+    val List<String> result = new ArrayList
+    toString("", result)
+    return "<root>" + Joiner.on("\n").join(result)
+  }
+  
+  def private void toString(String fullyQual, List<String> result) {
+    result.add(fullyQual + "\t" +  Joiner.on(" ").join(argumentValue))
+    for (String key : children.keySet) {
+      val String fullName = if (fullyQual == "") key else fullyQual + "." + key
+      children.get(key).toString(fullName, result)
+    }
   }
   
 }

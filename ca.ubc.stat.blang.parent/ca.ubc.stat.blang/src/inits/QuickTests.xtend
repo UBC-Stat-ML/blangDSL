@@ -28,7 +28,9 @@ class QuickTests {
     
     val Instantiator<AnotherOne> inst = new Instantiator(AnotherOne, parsed)
     
-    println(inst.init.get.myString)
+    inst.init
+    
+    println("done")
     
 //    val Arguments parsed = PosixParser.parse("contents")
 //    

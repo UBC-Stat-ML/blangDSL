@@ -9,9 +9,11 @@ import java.util.Optional
 interface InstantiationStrategy<T> {
   
   /**
-   * Null if this strategy does not consume input, otherwise a human-readable description of the format
+   * Human-redable description of the format expected by this strategy
    */
-  def Optional<String> formatDescription(InstantiationContext context)
+  def String formatDescription(InstantiationContext context)
+  
+  def boolean acceptsInput()
   
   def LinkedHashMap<String, ArgumentSpecification> childrenSpecifications(
     InstantiationContext context,
