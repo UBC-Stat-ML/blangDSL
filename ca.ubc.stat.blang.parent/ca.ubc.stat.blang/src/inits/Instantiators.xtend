@@ -38,7 +38,7 @@ class Instantiators {
       put(Integer, new OneArgConstructor<Integer>(int, new IntParser))
       put(Double, new OneArgConstructor<Double>(double, new DoubleParser))
       put(Boolean, new OneArgConstructor<Boolean>(boolean, new BooleanParser))
-      put(Long, new OneArgConstructor<Long>(long, new LongParser))
+      put(Long, new OneArgConstructor<Long>(long, new LongParser)) 
     
       put(Random, new OneArgConstructor<Long>(long, new LongParser))
       

@@ -28,6 +28,12 @@ class Arguments {
     this.argumentValue = argumentValue
   }
   
+//  def Arguments consumeValue() {
+//    val Arguments result = new Arguments(Optional.empty)
+//    result.children.putAll(this.children)
+//    return result
+//  }
+  
   def private Arguments getOrCreateDesc(List<String> path) {
     var Arguments result = this
     for (var int i = 0; i < path.size; i++) {
