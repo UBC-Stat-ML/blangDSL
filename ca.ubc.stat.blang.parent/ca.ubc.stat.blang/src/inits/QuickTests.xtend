@@ -20,6 +20,14 @@ class QuickTests {
     @Arg(description = "Some explanations")
     @Default("pirates")
     var String myString
+    
+    @Arg
+    var SubOne subOne
+  }
+  
+  static class SubOne {
+    @Arg
+    var String subStr
   }
   
   

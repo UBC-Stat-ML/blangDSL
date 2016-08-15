@@ -43,18 +43,19 @@ class Instantiator<T> {
   }
   
   def public String lastInitReport() {
-    val StringBuilder result = new StringBuilder
+    val List<String> result = new ArrayList
     val ArgumentSpecification rootSpec = new ArgumentSpecification(_type, Optional.empty, "")
     lastInitReport(result, rootSpec, new ArrayList, _arguments)
-    return result.toString
+    return Joiner.on("\n\n").join(result)
   }
   
   def private void lastInitReport(
-    StringBuilder builder, 
+    List<String> result, 
     ArgumentSpecification specifications, 
     List<String> qualifiedName,
     Arguments currentArguments
   ) {
+    val StringBuilder builder = new StringBuilder
     val currentType = specifications.type
     val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
     val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
@@ -66,11 +67,12 @@ class Instantiator<T> {
       } else {
         builder.append("  mandatory")
       }
+      result.add(builder.toString)
     }
     val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
       strategy.childrenSpecifications(context, currentArguments.childrenKeys)
     for (String childName : childrenSpecifications.keySet) {
-      lastInitReport(builder, childrenSpecifications.get(childName), qualName(qualifiedName, childName), currentArguments.child(childName))
+      lastInitReport(result, childrenSpecifications.get(childName), qualName(qualifiedName, childName), currentArguments.child(childName))
     }
   }
   

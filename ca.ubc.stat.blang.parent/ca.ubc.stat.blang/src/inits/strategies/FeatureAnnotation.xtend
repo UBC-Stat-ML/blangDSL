@@ -45,7 +45,7 @@ class FeatureAnnotation implements InstantiationStrategy {
       return Optional.empty
     }
     val List<ArgumentItem> items = new ArrayList
-    for (Default d : defaults) { //}.value) {
+    for (Default d : defaults) { 
       items.add(new ArgumentItem(d.key, d.value))
     }
     return Optional.of(Arguments.parse(items))
