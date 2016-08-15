@@ -40,7 +40,7 @@ class FeatureAnnotation implements InstantiationStrategy {
     return result
   }
   
-  def Optional<Arguments> readDefault(Default [] defaults) {
+  def public static Optional<Arguments> readDefault(Default [] defaults) {
     if (defaults.isEmpty) {
       return Optional.empty
     }
