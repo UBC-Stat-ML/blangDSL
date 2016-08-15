@@ -43,6 +43,7 @@ import blang.core.Param
 import blang.core.LogScaleFactor
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.eclipse.xtext.common.types.JvmOperation
+import org.eclipse.xtext.common.types.JvmConstructor
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -98,6 +99,7 @@ class SingleBlangModelInferrer {
     generateConstructor(scope, true)
   }
   
+  
   def private void generateConstructor(BlangScope scope, boolean withConstantParams) {
     val Procedure1<? super JvmOperation> memberBuilder = [
       visibility = JvmVisibility.PUBLIC
@@ -127,11 +129,11 @@ class SingleBlangModelInferrer {
             - second, all the params in the order they occur in the blang file
       '''
     ]
-    if (withConstantParams)
+    if (withConstantParams) {
       output.members += model.toMethod(BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME, typeRef(output), memberBuilder)
-      
-    else
+    } else {
       output.members += model.toConstructor(memberBuilder as Procedure1)
+    }
   }
   
   def private void generateMethods(BlangScope scope) {

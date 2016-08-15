@@ -109,12 +109,12 @@ class Arguments {
   override String toString() {
     val List<String> result = new ArrayList
     toString("", result)
-    return "<root>" + Joiner.on("\n").join(result)
+    return Joiner.on(" ").join(result)
   }
   
   def private void toString(String fullyQual, List<String> result) {
     if (argumentValue.present) {
-      result.add(fullyQual + "\t" +  argumentValue.get)
+      result.add(fullyQual + (if (fullyQual == "") "" else " ") +  Joiner.on(" ").join(argumentValue.get))
     }
     for (String key : children.keySet) {
       val String fullName = if (fullyQual == "") key else fullyQual + "." + key

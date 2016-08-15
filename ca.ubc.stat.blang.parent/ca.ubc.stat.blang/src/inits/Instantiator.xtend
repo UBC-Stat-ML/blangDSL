@@ -25,10 +25,10 @@ class Instantiator<T> {
   
   val Map<String, Object> globals = new HashMap
   
-  val InstantiationStrategy<?> defaultInitializationStrategy
+  val InstantiationStrategy defaultInitializationStrategy
   
   @Accessors(PUBLIC_GETTER)
-  val Map<Class<?>,InstantiationStrategy<?>> strategies = new HashMap
+  val Map<Class<?>,InstantiationStrategy> strategies = new HashMap
   
   new(Type _type, Arguments _arguments) {
     this._type = _type
@@ -36,10 +36,10 @@ class Instantiator<T> {
     this.defaultInitializationStrategy = new FeatureAnnotation
   }
   
-  var InitTree<T> lastInitTree = null
+  var InitTree lastInitTree = null
   def Optional<T> init() {
-    lastInitTree = init(_type, _arguments) as InitTree<T>
-    return lastInitTree.initResult.result
+    lastInitTree = init(_type, _arguments) as InitTree
+    return lastInitTree.initResult.result as Optional
   }
   
   def public String lastInitReport() {
@@ -57,7 +57,7 @@ class Instantiator<T> {
   ) {
     val currentType = specifications.type
     val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
-    val InstantiationStrategy<?> strategy = getInstantiationStrategy(currentType)
+    val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
     if (strategy.acceptsInput) {
       builder.append(qualifiedNameToString(qualifiedName) + " <" + currentType.typeName + " : " + strategy.formatDescription(context) + ">\n")
       builder.append("  description: " + specifications.description + "\n")
@@ -91,10 +91,10 @@ class Instantiator<T> {
   
   static class InitChildren {
     // null when it was missing
-    val Map<String, InitTree<?>> children = new HashMap
+    val Map<String, InitTree> children = new HashMap
     val Set<String> missings = new HashSet
     
-    def private addChild(String childName, InitTree<?> child) {
+    def private addChild(String childName, InitTree child) {
       children.put(childName, child)
     }
     def private addMissing(String childName) {
@@ -102,7 +102,7 @@ class Instantiator<T> {
     }
     def boolean childComplete() {
       var brokenChildDetected = false
-      for (InitTree<?> childTree : children.values) {
+      for (InitTree childTree : children.values) {
         if (childTree.initResult.success === false) {
           brokenChildDetected = true
         }
@@ -119,18 +119,18 @@ class Instantiator<T> {
   }
   
   @Data
-  static class InitTree<T> {
-    val InitResult<T> initResult
+  static class InitTree {
+    val InitResult initResult
     val InitChildren children
   }
   
-  def private InitTree<?> init(
+  def private InitTree init(
     Type currentType, 
     Arguments currentArguments
   ) {
     val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
     val InitChildren children = new InitChildren
-    val InstantiationStrategy<?> strategy = getInstantiationStrategy(currentType)
+    val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
     val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
       strategy.childrenSpecifications(context, currentArguments.childrenKeys)
     for (String childName : childrenSpecifications.keySet) {
@@ -144,7 +144,7 @@ class Instantiator<T> {
       } else {
         // if not, check if default is provided
         if (childSpec.defaultArguments.isPresent()) {
-           val InitTree<?> fromDefault = init(childSpec.type, childSpec.defaultArguments.get())
+           val InitTree fromDefault = init(childSpec.type, childSpec.defaultArguments.get())
            if (fromDefault.initResult.isSuccess) {
              // use the default value
              children.addChild(childName, fromDefault)
@@ -162,13 +162,13 @@ class Instantiator<T> {
     // check all parsed child names are in the specs
     val boolean allChildNamesRecognized = childrenSpecifications.keySet.containsAll(currentArguments.childrenKeys)
     
-    val InitResult<?> initResult = 
+    val InitResult initResult = 
       if (!allChildNamesRecognized) {
         InitResult.failure(UNKNOWN_ARGUMENTS)  // TODO: print the culpits 
       }
       else if (children.childComplete) {
         try {
-          val InitResult<?> initResult = strategy.instantiate(context, children.instantiatedChildren)
+          val InitResult initResult = strategy.instantiate(context, children.instantiatedChildren)
           val boolean hasArgValue = currentArguments.argumentValue.present
           val boolean acceptsInput = strategy.acceptsInput
           if (hasArgValue && !acceptsInput) {
@@ -201,10 +201,10 @@ class Instantiator<T> {
     }
   }
   
-  def InstantiationStrategy<?> getInstantiationStrategy(Type type) {
+  def InstantiationStrategy getInstantiationStrategy(Type type) {
     val typeToInitialize = getRawClass(type)
     // 1 - check in DB
-    val InstantiationStrategy<?> strategyInDB = strategies.get(typeToInitialize)
+    val InstantiationStrategy strategyInDB = strategies.get(typeToInitialize)
     if (strategyInDB !== null) {
       return strategyInDB
     }

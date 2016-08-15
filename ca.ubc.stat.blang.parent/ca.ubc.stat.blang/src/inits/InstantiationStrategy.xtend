@@ -6,7 +6,7 @@ import java.util.Set
 import inits.Instantiator.InstantiationContext
 import java.util.Optional
 
-interface InstantiationStrategy<T> {
+interface InstantiationStrategy {
   
   /**
    * Human-redable description of the format expected by this strategy
@@ -20,7 +20,7 @@ interface InstantiationStrategy<T> {
     Set<String> providedChildrenKeys
   )
   
-  def InitResult<T> instantiate(
+  def InitResult instantiate(
     InstantiationContext context,
     Map<String, Object> instantiatedChildren
   )

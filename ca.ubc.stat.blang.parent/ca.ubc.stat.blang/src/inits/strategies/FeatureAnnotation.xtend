@@ -12,14 +12,13 @@ import java.lang.reflect.Field
 import inits.Arg
 import java.lang.reflect.Type
 import inits.Default
-import inits.Defaults
 import inits.Arguments
 import inits.Arguments.ArgumentItem
 import java.util.List
 import java.util.ArrayList
 import ca.ubc.stat.blang.StaticUtils
 
-class FeatureAnnotation<T> implements InstantiationStrategy<T> {
+class FeatureAnnotation implements InstantiationStrategy {
   
   override String formatDescription(InstantiationContext context) {
     return ""
@@ -34,29 +33,27 @@ class FeatureAnnotation<T> implements InstantiationStrategy<T> {
     for (Field field : type.declaredFields.filter[!it.getAnnotationsByType(Arg).isEmpty]) {
       val Arg arg = field.getAnnotationsByType(Arg).get(0)
       val Type childType = field.genericType
-      val ArgumentSpecification spec = new ArgumentSpecification(childType, readDefault(field.getAnnotationsByType(Defaults)), arg.description)
+      val ArgumentSpecification spec = new ArgumentSpecification(childType, readDefault(field.getAnnotationsByType(Default)), arg.description)
       val String name = field.name
       result.put(name, spec)
     }
     return result
   }
   
-  def Optional<Arguments> readDefault(Defaults [] defaultss) {
-    if (defaultss.isEmpty) {
+  def Optional<Arguments> readDefault(Default [] defaults) {
+    if (defaults.isEmpty) {
       return Optional.empty
     }
     val List<ArgumentItem> items = new ArrayList
-    for (Defaults defaults : defaultss) {
-      for (Default d : defaults.value) {
-        items.add(new ArgumentItem(d.key, d.value))
-      }
+    for (Default d : defaults) { //}.value) {
+      items.add(new ArgumentItem(d.key, d.value))
     }
     return Optional.of(Arguments.parse(items))
   }
   
-  override InitResult<T> instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
+  override InitResult instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
     val Class<?> rawType = context.rawType
-    val T result = rawType.newInstance as T
+    val Object result = rawType.newInstance
     for (Field field : rawType.declaredFields.filter[!it.getAnnotationsByType(Arg).isEmpty]) {
       StaticUtils::setFieldValue(field, result, instantiatedChildren.get(field.name))
     }

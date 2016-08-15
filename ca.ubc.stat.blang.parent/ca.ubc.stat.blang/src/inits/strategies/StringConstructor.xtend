@@ -11,7 +11,7 @@ import inits.ArgumentSpecification
 import java.lang.reflect.Constructor
 import com.google.common.base.Joiner
 
-class StringConstructor<T> implements InstantiationStrategy<T> {
+class StringConstructor implements InstantiationStrategy {
   
   override String formatDescription(InstantiationContext context) {
     return "Any string(s)"
@@ -21,8 +21,8 @@ class StringConstructor<T> implements InstantiationStrategy<T> {
     return new LinkedHashMap
   }
   
-  override InitResult<T> instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
-    val Constructor<T> constructor = context.rawType.getConstructor(String) as Constructor<T>
+  override InitResult instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
+    val Constructor<?> constructor = context.rawType.getConstructor(String) as Constructor<?>
     val String argument = Joiner.on(" ").join(context.argumentValue.get)
     return InitResult.success(constructor.newInstance(#[argument]))
   }
