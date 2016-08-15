@@ -6,19 +6,19 @@ import java.util.List
 import inits.Instantiator.InstantiationContext
 import com.google.common.base.Joiner
 
-class IntParser implements Parser<Integer> {
+class DoubleParser implements Parser<Double> {
   
   override parse(Optional<List<String>> arguments) {
     val String argument = Joiner.on(" ").join(arguments.get)
     if (argument.matches("\\s*INF\\s*")) {
-      return Integer.MAX_VALUE
+      return Double.POSITIVE_INFINITY
     } else {
-      return Integer.parseInt(argument)
+      return Double.parseDouble(argument)
     }
   }
   
   override formatDescription(InstantiationContext context) {
-    return "An integer or INF"
+    return "A number or INF"
   }
   
 }

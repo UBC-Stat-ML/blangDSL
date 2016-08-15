@@ -10,6 +10,9 @@ import inits.ArgumentSpecification
 import java.lang.reflect.Constructor
 import org.eclipse.xtend.lib.annotations.Data
 
+/**
+ * T is the type of the one argument provided to constructor
+ */
 @Data
 class OneArgConstructor<T> implements InstantiationStrategy {
   

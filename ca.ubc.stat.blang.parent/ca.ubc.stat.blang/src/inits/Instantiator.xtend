@@ -218,7 +218,7 @@ class Instantiator<T> {
     }
   }
   
-  def InstantiationStrategy getInstantiationStrategy(Type type) {
+  def private InstantiationStrategy getInstantiationStrategy(Type type) {
     val typeToInitialize = getRawClass(type)
     // 1 - check in DB
     val InstantiationStrategy strategyInDB = strategies.get(typeToInitialize)
