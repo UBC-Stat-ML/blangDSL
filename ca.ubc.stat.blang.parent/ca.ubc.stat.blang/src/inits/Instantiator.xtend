@@ -45,34 +45,49 @@ class Instantiator<T> {
   def public String lastInitReport() {
     val List<String> result = new ArrayList
     val ArgumentSpecification rootSpec = new ArgumentSpecification(_type, Optional.empty, "")
-    lastInitReport(result, rootSpec, new ArrayList, _arguments)
-    return Joiner.on("\n\n").join(result)
+    lastInitReport(result, rootSpec, new ArrayList, _arguments, lastInitTree)
+    return Joiner.on("\n").join(result) + "\n"
   }
   
   def private void lastInitReport(
     List<String> result, 
     ArgumentSpecification specifications, 
     List<String> qualifiedName,
-    Arguments currentArguments
+    Arguments currentArguments,
+    InitTree initTree
   ) {
     val StringBuilder builder = new StringBuilder
     val currentType = specifications.type
     val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
     val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
-    if (strategy.acceptsInput) {
-      builder.append(qualifiedNameToString(qualifiedName) + " <" + currentType.typeName + " : " + strategy.formatDescription(context) + ">\n")
+    if (!qualifiedName.empty || strategy.acceptsInput) {
+      if (strategy.acceptsInput) {
+        builder.append(qualifiedNameToString(qualifiedName) + " <" + currentType.typeName + " : " + strategy.formatDescription(context) + ">\n")
+      } else {
+        builder.append("group " + Joiner.on(".").join(qualifiedName) + "\n")
+      }
       builder.append("  description: " + specifications.description + "\n")
       if (specifications.defaultArguments.present) {
-        builder.append("  not mandatory, default is: " + specifications.defaultArguments.get)
+        builder.append("  not mandatory, default is: " + specifications.defaultArguments.get + "\n")
       } else {
-        builder.append("  mandatory")
+        builder.append("  mandatory\n")
+      }
+      if (initTree !== null && initTree.initResult.errorMessage.present) {
+        builder.append("  error message: " + initTree.initResult.errorMessage.get + "\n")
       }
       result.add(builder.toString)
     }
+    // recurse    
     val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
       strategy.childrenSpecifications(context, currentArguments.childrenKeys)
     for (String childName : childrenSpecifications.keySet) {
-      lastInitReport(result, childrenSpecifications.get(childName), qualName(qualifiedName, childName), currentArguments.child(childName))
+      val InitTree subTree = 
+        if (initTree === null) {
+          null
+        } else {
+          initTree.children.children.get(childName)
+        }
+      lastInitReport(result, childrenSpecifications.get(childName), qualName(qualifiedName, childName), currentArguments.child(childName), subTree)
     }
   }
   

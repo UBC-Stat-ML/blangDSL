@@ -1,19 +1,15 @@
 package inits
 
-import inits.strategies.StringConstructor
 import inits.strategies.FeatureAnnotation
 import java.util.Optional
+import inits.strategies.parsers.IntParser
+import inits.strategies.OneArgConstructor
+import inits.strategies.Primitive
+import inits.strategies.parsers.StringParser
 
 class QuickTests {
   
-  @InitVia(StringConstructor)
-  static class MyClass {
-    
-    new (String test) {
-      println("ok: " + test)
-    }
-    
-  }
+
   
   @InitVia(FeatureAnnotation)
   static class AnotherOne {
@@ -23,6 +19,9 @@ class QuickTests {
     
     @Arg
     var SubOne subOne
+    
+    @Arg
+    var int anInt
   }
   
   static class SubOne {
@@ -33,14 +32,20 @@ class QuickTests {
   
   def public static void main(String [] args) {
     
-    val Arguments parsed = PosixParser.parse("--myString", "it worked!")
+    val Arguments parsed = PosixParser.parse("--myString", "it worked!", "--subOne.subStr", "rabbit", "--anInt", "18")
 //    
     val Instantiator<AnotherOne> inst = new Instantiator(AnotherOne, parsed)
-    inst.strategies.put(String, new StringConstructor)
+    inst.strategies.put(String, new OneArgConstructor<String>(String, new StringParser))
+    inst.strategies.put(Integer, new OneArgConstructor<Integer>(int, new IntParser))
+    inst.strategies.put(int, new Primitive<Integer>(int, new IntParser))
+    
 //    
-    inst.init
+    val Optional<AnotherOne> result = inst.init
     
     println(inst.lastInitReport)
+    
+    println(result.get.anInt)
+    
 //    
 //    println("done")
     

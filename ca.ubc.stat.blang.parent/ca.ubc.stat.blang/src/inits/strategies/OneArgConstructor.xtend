@@ -5,16 +5,19 @@ import inits.Instantiator.InstantiationContext
 import java.util.Set
 import java.util.Map
 import inits.InitResult
-import java.util.Optional
 import java.util.LinkedHashMap
 import inits.ArgumentSpecification
 import java.lang.reflect.Constructor
-import com.google.common.base.Joiner
+import org.eclipse.xtend.lib.annotations.Data
 
-class StringConstructor implements InstantiationStrategy {
+@Data
+class OneArgConstructor<T> implements InstantiationStrategy {
+  
+  val Class<T> type
+  val Parser<T> parser
   
   override String formatDescription(InstantiationContext context) {
-    return "Any string(s)"
+    return parser.formatDescription(context)
   }
   
   override LinkedHashMap<String, ArgumentSpecification> childrenSpecifications(InstantiationContext context, Set<String> providedChildrenKeys) {
@@ -22,9 +25,9 @@ class StringConstructor implements InstantiationStrategy {
   }
   
   override InitResult instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
-    val Constructor<?> constructor = context.rawType.getConstructor(String) as Constructor<?>
-    val String argument = Joiner.on(" ").join(context.argumentValue.get)
-    return InitResult.success(constructor.newInstance(#[argument]))
+    val Constructor<?> constructor = context.rawType.getConstructor(type) as Constructor<?>
+    val T parsed = parser.parse(context.argumentValue)
+    return InitResult.success(constructor.newInstance(#[parsed]))
   }
   
   override boolean acceptsInput() {

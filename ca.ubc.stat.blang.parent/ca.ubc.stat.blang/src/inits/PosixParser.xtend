@@ -21,8 +21,10 @@ class PosixParser {
     
     for (String arg : args) {
       if (arg.matches("[-][-].*")) {
-        // process previous
-        items.add(new ArgumentItem(currentKey, currentValue))
+        // process previous (unless it's the empty root)
+        if (!currentKey.isEmpty || !currentValue.isEmpty) {
+          items.add(new ArgumentItem(currentKey, currentValue))
+        }
         // start next
         currentKey = readKey(arg)
         currentValue = new ArrayList
@@ -32,7 +34,9 @@ class PosixParser {
     }
     
     // don't forget to process last one too
-    items.add(new ArgumentItem(currentKey, currentValue))
+    if (!currentKey.isEmpty || !currentValue.isEmpty) {
+      items.add(new ArgumentItem(currentKey, currentValue))
+    }
     
     return Arguments.parse(items)
   }

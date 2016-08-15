@@ -114,7 +114,7 @@ class Arguments {
   
   def private void toString(String fullyQual, List<String> result) {
     if (argumentValue.present) {
-      result.add(fullyQual + (if (fullyQual == "") "" else " ") +  Joiner.on(" ").join(argumentValue.get))
+      result.add((if (fullyQual == "") "" else "--" + fullyQual + " ") +  Joiner.on(" ").join(argumentValue.get))
     }
     for (String key : children.keySet) {
       val String fullName = if (fullyQual == "") key else fullyQual + "." + key
