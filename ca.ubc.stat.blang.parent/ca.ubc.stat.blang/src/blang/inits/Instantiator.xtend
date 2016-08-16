@@ -1,4 +1,4 @@
-package inits
+package blang.inits
 
 import org.eclipse.xtend.lib.annotations.Data
 import java.lang.reflect.Type
@@ -13,7 +13,7 @@ import java.util.List
 import java.util.Set
 import java.util.HashSet
 import org.eclipse.xtend.lib.annotations.Accessors
-import inits.strategies.FeatureAnnotation
+import blang.inits.strategies.FeatureAnnotation
 import java.util.Optional
 import java.util.ArrayList
 import com.google.common.base.Joiner

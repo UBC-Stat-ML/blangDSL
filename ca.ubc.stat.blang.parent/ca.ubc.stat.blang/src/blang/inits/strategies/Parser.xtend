@@ -1,8 +1,8 @@
-package inits.strategies
+package blang.inits.strategies
 
 import java.util.List
 import java.util.Optional
-import inits.Instantiator.InstantiationContext
+import blang.inits.Instantiator.InstantiationContext
 
 interface Parser<T> {
   def T parse(Optional<List<String>> arguments)

@@ -1,4 +1,4 @@
-package inits
+package blang.inits
 
 import org.eclipse.xtend.lib.annotations.Data
 import java.lang.reflect.Type

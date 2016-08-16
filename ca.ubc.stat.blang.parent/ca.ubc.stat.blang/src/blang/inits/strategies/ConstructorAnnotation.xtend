@@ -1,12 +1,12 @@
-package inits.strategies
+package blang.inits.strategies
 
-import inits.ArgumentSpecification
-import inits.ConstructorArg
-import inits.Default
-import inits.DesignatedConstructor
-import inits.InitResult
-import inits.InstantiationStrategy
-import inits.Instantiator.InstantiationContext
+import blang.inits.ArgumentSpecification
+import blang.inits.ConstructorArg
+import blang.inits.Default
+import blang.inits.DesignatedConstructor
+import blang.inits.InitResult
+import blang.inits.InstantiationStrategy
+import blang.inits.Instantiator.InstantiationContext
 import java.lang.reflect.Constructor
 import java.lang.reflect.Parameter
 import java.lang.reflect.Type

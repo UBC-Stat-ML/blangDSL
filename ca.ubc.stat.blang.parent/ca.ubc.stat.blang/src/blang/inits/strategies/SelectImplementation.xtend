@@ -1,11 +1,11 @@
-package inits.strategies
+package blang.inits.strategies
 
 import com.google.common.base.Joiner
-import inits.ArgumentSpecification
-import inits.Implementation
-import inits.InitResult
-import inits.InstantiationStrategy
-import inits.Instantiator.InstantiationContext
+import blang.inits.ArgumentSpecification
+import blang.inits.Implementation
+import blang.inits.InitResult
+import blang.inits.InstantiationStrategy
+import blang.inits.Instantiator.InstantiationContext
 import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map

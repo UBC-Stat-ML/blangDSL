@@ -1,6 +1,6 @@
-package inits
+package blang.inits
 
-import inits.strategies.SelectImplementation
+import blang.inits.strategies.SelectImplementation
 import java.lang.annotation.Repeatable
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy

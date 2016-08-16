@@ -1,7 +1,10 @@
 package ca.ubc.stat.blang.jvmmodel
 
+import blang.core.DeboxedName
+import blang.core.LogScaleFactor
 import blang.core.Model
 import blang.core.ModelComponent
+import blang.core.Param
 import blang.core.SupportFactor
 import ca.ubc.stat.blang.StaticUtils
 import ca.ubc.stat.blang.blangDsl.BlangModel
@@ -29,6 +32,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtend2.lib.StringConcatenationClient
 import org.eclipse.xtext.common.types.JvmDeclaredType
 import org.eclipse.xtext.common.types.JvmFormalParameter
+import org.eclipse.xtext.common.types.JvmOperation
 import org.eclipse.xtext.common.types.JvmTypeReference
 import org.eclipse.xtext.common.types.JvmVisibility
 import org.eclipse.xtext.naming.QualifiedName
@@ -38,12 +42,8 @@ import org.eclipse.xtext.resource.IResourceDescriptionsProvider
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import blang.core.DeboxedName
-import blang.core.Param
-import blang.core.LogScaleFactor
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
-import org.eclipse.xtext.common.types.JvmOperation
-import org.eclipse.xtext.common.types.JvmConstructor
+import blang.inits.ConstructorArg
+import blang.inits.DesignatedConstructor
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -70,6 +70,7 @@ class SingleBlangModelInferrer {
     setupClass()
     val BlangScope globalScope = setupVariables()
     generateConstructor(globalScope)
+    generateFixedParamStaticMethod(globalScope)
     generateMethods(globalScope)
   }
   
@@ -94,26 +95,55 @@ class SingleBlangModelInferrer {
     return result
   }
   
-  def private void generateConstructor(BlangScope scope) {
-    generateConstructor(scope, false)
-    generateConstructor(scope, true)
+  def static private List<BlangVariable> constructorOrder(BlangScope scope) {
+    var List<BlangVariable> result = new ArrayList
+    val boolean [] variablesOrder = #[false, true]; // isParam == false, then, isParam == true
+    for (boolean isParam : variablesOrder) {
+      for (BlangVariable variable : scope.variables.filter[it.param === isParam]) {
+        result.add(variable)
+      }
+    }
+    return result
   }
   
-  
-  def private void generateConstructor(BlangScope scope, boolean withConstantParams) {
-    val Procedure1<? super JvmOperation> memberBuilder = [
+  def private void generateFixedParamStaticMethod(BlangScope scope) {
+    val JvmOperation method = model.toMethod(BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME, typeRef(output)) [
       visibility = JvmVisibility.PUBLIC
-      // Random variables show up earlier in the constructor parameters, then params
-      val boolean [] variablesOrder = #[false, true]; // isParam == false, then, isParam == true
-      for (boolean isParam : variablesOrder) {
-        for (BlangVariable variable : scope.variables.filter[it.param === isParam]) {
-          val JvmFormalParameter param = model.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder)) 
-          if (isParam === true) {
-            param.annotations += annotationRef(Param) 
-          }
-          param.annotations += annotationRef(DeboxedName, variable.deboxedName)
-          parameters += param
+      static = true
+      for (BlangVariable variable : constructorOrder(scope)) {
+        val JvmFormalParameter param = model.toParameter(variable.deboxedName, variable.deboxedType)
+        if (variable.param) {
+          param.annotations += annotationRef(Param) 
         }
+        param.annotations += annotationRef(ConstructorArg, variable.deboxedName)
+        parameters += param
+      }
+      body = '''
+        return new «typeRef(output)»(
+          «FOR BlangVariable variable : constructorOrder(scope) SEPARATOR ", "»
+          «IF variable.param»
+            () -> «variable.deboxedName»
+          «ELSE»
+            «variable.deboxedName»
+          «ENDIF»
+          «ENDFOR»
+        );
+      '''
+    ]
+    method.annotations += annotationRef(DesignatedConstructor)
+    output.members += method
+  }
+  
+  def private void generateConstructor(BlangScope scope) {
+    output.members += model.toConstructor[
+      visibility = JvmVisibility.PUBLIC
+      for (BlangVariable variable : constructorOrder(scope)) {
+        val JvmFormalParameter param = model.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder)) 
+        if (variable.param) {
+          param.annotations += annotationRef(Param) 
+        }
+        param.annotations += annotationRef(DeboxedName, variable.deboxedName)
+        parameters += param
       }
       body = '''
         «FOR BlangVariable variable : scope.variables»
@@ -129,11 +159,11 @@ class SingleBlangModelInferrer {
             - second, all the params in the order they occur in the blang file
       '''
     ]
-    if (withConstantParams) {
-      output.members += model.toMethod(BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME, typeRef(output), memberBuilder)
-    } else {
-      output.members += model.toConstructor(memberBuilder as Procedure1)
-    }
+//    if (withConstantParams) {
+//      output.members += model.toMethod(BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME, typeRef(output), memberBuilder)
+//    } else {
+//      output.members += model.toConstructor(memberBuilder as Procedure1)
+//    }
   }
   
   def private void generateMethods(BlangScope scope) {
@@ -281,7 +311,6 @@ class SingleBlangModelInferrer {
   
   def private List<ConstructorArgument> constructorParameters(InstantiatedDistribution distribution) {
     try { return _constructorParametersFromXtextIndex(distribution) } catch (Exception e) { e.printStackTrace }
-    System.err.println("Note: backing up to loading from the class path")
     try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) { e.printStackTrace }
     return null   // TODO: error handling
   }

@@ -1,9 +1,9 @@
-package inits
+package blang.inits
 
 import java.util.LinkedHashMap
 import java.util.Map
 import java.util.Set
-import inits.Instantiator.InstantiationContext
+import blang.inits.Instantiator.InstantiationContext
 import java.util.Optional
 
 interface InstantiationStrategy {

@@ -1,9 +1,9 @@
-package inits.strategies.parsers
+package blang.inits.strategies.parsers
 
-import inits.strategies.Parser
+import blang.inits.strategies.Parser
 import java.util.Optional
 import java.util.List
-import inits.Instantiator.InstantiationContext
+import blang.inits.Instantiator.InstantiationContext
 import com.google.common.base.Joiner
 
 class IntParser implements Parser<Integer> {

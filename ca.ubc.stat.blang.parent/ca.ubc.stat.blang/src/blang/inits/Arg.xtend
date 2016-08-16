@@ -1,4 +1,4 @@
-package inits
+package blang.inits
 
 import java.lang.annotation.ElementType
 import java.lang.annotation.Target

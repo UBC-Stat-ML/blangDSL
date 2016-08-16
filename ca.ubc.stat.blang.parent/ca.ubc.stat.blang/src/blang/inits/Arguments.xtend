@@ -1,4 +1,4 @@
-package inits
+package blang.inits
 
 import java.util.List
 import java.util.Set

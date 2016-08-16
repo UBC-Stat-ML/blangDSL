@@ -1,12 +1,12 @@
-package inits.strategies
+package blang.inits.strategies
 
-import inits.InstantiationStrategy
-import inits.Instantiator.InstantiationContext
+import blang.inits.InstantiationStrategy
+import blang.inits.Instantiator.InstantiationContext
 import java.util.Set
 import java.util.Map
-import inits.InitResult
+import blang.inits.InitResult
 import java.util.LinkedHashMap
-import inits.ArgumentSpecification
+import blang.inits.ArgumentSpecification
 import java.lang.reflect.Constructor
 import org.eclipse.xtend.lib.annotations.Data
 

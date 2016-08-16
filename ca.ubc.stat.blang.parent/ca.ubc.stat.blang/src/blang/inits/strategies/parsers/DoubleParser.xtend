@@ -1,19 +1,19 @@
-package inits.strategies.parsers
+package blang.inits.strategies.parsers
 
-import inits.strategies.Parser
+import blang.inits.strategies.Parser
 import java.util.Optional
 import java.util.List
-import inits.Instantiator.InstantiationContext
+import blang.inits.Instantiator.InstantiationContext
 import com.google.common.base.Joiner
 
-class LongParser implements Parser<Long> {
+class DoubleParser implements Parser<Double> {
   
   override parse(Optional<List<String>> arguments) {
     val String argument = Joiner.on(" ").join(arguments.get)
     if (argument.matches("\\s*INF\\s*")) {
-      return Long.MAX_VALUE
+      return Double.POSITIVE_INFINITY
     } else {
-      return Long.parseLong(argument)
+      return Double.parseDouble(argument)
     }
   }
   

@@ -1,10 +1,10 @@
-package inits
+package blang.inits
 
-import inits.strategies.FeatureAnnotation
+import blang.inits.strategies.FeatureAnnotation
 import java.util.Random
 import java.util.Optional
-import inits.strategies.SelectImplementation
-import inits.strategies.ConstructorAnnotation
+import blang.inits.strategies.SelectImplementation
+import blang.inits.strategies.ConstructorAnnotation
 
 // TODO: move and transform to test
 class Demo {
@@ -23,7 +23,7 @@ class Demo {
     
     @Arg
     var MyInterface myInterface
-    
+     
     @Arg
     var WithConstr withC
   }

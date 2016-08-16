@@ -1,13 +1,13 @@
-package inits
+package blang.inits
 
-import inits.strategies.Primitive
-import inits.strategies.parsers.IntParser
-import inits.strategies.OneArgConstructor
-import inits.strategies.parsers.StringParser
-import inits.strategies.parsers.DoubleParser
-import inits.strategies.parsers.BooleanParser
+import blang.inits.strategies.Primitive
+import blang.inits.strategies.parsers.IntParser
+import blang.inits.strategies.OneArgConstructor
+import blang.inits.strategies.parsers.StringParser
+import blang.inits.strategies.parsers.DoubleParser
+import blang.inits.strategies.parsers.BooleanParser
 import java.util.Random
-import inits.strategies.parsers.LongParser
+import blang.inits.strategies.parsers.LongParser
 import java.util.Map
 
 class Instantiators {

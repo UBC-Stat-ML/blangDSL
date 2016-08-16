@@ -1,6 +1,6 @@
-package inits
+package blang.inits
 
-import inits.Arguments.ArgumentItem
+import blang.inits.Arguments.ArgumentItem
 import java.util.ArrayList
 import java.util.List
 import com.google.common.base.Splitter
