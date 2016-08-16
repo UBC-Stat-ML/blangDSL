@@ -60,7 +60,7 @@ class FeatureAnnotation implements InstantiationStrategy {
     return InitResult.success(result)
   }
   
-  override boolean acceptsInput() {
+  override boolean acceptsInput(InstantiationContext context) {
     return false
   }
   

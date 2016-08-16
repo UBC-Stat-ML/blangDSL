@@ -61,8 +61,8 @@ class Instantiator<T> {
     val currentType = specifications.type
     val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
     val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
-    if (!qualifiedName.empty || strategy.acceptsInput) {
-      if (strategy.acceptsInput) {
+    if (!qualifiedName.empty || strategy.acceptsInput(context)) {
+      if (strategy.acceptsInput(context)) {
         builder.append(qualifiedNameToString(qualifiedName) + " <" + currentType.typeName + " : " + strategy.formatDescription(context) + ">\n")
       } else {
         builder.append("group " + Joiner.on(".").join(qualifiedName) + "\n")
@@ -188,7 +188,7 @@ class Instantiator<T> {
         try {
           val InitResult initResult = strategy.instantiate(context, children.instantiatedChildren)
           val boolean hasArgValue = currentArguments.argumentValue.present
-          val boolean acceptsInput = strategy.acceptsInput
+          val boolean acceptsInput = strategy.acceptsInput(context)
           if (hasArgValue && !acceptsInput) {
             InitResult.failure(UN_NECESSARY_VALUE)
           } else {

@@ -106,7 +106,7 @@ class ConstructorAnnotation implements InstantiationStrategy {
     }
   }
   
-  override boolean acceptsInput() {
+  override boolean acceptsInput(InstantiationContext context) {
     return false
   }
   

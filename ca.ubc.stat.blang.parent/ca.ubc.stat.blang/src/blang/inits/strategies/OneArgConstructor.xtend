@@ -33,7 +33,7 @@ class OneArgConstructor<T> implements InstantiationStrategy {
     return InitResult.success(constructor.newInstance(#[parsed]))
   }
   
-  override boolean acceptsInput() {
+  override boolean acceptsInput(InstantiationContext context) {
     return true
   }
   

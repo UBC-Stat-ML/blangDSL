@@ -28,7 +28,7 @@ class Primitive<T> implements InstantiationStrategy {
     return InitResult.success(parsed)
   }
   
-  override boolean acceptsInput() {
+  override boolean acceptsInput(InstantiationContext context) {
     return true
   }
   

@@ -12,7 +12,7 @@ interface InstantiationStrategy {
    */
   def String formatDescription(InstantiationContext context)
   
-  def boolean acceptsInput()
+  def boolean acceptsInput(InstantiationContext context)
   
   def LinkedHashMap<String, ArgumentSpecification> childrenSpecifications(
     InstantiationContext context,

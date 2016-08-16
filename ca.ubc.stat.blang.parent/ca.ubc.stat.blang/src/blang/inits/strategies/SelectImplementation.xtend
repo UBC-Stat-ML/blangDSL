@@ -12,13 +12,37 @@ import java.util.Map
 import java.util.Optional
 import java.util.Set
 
+/**
+ * Limitation of the select version: consumes all the input. Use DefaultImplementation 
+ * strategy instead (which just uses this with the right switch turned on).
+ * 
+ * TODO: Perhaps later do something where just the first item in the list is used
+ * Before then, just do not document that feature yet.
+ */
 class SelectImplementation implements InstantiationStrategy {
   
   val public static String DEFAULT_KEY = "default"
+  val boolean allowMultiple
+  
+  new() {
+    this.allowMultiple = true
+  }
+  
+  new(boolean allowMultiple) {
+    this.allowMultiple = allowMultiple
+  }
   
   override String formatDescription(InstantiationContext context) {
-    val ImplementationSpec spec = readImplementations(context)
-    return Joiner.on("|").join(spec.implementations.keySet)
+    if (allowMultiple) {
+      // print the choice of implementation
+      val ImplementationSpec spec = readImplementations(context)
+      return Joiner.on("|").join(spec.implementations.keySet)
+    } else {
+      // just forward to the implementation
+      val ImplementationSpec spec = readImplementations(context)
+      val Class<?> impl = spec.pickImplementation(context.argumentValue)
+      context.getInstantiationStrategy(impl).formatDescription(context)
+    }
   }
   
   override LinkedHashMap<String, ArgumentSpecification> childrenSpecifications(
@@ -29,9 +53,11 @@ class SelectImplementation implements InstantiationStrategy {
     val ImplementationSpec spec = readImplementations(context)
     val Class<?> impl = spec.pickImplementation(context.argumentValue)
     
-    // consume
-    val InstantiationContext consumed = context.newInstance(impl, Optional.empty)
-    return context.getInstantiationStrategy(impl).childrenSpecifications(consumed, providedChildrenKeys)
+    if (!allowMultiple && spec.implementations.size !== 1) {
+      throw new RuntimeException("Only one implementation allowed.")
+    }
+    
+    return context.getInstantiationStrategy(impl).childrenSpecifications(childContext(context), providedChildrenKeys)
   }
   
   override InitResult instantiate(
@@ -42,13 +68,27 @@ class SelectImplementation implements InstantiationStrategy {
     val ImplementationSpec spec = readImplementations(context)
     val Class<?> impl = spec.pickImplementation(context.argumentValue)
     
-    // consume
-    val InstantiationContext consumed = context.newInstance(impl, Optional.empty)
-    return context.getInstantiationStrategy(impl).instantiate(consumed, instantiatedChildren)
+    return context.getInstantiationStrategy(impl).instantiate(childContext(context), instantiatedChildren)
   }
   
-  override boolean acceptsInput() {
-    return true 
+  // if the implementation name was read, consume the argument
+  def InstantiationContext childContext(InstantiationContext context) {
+    val ImplementationSpec spec = readImplementations(context)
+    val Class<?> impl = spec.pickImplementation(context.argumentValue)
+    if (allowMultiple) 
+      return context.newInstance(impl, Optional.empty)
+    else
+      return context
+  }
+  
+  override boolean acceptsInput(InstantiationContext context) {
+    if (allowMultiple) {
+      return true
+    } else {
+      val ImplementationSpec spec = readImplementations(context)
+      val Class<?> impl = spec.pickImplementation(context.argumentValue)
+      context.getInstantiationStrategy(impl).acceptsInput(context)
+    }
   }
   
   static private class ImplementationSpec {
@@ -81,7 +121,7 @@ class SelectImplementation implements InstantiationStrategy {
     for (Implementation impl : type.getAnnotationsByType(Implementation)) {
       if (impl.key == DEFAULT_KEY) {
         if (result.defaultImpl.present) {
-          throw new RuntimeException("The cannot be two default implementations")
+          throw new RuntimeException("There cannot be two default implementations")
         }
         result.defaultImpl = Optional.of(impl.value)
       }
