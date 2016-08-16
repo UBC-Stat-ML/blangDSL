@@ -11,7 +11,6 @@ import java.util.List
 import java.util.Map
 import java.util.Optional
 import java.util.Set
-import com.ibm.icu.lang.UScript.ScriptUsage
 
 /**
  * Limitation of the select version: consumes all the input. Use DefaultImplementation 
