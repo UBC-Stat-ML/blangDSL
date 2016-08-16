@@ -54,10 +54,15 @@ class FeatureAnnotation implements InstantiationStrategy {
   override InitResult instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
     val Class<?> rawType = context.rawType
     val Object result = rawType.newInstance
+    return instantiate(context, instantiatedChildren, result)
+  }
+  
+  def InitResult instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren, Object instance) {
+    val Class<?> rawType = context.rawType
     for (Field field : rawType.declaredFields.filter[!it.getAnnotationsByType(Arg).isEmpty]) {
-      StaticUtils::setFieldValue(field, result, instantiatedChildren.get(field.name))
+      StaticUtils::setFieldValue(field, instance, instantiatedChildren.get(field.name))
     }
-    return InitResult.success(result)
+    return InitResult.success(instance)
   }
   
   override boolean acceptsInput(InstantiationContext context) {

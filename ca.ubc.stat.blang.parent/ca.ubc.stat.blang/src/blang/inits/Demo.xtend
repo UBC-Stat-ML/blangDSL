@@ -6,6 +6,7 @@ import java.util.Optional
 import blang.inits.strategies.SelectImplementation
 import blang.inits.strategies.ConstructorAnnotation
 import java.util.List
+import com.google.common.base.Joiner
 
 // TODO: move and transform to test
 class Demo {
@@ -30,6 +31,23 @@ class Demo {
     
     @Arg
     var WithStaticFactory withS
+    
+    @Arg 
+    var CombinedTest combined
+  }
+  
+  static class CombinedTest {
+    
+    @Arg
+    var String aStr
+    
+    var String other
+    
+    @DesignatedConstructor
+    new (@Input(formatDescription = "some format") List<String> input, @ConstructorArg("blah") int blah) {
+      other = Joiner.on(" ").join(input) + blah
+    }
+    
   }
   
   @InitVia(FeatureAnnotation)
@@ -107,7 +125,10 @@ class Demo {
       "--withC", "666",
       "--withC.first", "Baba",
       "--withC.second", "BouThack",
-      "--withS.first", "bouh!")
+      "--withS.first", "bouh!",
+      "--combined", "COMBINED",
+      "--combined.aStr", "A STR",
+      "--combined.blah", "123456")
     val Instantiator<MyClass> inst = Instantiators::getDefault(MyClass, parsed)
     inst.debug = true
     inst.globals.put(GLOBAL_KEY, " -- this is global ! ---")
@@ -120,5 +141,6 @@ class Demo {
     println(product.get.withC)
     println(product.get.withS.mine)
     println(product.get.withC.number)
+    println(product.get.combined.other)
   }
 }

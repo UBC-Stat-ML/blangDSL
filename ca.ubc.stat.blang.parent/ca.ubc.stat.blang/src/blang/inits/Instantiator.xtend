@@ -13,10 +13,10 @@ import java.util.List
 import java.util.Set
 import java.util.HashSet
 import org.eclipse.xtend.lib.annotations.Accessors
-import blang.inits.strategies.FeatureAnnotation
 import java.util.Optional
 import java.util.ArrayList
 import com.google.common.base.Joiner
+import blang.inits.strategies.Combined
 
 class Instantiator<T> {
   
@@ -37,7 +37,7 @@ class Instantiator<T> {
   new(Type _type, Arguments _arguments) {
     this._type = _type
     this._arguments = _arguments
-    this.defaultInitializationStrategy = new FeatureAnnotation
+    this.defaultInitializationStrategy = new Combined
   }
   
   var InitTree lastInitTree = null
