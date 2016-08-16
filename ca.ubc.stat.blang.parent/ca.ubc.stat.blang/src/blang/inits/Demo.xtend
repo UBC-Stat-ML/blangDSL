@@ -26,6 +26,9 @@ class Demo {
      
     @Arg
     var WithConstr withC
+    
+    @Arg
+    var WithStaticFactory withS
   }
   
   @InitVia(FeatureAnnotation)
@@ -53,6 +56,19 @@ class Demo {
     
     override String toString() {
       return contents
+    }
+  }
+  
+  @InitVia(ConstructorAnnotation)
+  static class WithStaticFactory {
+    
+    var String mine
+    
+    @DesignatedConstructor
+    def static WithStaticFactory buildIt(@ConstructorArg("first") String first) {
+      val WithStaticFactory result = new WithStaticFactory
+      result.mine = first
+      return result
     }
   }
   
@@ -85,7 +101,8 @@ class Demo {
       "--anInt", "18", 
       "--myInterface", "default",
       "--withC.first", "Baba",
-      "--withC.second", "BouThack")
+      "--withC.second", "BouThack",
+      "--withS.first", "bouh!")
     val Instantiator<MyClass> inst = Instantiators::getDefault(MyClass, parsed)
     inst.globals.put(GLOBAL_KEY, " -- this is global ! ---")
     val Optional<MyClass> product = inst.init
@@ -95,5 +112,6 @@ class Demo {
     println(product.get.subset.subStr)
     println(product.get.myInterface.quack)
     println(product.get.withC)
+    println(product.get.withS.mine)
   }
 }
