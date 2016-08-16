@@ -81,18 +81,20 @@ class Instantiator<T> {
       }
       result.add(builder.toString)
     }
-    // recurse    
-    val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
-      strategy.childrenSpecifications(context, currentArguments.childrenKeys)
-    for (String childName : childrenSpecifications.keySet) {
-      val InitTree subTree = 
-        if (initTree === null) {
-          null
-        } else {
-          initTree.children.children.get(childName)
-        }
-      lastInitReport(result, childrenSpecifications.get(childName), qualName(qualifiedName, childName), currentArguments.child(childName), subTree)
-    }
+    // recurse  
+    try {  
+      val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
+        strategy.childrenSpecifications(context, currentArguments.childrenKeys)
+      for (String childName : childrenSpecifications.keySet) {
+        val InitTree subTree = 
+          if (initTree === null) {
+            null
+          } else {
+            initTree.children.children.get(childName)
+          }
+        lastInitReport(result, childrenSpecifications.get(childName), qualName(qualifiedName, childName), currentArguments.child(childName), subTree)
+      }
+    } catch (Exception e) {}
   }
   
   def private List<String> qualName(List<String> prefix, String name) {
@@ -153,7 +155,11 @@ class Instantiator<T> {
     val InitChildren children = new InitChildren
     val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
     val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
-      strategy.childrenSpecifications(context, currentArguments.childrenKeys)
+      try {
+        strategy.childrenSpecifications(context, currentArguments.childrenKeys) 
+      } catch (Exception e) {
+        return new InitTree(InitResult.failure(e.toString), new InitChildren)
+      }
     for (String childName : childrenSpecifications.keySet) {
       val ArgumentSpecification childSpec = childrenSpecifications.get(childName)
       // check if subtree of Argument has anything at all (contents or further children)
