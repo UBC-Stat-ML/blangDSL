@@ -31,6 +31,9 @@ class Instantiator<T> {
   @Accessors(PUBLIC_GETTER)
   val Map<Class<?>,InstantiationStrategy> strategies = new HashMap
   
+  @Accessors(PUBLIC_SETTER)
+  var boolean debug = false
+  
   new(Type _type, Arguments _arguments) {
     this._type = _type
     this._arguments = _arguments
@@ -195,6 +198,9 @@ class Instantiator<T> {
             initResult
           }
         } catch (Exception e) {
+          if (debug) {
+            e.printStackTrace
+          }
           InitResult.failure(e.toString)
         }
       } else {

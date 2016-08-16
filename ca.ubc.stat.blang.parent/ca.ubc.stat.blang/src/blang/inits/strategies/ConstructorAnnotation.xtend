@@ -16,41 +16,88 @@ import java.util.Set
 import java.lang.reflect.Method
 import org.eclipse.xtend.lib.annotations.Data
 import blang.inits.DesignatedConstructor
+import java.util.List
+import java.util.ArrayList
+import blang.inits.Input
 
 class ConstructorAnnotation implements InstantiationStrategy {
   
   override String formatDescription(InstantiationContext context) {
-    return ""
+    val BuilderArgumentsSpecification spec = new BuilderArgumentsSpecification(context)
+    if (spec.hasInput) {
+      return spec.inputAnnotation.get.formatDescription
+    } else {
+      return ""
+    }
   }
   
   override LinkedHashMap<String, ArgumentSpecification> childrenSpecifications(
     InstantiationContext context, 
     Set<String> providedChildrenKeys
   ) {
-    val Builder builder = getConstructor(context)
-    val LinkedHashMap<String, ArgumentSpecification> result = new LinkedHashMap
-    for (Parameter p : builder.parameters) {
-      val ConstructorArg [] args = p.getAnnotationsByType(ConstructorArg)
-      if (args.size != 1) {
-        throw new RuntimeException("Each argument of the designated constructor should have exactly one annotation @" + ConstructorArg.simpleName)
-      }
-      val ConstructorArg arg = args.get(0)
-      val Type childType = p.parameterizedType
-      val ArgumentSpecification spec = new ArgumentSpecification(childType, FeatureAnnotation::readDefault(p.getAnnotationsByType(Default)), arg.description)
-      val String name = arg.value
-      result.put(name, spec)
+    return new BuilderArgumentsSpecification(context).arguments
+  }
+  
+  static class BuilderArgumentsSpecification {
+    val LinkedHashMap<String, ArgumentSpecification> arguments = new LinkedHashMap
+    
+    // orders the keys as well as potentially a slot for the input
+    val List<String> orderedKeys = new ArrayList
+    val static final String INPUT_SLOT = "INPUT_SLOT"
+    
+    val Builder builder
+    
+    var Optional<Input> inputAnnotation = Optional.empty 
+    
+    def boolean hasInput() {
+      return inputAnnotation.present
     }
-    return result
+    
+    new (InstantiationContext context) {
+      builder = getConstructor(context)
+      for (Parameter p : builder.parameters) {
+        val ConstructorArg [] args = p.getAnnotationsByType(ConstructorArg)
+        val Input [] inputs = p.getAnnotationsByType(Input)
+        if (args.size === 1 && inputs.size === 1) {
+          throw new RuntimeException("These two annotations cannot be used at same time @" + ConstructorArg.simpleName + " and @" + Input.simpleName)
+        } else if (args.size === 1) {
+          val ConstructorArg arg = args.get(0)
+          val Type childType = p.parameterizedType
+          val ArgumentSpecification spec = new ArgumentSpecification(childType, FeatureAnnotation::readDefault(p.getAnnotationsByType(Default)), arg.description)
+          val String name = arg.value
+          arguments.put(name, spec)
+          orderedKeys.add(name)
+        } else if (inputs.size === 1) {
+          if (hasInput) {
+            throw new RuntimeException("At most one input can be associated with @" + Input.simpleName)
+          } 
+          orderedKeys.add(INPUT_SLOT)
+          inputAnnotation = Optional.of(inputs.get(0))
+        } else {
+          throw new RuntimeException("Each argument of the designated constructor should have exactly one annotation @" + ConstructorArg.simpleName
+            + " or, for at most one of the slots, an annotation @" + Input.simpleName)
+        }
+      }
+    }
+  
+    def size() {
+      return orderedKeys.size
+    }
+  
   }
 
   override InitResult instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
-    val Builder builder = getConstructor(context)
-    val Object [] sortedArguments = newArrayOfSize(instantiatedChildren.size)
+    val BuilderArgumentsSpecification spec = new BuilderArgumentsSpecification(context)
+    val Object [] sortedArguments = newArrayOfSize(spec.size)
     var int i = 0
-    for (String key : childrenSpecifications(context, instantiatedChildren.keySet).keySet) {
-      sortedArguments.set(i++, instantiatedChildren.get(key))
+    for (String key : spec.orderedKeys) {
+      if (key === BuilderArgumentsSpecification.INPUT_SLOT) {
+        sortedArguments.set(i++, context.argumentValue.get)
+      } else {
+        sortedArguments.set(i++, instantiatedChildren.get(key))
+      }
     }
-    return InitResult.success(builder.build(sortedArguments))
+    return InitResult.success(spec.builder.build(sortedArguments))
   }
   
   static interface Builder {
@@ -99,6 +146,14 @@ class ConstructorAnnotation implements InstantiationStrategy {
         found = Optional.of(new FactoryMethod(m))
       } 
     }
+    if (!found.present)
+    {
+      // defaults to zero-arg constructor
+      val Constructor<?> zeroArg = context.rawType.getConstructor()
+      if (zeroArg !== null) {
+        found = Optional.of(new ConstructorBuilder(zeroArg))
+      }
+    }
     if (found.present) {
       return found.get
     } else {
@@ -107,7 +162,7 @@ class ConstructorAnnotation implements InstantiationStrategy {
   }
   
   override boolean acceptsInput(InstantiationContext context) {
-    return false
+    return new BuilderArgumentsSpecification(context).hasInput
   }
   
 }

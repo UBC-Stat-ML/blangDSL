@@ -5,6 +5,7 @@ import java.util.Random
 import java.util.Optional
 import blang.inits.strategies.SelectImplementation
 import blang.inits.strategies.ConstructorAnnotation
+import java.util.List
 
 // TODO: move and transform to test
 class Demo {
@@ -44,14 +45,17 @@ class Demo {
   @InitVia(ConstructorAnnotation)
   static class WithConstr {
     val String contents
+    val int number
     
     @DesignatedConstructor
     new (
       @ConstructorArg("first") String first, 
       @ConstructorArg("second") String second,
-      @ConstructorArg(GLOBAL_KEY) String myGlobal
+      @ConstructorArg(GLOBAL_KEY) String myGlobal,
+      @Input(formatDescription = "a number") List<String> input
     ) {
       contents = first + ", " + second + " - " + myGlobal
+      number = Integer.parseInt(input.get(0))
     }
     
     override String toString() {
@@ -100,10 +104,12 @@ class Demo {
       "--subset.subStr", "rabbit", 
       "--anInt", "18", 
       "--myInterface", "default",
+      "--withC", "666",
       "--withC.first", "Baba",
       "--withC.second", "BouThack",
       "--withS.first", "bouh!")
     val Instantiator<MyClass> inst = Instantiators::getDefault(MyClass, parsed)
+    inst.debug = true
     inst.globals.put(GLOBAL_KEY, " -- this is global ! ---")
     val Optional<MyClass> product = inst.init
     
@@ -113,5 +119,6 @@ class Demo {
     println(product.get.myInterface.quack)
     println(product.get.withC)
     println(product.get.withS.mine)
+    println(product.get.withC.number)
   }
 }
