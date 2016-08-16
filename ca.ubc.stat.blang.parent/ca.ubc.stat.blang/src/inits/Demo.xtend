@@ -45,15 +45,18 @@ class Demo {
     @DesignatedConstructor
     new (
       @ConstructorArg("first") String first, 
-      @ConstructorArg("second") String second
+      @ConstructorArg("second") String second,
+      @ConstructorArg(GLOBAL_KEY) String myGlobal
     ) {
-      contents = first + ", " + second
+      contents = first + ", " + second + " - " + myGlobal
     }
     
     override String toString() {
       return contents
     }
   }
+  
+  val static String GLOBAL_KEY = "___global_key"
   
   @InitVia(SelectImplementation)
   @Implementation(MyImpl) 
@@ -84,11 +87,13 @@ class Demo {
       "--withC.first", "Baba",
       "--withC.second", "BouThack")
     val Instantiator<MyClass> inst = Instantiators::getDefault(MyClass, parsed)
+    inst.globals.put(GLOBAL_KEY, " -- this is global ! ---")
     val Optional<MyClass> product = inst.init
     
     println(inst.lastInitReport)
     
     println(product.get.subset.subStr)
     println(product.get.myInterface.quack)
+    println(product.get.withC)
   }
 }

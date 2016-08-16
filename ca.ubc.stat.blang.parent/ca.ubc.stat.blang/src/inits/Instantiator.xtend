@@ -23,6 +23,7 @@ class Instantiator<T> {
   val Type _type
   val Arguments _arguments
   
+  @Accessors(PUBLIC_GETTER)
   val Map<String, Object> globals = new HashMap
   
   val InstantiationStrategy defaultInitializationStrategy
