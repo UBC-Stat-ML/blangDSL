@@ -6,6 +6,6 @@ import org.eclipse.xtend.lib.annotations.Delegate
 class DefaultImplementation implements InstantiationStrategy {
   
   @Delegate
-  val SelectImplementation implementation = new SelectImplementation(false)
+  val SelectImplementation implementation = new SelectImplementation(false, true)
   
 }

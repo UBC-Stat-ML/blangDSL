@@ -7,6 +7,7 @@ import blang.inits.strategies.SelectImplementation
 import blang.inits.strategies.ConstructorAnnotation
 import java.util.List
 import com.google.common.base.Joiner
+import blang.inits.strategies.FullyQualifiedImplementation
 
 // TODO: move and transform to test
 class Demo {
@@ -34,6 +35,9 @@ class Demo {
     
     @Arg 
     var CombinedTest combined
+    
+    @Arg
+    var MyOtherInterf interf
   }
   
   static class CombinedTest {
@@ -80,6 +84,19 @@ class Demo {
       return contents
     }
   }
+  
+  @InitVia(FullyQualifiedImplementation)
+  static interface MyOtherInterf {
+    def String alien()
+  }
+  
+  static class MyOtherImp implements MyOtherInterf {
+    @Arg var String asdf
+    override String alien() {
+      return asdf
+    }
+  }
+  
   
   @InitVia(ConstructorAnnotation)
   static class WithStaticFactory {
@@ -128,7 +145,9 @@ class Demo {
       "--withS.first", "bouh!",
       "--combined", "COMBINED",
       "--combined.aStr", "A STR",
-      "--combined.blah", "123456")
+      "--combined.blah", "123456",
+      "--interf", "blang.inits.Demo$MyOtherImp",
+      "--interf.asdf", "Klingons")
     val Instantiator<MyClass> inst = Instantiators::getDefault(MyClass, parsed)
     inst.debug = true
     inst.globals.put(GLOBAL_KEY, " -- this is global ! ---")
@@ -142,5 +161,6 @@ class Demo {
     println(product.get.withS.mine)
     println(product.get.withC.number)
     println(product.get.combined.other)
+    println(product.get.interf.alien)
   }
 }

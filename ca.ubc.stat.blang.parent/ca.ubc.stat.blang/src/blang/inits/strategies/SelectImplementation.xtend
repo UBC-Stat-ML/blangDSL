@@ -11,6 +11,7 @@ import java.util.List
 import java.util.Map
 import java.util.Optional
 import java.util.Set
+import com.ibm.icu.lang.UScript.ScriptUsage
 
 /**
  * Limitation of the select version: consumes all the input. Use DefaultImplementation 
@@ -23,24 +24,31 @@ class SelectImplementation implements InstantiationStrategy {
   
   val public static String DEFAULT_KEY = "default"
   val boolean allowMultiple
+  val boolean useFullyQualified
   
   new() {
     this.allowMultiple = true
+    this.useFullyQualified = false
   }
   
-  new(boolean allowMultiple) {
+  new(boolean allowMultiple, boolean useFullyQualified) {
     this.allowMultiple = allowMultiple
+    this.useFullyQualified = useFullyQualified
   }
   
   override String formatDescription(InstantiationContext context) {
     if (allowMultiple) {
-      // print the choice of implementation
-      val ImplementationSpec spec = readImplementations(context)
-      return Joiner.on("|").join(spec.implementations.keySet)
+      if (useFullyQualified) {
+        return "Fully qualified type implementing " + context.rawType.name
+      } else {
+        // print the choice of implementation
+        val ImplementationSpec spec = readImplementations(context)
+        return Joiner.on("|").join(spec.implementations.keySet)
+      }
     } else {
       // just forward to the implementation
       val ImplementationSpec spec = readImplementations(context)
-      val Class<?> impl = spec.pickImplementation(context.argumentValue)
+      val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
       context.getInstantiationStrategy(impl).formatDescription(context)
     }
   }
@@ -51,7 +59,7 @@ class SelectImplementation implements InstantiationStrategy {
   ) {
     // pick the implementation
     val ImplementationSpec spec = readImplementations(context)
-    val Class<?> impl = spec.pickImplementation(context.argumentValue)
+    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
     
     if (!allowMultiple && spec.implementations.size !== 1) {
       throw new RuntimeException("Only one implementation allowed.")
@@ -66,7 +74,7 @@ class SelectImplementation implements InstantiationStrategy {
   ) {
     // pick the implementation
     val ImplementationSpec spec = readImplementations(context)
-    val Class<?> impl = spec.pickImplementation(context.argumentValue)
+    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
     
     return context.getInstantiationStrategy(impl).instantiate(childContext(context), instantiatedChildren)
   }
@@ -74,7 +82,7 @@ class SelectImplementation implements InstantiationStrategy {
   // if the implementation name was read, consume the argument
   def InstantiationContext childContext(InstantiationContext context) {
     val ImplementationSpec spec = readImplementations(context)
-    val Class<?> impl = spec.pickImplementation(context.argumentValue)
+    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
     if (allowMultiple) 
       return context.newInstance(impl, Optional.empty)
     else
@@ -86,7 +94,7 @@ class SelectImplementation implements InstantiationStrategy {
       return true
     } else {
       val ImplementationSpec spec = readImplementations(context)
-      val Class<?> impl = spec.pickImplementation(context.argumentValue)
+      val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
       context.getInstantiationStrategy(impl).acceptsInput(context)
     }
   }
@@ -95,8 +103,8 @@ class SelectImplementation implements InstantiationStrategy {
     var Map<String, Class<?>> implementations = new LinkedHashMap
     var Optional<Class<?>> defaultImpl = Optional.empty
   
-    def Class<?> pickImplementation(Optional<List<String>> optional) {
-      if (optional.isPresent) {
+    def Class<?> pickImplementation(Optional<List<String>> optional, boolean useQual) {
+      if (optional.isPresent && !useQual) {
         val String argument = Joiner.on(" ").join(optional.get)
         for (String key : implementations.keySet) {
           if (argument.matches("\\s*" + key + "\\s*")) {  // TODO: avoid regex
@@ -118,17 +126,22 @@ class SelectImplementation implements InstantiationStrategy {
   def ImplementationSpec readImplementations(InstantiationContext context) {
     val ImplementationSpec result = new ImplementationSpec
     val Class<?> type = context.rawType
-    for (Implementation impl : type.getAnnotationsByType(Implementation)) {
-      if (impl.key == DEFAULT_KEY) {
-        if (result.defaultImpl.present) {
-          throw new RuntimeException("There cannot be two default implementations")
+    if (useFullyQualified) {
+      val String argument = Joiner.on(" ").join(context.argumentValue.get)
+      result.defaultImpl = Optional.of(Class.forName(argument))
+    } else {
+      for (Implementation impl : type.getAnnotationsByType(Implementation)) {
+        if (impl.key == DEFAULT_KEY) {
+          if (result.defaultImpl.present) {
+            throw new RuntimeException("There cannot be two default implementations")
+          }
+          result.defaultImpl = Optional.of(impl.value)
         }
-        result.defaultImpl = Optional.of(impl.value)
+        if (result.implementations.keySet.contains(impl.key)) {
+          throw new RuntimeException("Implementation keys should be distinct")
+        }
+        result.implementations.put(impl.key, impl.value)
       }
-      if (result.implementations.keySet.contains(impl.key)) {
-        throw new RuntimeException("Implementation keys should be distinct")
-      }
-      result.implementations.put(impl.key, impl.value)
     }
     return result
   }
