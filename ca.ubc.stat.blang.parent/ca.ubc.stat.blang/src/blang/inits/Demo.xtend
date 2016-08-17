@@ -148,10 +148,13 @@ class Demo {
       "--combined.blah", "123456",
       "--interf", "blang.inits.Demo$MyOtherImp",
       "--interf.asdf", "Klingons")
-    val Instantiator<MyClass> inst = Instantiators::getDefault(MyClass, parsed)
+    
+    println(parsed)
+      
+    val Instantiator inst = Instantiators::getDefault()
     inst.debug = true
     inst.globals.put(GLOBAL_KEY, " -- this is global ! ---")
-    val Optional<MyClass> product = inst.init
+    val Optional<MyClass> product = inst.init(MyClass, parsed)
     
     println(inst.lastInitReport)
     

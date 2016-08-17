@@ -9,6 +9,7 @@ import java.util.ArrayList
 import java.util.HashSet
 import com.google.common.base.Joiner
 import java.util.Optional
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A tree of arguments. E.g. --node is parent of --node.child
@@ -24,8 +25,12 @@ class Arguments {
   var Optional<List<String>> argumentValue
   val Map<String, Arguments> children = new HashMap
   
-  private new(Optional<List<String>> argumentValue) {
+  @Accessors(PUBLIC_GETTER)
+  val QualifiedName qName
+  
+  private new(Optional<List<String>> argumentValue, QualifiedName qName) {
     this.argumentValue = argumentValue
+    this.qName = qName
   }
   
 //  def Arguments consumeValue() {
@@ -41,7 +46,7 @@ class Arguments {
       if (result.childrenKeys.contains(currentChildName)) {
         result = result.child(currentChildName)
       } else {
-        val Arguments child = new Arguments(Optional.empty)
+        val Arguments child = new Arguments(Optional.empty, result.qName.child(currentChildName))
         result.addChild(currentChildName, child)
         result = child
       }
@@ -51,7 +56,7 @@ class Arguments {
   
   def static Arguments parse(List<ArgumentItem> items) {
     val Set<List<String>> visitedKeys = new HashSet
-    val Arguments root = new Arguments(Optional.empty)
+    val Arguments root = new Arguments(Optional.empty, QualifiedName.root())
     
     for (ArgumentItem item : items) {
       if (visitedKeys.contains(item.fullyQualifiedName)) {
@@ -79,19 +84,14 @@ class Arguments {
     children.put(name, item)
   }
   
-  /**
-   * throw exception if the child does not exists
-   */
   def Arguments child(String string) {
     val Arguments result = children.get(string)
     if (result === null) {
-      return NULL
+      return new Arguments(Optional.empty, qName.child(string))
     } else {
       return result
     }
   }
-  
-  val static final Arguments NULL = new Arguments(Optional.empty)
   
   /**
    * We say the tree is null the corresponding switch did not occur, nor
@@ -102,7 +102,7 @@ class Arguments {
   }
   
   /**
-   * null if the key was not inserted
+   * null if the key was not inserted, i.e. the switch did not occur
    */
   def Optional<List<String>> argumentValue() {
     return argumentValue
@@ -114,17 +114,16 @@ class Arguments {
   
   override String toString() {
     val List<String> result = new ArrayList
-    toString("", result)
+    toString(result)
     return Joiner.on(" ").join(result)
   }
   
-  def private void toString(String fullyQual, List<String> result) {
+  def private void toString(List<String> result) {
     if (argumentValue.present) {
-      result.add((if (fullyQual == "") "" else "--" + fullyQual + " ") +  Joiner.on(" ").join(argumentValue.get))
+      result.add((if (qName.isRoot()) "" else "--" + qName + " ") + Joiner.on(" ").join(argumentValue.get))
     }
     for (String key : children.keySet) {
-      val String fullName = if (fullyQual == "") key else fullyQual + "." + key
-      children.get(key).toString(fullName, result)
+      children.get(key).toString(result)
     }
   }
   

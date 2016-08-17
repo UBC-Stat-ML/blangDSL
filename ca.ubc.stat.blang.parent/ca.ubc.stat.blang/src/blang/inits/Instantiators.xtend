@@ -12,15 +12,15 @@ import java.util.Map
 
 class Instantiators {
   
-  def static <T> Instantiator<T> getDefault(Class<T> type, Arguments arguments) {
-    val Instantiator<T> result = new Instantiator(type, arguments)
+  def static Instantiator getDefault() {
+    val Instantiator result = new Instantiator()
     addPrimitiveStrategies(result.strategies)
     addOneArgConstructorStrategies(result.strategies)
     return result
   }
   
   // strategies for creating  primitive
-  def static <T> void addPrimitiveStrategies(Map<Class<?>,InstantiationStrategy> strategies) {
+  def static void addPrimitiveStrategies(Map<Class<?>,InstantiationStrategy> strategies) {
     strategies => [
       put(int,     new Primitive<Integer>(  int,      new IntParser))
       put(double,  new Primitive<Double>(   double,   new DoubleParser))
@@ -30,7 +30,7 @@ class Instantiators {
   }
   
   // strategies for classes with a one-argument constructor
-  def static <T> void addOneArgConstructorStrategies(Map<Class<?>,InstantiationStrategy> strategies) {
+  def static void addOneArgConstructorStrategies(Map<Class<?>,InstantiationStrategy> strategies) {
     strategies => [
     
       put(String, new OneArgConstructor<String>(String, new StringParser))

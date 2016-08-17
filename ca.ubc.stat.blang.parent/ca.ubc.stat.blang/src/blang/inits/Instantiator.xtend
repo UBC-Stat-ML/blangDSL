@@ -18,15 +18,12 @@ import java.util.ArrayList
 import com.google.common.base.Joiner
 import blang.inits.strategies.Combined
 
-class Instantiator<T> {
-  
-  val Type _type
-  val Arguments _arguments
+class Instantiator {
   
   @Accessors(PUBLIC_GETTER)
   val Map<String, Object> globals = new HashMap
   
-  val InstantiationStrategy defaultInitializationStrategy
+  val InstantiationStrategy defaultInitializationStrategy = new Combined
   
   @Accessors(PUBLIC_GETTER)
   val Map<Class<?>,InstantiationStrategy> strategies = new HashMap
@@ -34,29 +31,29 @@ class Instantiator<T> {
   @Accessors(PUBLIC_SETTER)
   var boolean debug = false
   
-  new(Type _type, Arguments _arguments) {
-    this._type = _type
-    this._arguments = _arguments
-    this.defaultInitializationStrategy = new Combined
-  }
   
-  var InitTree lastInitTree = null
-  def Optional<T> init() {
-    lastInitTree = init(_type, _arguments) as InitTree
+  def <T> Optional<T> init(Type type, Arguments arguments) {
+    _type = type
+    _arguments = arguments
+    lastInitTree = _init(type, arguments) as InitTree
     return lastInitTree.initResult.result as Optional
   }
+  
+  // info from last call of init
+  var InitTree lastInitTree = null
+  var Type _type = null
+  var Arguments _arguments = null
   
   def public String lastInitReport() {
     val List<String> result = new ArrayList
     val ArgumentSpecification rootSpec = new ArgumentSpecification(_type, Optional.empty, "")
-    lastInitReport(result, rootSpec, new ArrayList, _arguments, lastInitTree)
+    lastInitReport(result, rootSpec, _arguments, lastInitTree)
     return Joiner.on("\n").join(result) + "\n"
   }
   
   def private void lastInitReport(
     List<String> result, 
     ArgumentSpecification specifications, 
-    List<String> qualifiedName,
     Arguments currentArguments,
     InitTree initTree
   ) {
@@ -64,11 +61,11 @@ class Instantiator<T> {
     val currentType = specifications.type
     val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
     val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
-    if (!qualifiedName.empty || strategy.acceptsInput(context)) {
+    if (!currentArguments.getQName().isRoot() || strategy.acceptsInput(context)) {
       if (strategy.acceptsInput(context)) {
-        builder.append(qualifiedNameToString(qualifiedName) + " <" + currentType.typeName + " : " + strategy.formatDescription(context) + ">\n")
+        builder.append(qualifiedNameToString(currentArguments) + " <" + currentType.typeName + " : " + strategy.formatDescription(context) + ">\n")
       } else {
-        builder.append("group " + Joiner.on(".").join(qualifiedName) + "\n")
+        builder.append("group " + currentArguments.getQName() + "\n")
       }
       builder.append("  description: " + specifications.description + "\n")
       if (specifications.defaultArguments.present) {
@@ -92,23 +89,16 @@ class Instantiator<T> {
           } else {
             initTree.children.children.get(childName)
           }
-        lastInitReport(result, childrenSpecifications.get(childName), qualName(qualifiedName, childName), currentArguments.child(childName), subTree)
+        lastInitReport(result, childrenSpecifications.get(childName), currentArguments.child(childName), subTree)
       }
     } catch (Exception e) {}
   }
-  
-  def private List<String> qualName(List<String> prefix, String name) {
-    val List<String> result = new ArrayList
-    result.addAll(prefix)
-    result.add(name)
-    return result
-  }
-  
-  def private String qualifiedNameToString(List<String> prefix) {
-    if (prefix.empty) {
+
+  def private String qualifiedNameToString(Arguments arg) {
+    if (arg.getQName.isRoot()) {
       return "<root>"
     } else {
-      return "--" + Joiner.on(".").join(prefix)
+      return "--" + arg.getQName
     }
   }
   
@@ -147,7 +137,7 @@ class Instantiator<T> {
     val InitChildren children
   }
   
-  def private InitTree init(
+  def private InitTree _init(
     Type currentType, 
     Arguments currentArguments
   ) {
@@ -165,13 +155,13 @@ class Instantiator<T> {
       // check if subtree of Argument has anything at all (contents or further children)
       if (currentArguments.childrenKeys.contains(childName)) {
         // if so, recurse
-        children.addChild(childName, init(childSpec.type, currentArguments.child(childName)))
+        children.addChild(childName, _init(childSpec.type, currentArguments.child(childName)))
       } else if (globals.containsKey(childName)) {
         children.addChild(childName, new InitTree(InitResult.success(globals.get(childName)), new InitChildren))
       } else {
         // if not, check if default is provided
         if (childSpec.defaultArguments.isPresent()) {
-           val InitTree fromDefault = init(childSpec.type, childSpec.defaultArguments.get())
+           val InitTree fromDefault = _init(childSpec.type, childSpec.defaultArguments.get())
            if (fromDefault.initResult.isSuccess) {
              // use the default value
              children.addChild(childName, fromDefault)
@@ -248,7 +238,7 @@ class Instantiator<T> {
   
   @Data
   static class InstantiationContext {
-    val Instantiator<?> instantiator
+    val Instantiator instantiator
     
     @Accessors(PUBLIC_GETTER)
     val Type requestedType
