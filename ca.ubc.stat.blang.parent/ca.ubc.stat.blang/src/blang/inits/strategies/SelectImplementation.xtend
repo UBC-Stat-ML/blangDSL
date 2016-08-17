@@ -47,8 +47,8 @@ class SelectImplementation implements InstantiationStrategy {
     } else {
       // just forward to the implementation
       val ImplementationSpec spec = readImplementations(context)
-      val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
-      context.getInstantiationStrategy(impl).formatDescription(context)
+      val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified, allowMultiple)
+      context.getInstantiationStrategy(impl).formatDescription(childContext(context))
     }
   }
   
@@ -58,7 +58,7 @@ class SelectImplementation implements InstantiationStrategy {
   ) {
     // pick the implementation
     val ImplementationSpec spec = readImplementations(context)
-    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
+    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified, allowMultiple)
     
     if (!allowMultiple && spec.implementations.size !== 1) {
       throw new RuntimeException("Only one implementation allowed.")
@@ -73,7 +73,7 @@ class SelectImplementation implements InstantiationStrategy {
   ) {
     // pick the implementation
     val ImplementationSpec spec = readImplementations(context)
-    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
+    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified, allowMultiple)
     
     return context.getInstantiationStrategy(impl).instantiate(childContext(context), instantiatedChildren)
   }
@@ -81,11 +81,11 @@ class SelectImplementation implements InstantiationStrategy {
   // if the implementation name was read, consume the argument
   def InstantiationContext childContext(InstantiationContext context) {
     val ImplementationSpec spec = readImplementations(context)
-    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
+    val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified, allowMultiple)
     if (allowMultiple) 
       return context.newInstance(impl, Optional.empty)
     else
-      return context
+      return context.newInstance(impl, context.argumentValue)
   }
   
   override boolean acceptsInput(InstantiationContext context) {
@@ -93,8 +93,8 @@ class SelectImplementation implements InstantiationStrategy {
       return true
     } else {
       val ImplementationSpec spec = readImplementations(context)
-      val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified)
-      context.getInstantiationStrategy(impl).acceptsInput(context)
+      val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified, allowMultiple)
+      context.getInstantiationStrategy(impl).acceptsInput(childContext(context))
     }
   }
   
@@ -102,8 +102,8 @@ class SelectImplementation implements InstantiationStrategy {
     var Map<String, Class<?>> implementations = new LinkedHashMap
     var Optional<Class<?>> defaultImpl = Optional.empty
   
-    def Class<?> pickImplementation(Optional<List<String>> optional, boolean useQual) {
-      if (optional.isPresent && !useQual) {
+    def Class<?> pickImplementation(Optional<List<String>> optional, boolean useQual, boolean allowMultiple) {
+      if (optional.isPresent && !useQual && allowMultiple) {
         val String argument = Joiner.on(" ").join(optional.get)
         for (String key : implementations.keySet) {
           if (argument.matches("\\s*" + key + "\\s*")) {  // TODO: avoid regex
