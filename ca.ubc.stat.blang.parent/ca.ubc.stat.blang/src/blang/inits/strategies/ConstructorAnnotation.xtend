@@ -19,6 +19,8 @@ import blang.inits.DesignatedConstructor
 import java.util.List
 import java.util.ArrayList
 import blang.inits.Input
+import java.lang.annotation.Annotation
+import java.util.LinkedHashSet
 
 class ConstructorAnnotation implements InstantiationStrategy {
   
@@ -40,61 +42,71 @@ class ConstructorAnnotation implements InstantiationStrategy {
   
   static class BuilderArgumentsSpecification {
     val LinkedHashMap<String, ArgumentSpecification> arguments = new LinkedHashMap
-    
-    // orders the keys as well as potentially a slot for the input
-    val List<String> orderedKeys = new ArrayList
-    val static final String INPUT_SLOT = "INPUT_SLOT"
-    
+    // orders the keys as well as the slot used by other annotations
+    val List<Annotation> annotatedArguments = new ArrayList
     val Builder builder
-    
-    var Optional<Input> inputAnnotation = Optional.empty 
+    var Optional<Input> inputAnnotation = Optional.empty
     
     def boolean hasInput() {
       return inputAnnotation.present
     }
     
+    def static Annotation findAnnotation(Parameter p) {
+      var Optional<Annotation> result = Optional.empty
+      for (Annotation annotation : p.annotations) {
+        if (possibleAnnotations.contains(annotation.annotationType)) {
+          if (result.present) {
+            throw new RuntimeException // TODO: report duplicate
+          }
+          result = Optional.of(annotation)
+        }
+      }
+      if (!result.present) {
+        throw new RuntimeException // TODO: one needs to be there
+      }
+      return result.get
+    }
+    
+    val static Set<Class<?>> possibleAnnotations = new LinkedHashSet(#[Input, ConstructorArg])
+    
     new (InstantiationContext context) {
       builder = getConstructor(context)
       for (Parameter p : builder.parameters) {
-        val ConstructorArg [] args = p.getAnnotationsByType(ConstructorArg)
-        val Input [] inputs = p.getAnnotationsByType(Input)
-        if (args.size === 1 && inputs.size === 1) {
-          throw new RuntimeException("These two annotations cannot be used at same time @" + ConstructorArg.simpleName + " and @" + Input.simpleName)
-        } else if (args.size === 1) {
-          val ConstructorArg arg = args.get(0)
-          val Type childType = p.parameterizedType
-          val ArgumentSpecification spec = new ArgumentSpecification(childType, FeatureAnnotation::readDefault(p.getAnnotationsByType(Default)), arg.description)
-          val String name = arg.value
-          arguments.put(name, spec)
-          orderedKeys.add(name)
-        } else if (inputs.size === 1) {
-          if (hasInput) {
-            throw new RuntimeException("At most one input can be associated with @" + Input.simpleName)
-          } 
-          orderedKeys.add(INPUT_SLOT)
-          inputAnnotation = Optional.of(inputs.get(0))
-        } else {
-          throw new RuntimeException("Each argument of the designated constructor should have exactly one annotation @" + ConstructorArg.simpleName
-            + " or, for at most one of the slots, an annotation @" + Input.simpleName)
+        val Annotation currentAnnotation = findAnnotation(p) 
+        annotatedArguments.add(currentAnnotation)
+        switch currentAnnotation {
+          ConstructorArg : {
+            val Type childType = p.parameterizedType
+            val ArgumentSpecification spec = new ArgumentSpecification(childType, FeatureAnnotation::readDefault(p.getAnnotationsByType(Default)), currentAnnotation.description)
+            val String name = currentAnnotation.value
+            arguments.put(name, spec)
+          }
+          Input : {
+            inputAnnotation = Optional.of(currentAnnotation)
+          }
+          default :
+            throw new RuntimeException // should not get here
         }
       }
     }
   
     def size() {
-      return orderedKeys.size
+      return annotatedArguments.size
     }
-  
   }
 
   override InitResult instantiate(InstantiationContext context, Map<String, Object> instantiatedChildren) {
     val BuilderArgumentsSpecification spec = new BuilderArgumentsSpecification(context)
     val Object [] sortedArguments = newArrayOfSize(spec.size)
     var int i = 0
-    for (String key : spec.orderedKeys) {
-      if (key === BuilderArgumentsSpecification.INPUT_SLOT) {
-        sortedArguments.set(i++, context.argumentValue.get)
-      } else {
-        sortedArguments.set(i++, instantiatedChildren.get(key))
+    for (Annotation currentAnnotation : spec.annotatedArguments) {
+      switch currentAnnotation {
+        Input : 
+          sortedArguments.set(i++, context.argumentValue.get)
+        ConstructorArg : 
+          sortedArguments.set(i++, instantiatedChildren.get(currentAnnotation.value))
+        default : 
+          throw new RuntimeException // should not get here
       }
     }
     return InitResult.success(spec.builder.build(sortedArguments))
@@ -125,7 +137,6 @@ class ConstructorAnnotation implements InstantiationStrategy {
     override Iterable<Parameter> parameters() {
       return staticBuilder.parameters
     }
-    
   }
   
   def static Builder getConstructor(InstantiationContext context) {
@@ -164,5 +175,4 @@ class ConstructorAnnotation implements InstantiationStrategy {
   override boolean acceptsInput(InstantiationContext context) {
     return new BuilderArgumentsSpecification(context).hasInput
   }
-  
 }

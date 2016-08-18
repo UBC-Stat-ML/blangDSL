@@ -33,11 +33,11 @@ class Arguments {
     this.qName = qName
   }
   
-//  def Arguments consumeValue() {
-//    val Arguments result = new Arguments(Optional.empty)
-//    result.children.putAll(this.children)
-//    return result
-//  }
+  def Arguments consumeValue() {
+    val Arguments result = new Arguments(Optional.empty, qName)
+    result.children.putAll(this.children)
+    return result
+  }
   
   def private Arguments getOrCreateDesc(List<String> path) {
     var Arguments result = this

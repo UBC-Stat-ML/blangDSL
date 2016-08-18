@@ -82,10 +82,7 @@ class SelectImplementation implements InstantiationStrategy {
   def InstantiationContext childContext(InstantiationContext context) {
     val ImplementationSpec spec = readImplementations(context)
     val Class<?> impl = spec.pickImplementation(context.argumentValue, useFullyQualified, allowMultiple)
-    if (allowMultiple) 
-      return context.newInstance(impl, Optional.empty)
-    else
-      return context.newInstance(impl, context.argumentValue)
+    return context.implementationContext(impl, allowMultiple)
   }
   
   override boolean acceptsInput(InstantiationContext context) {

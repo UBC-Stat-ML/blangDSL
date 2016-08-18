@@ -59,7 +59,7 @@ class Instantiator {
   ) {
     val StringBuilder builder = new StringBuilder
     val currentType = specifications.type
-    val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
+    val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments)
     val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
     if (!currentArguments.getQName().isRoot() || strategy.acceptsInput(context)) {
       if (strategy.acceptsInput(context)) {
@@ -141,7 +141,7 @@ class Instantiator {
     Type currentType, 
     Arguments currentArguments
   ) {
-    val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments.argumentValue)
+    val InstantiationContext context = new InstantiationContext(this, currentType, currentArguments)
     val InitChildren children = new InitChildren
     val InstantiationStrategy strategy = getInstantiationStrategy(currentType)
     val LinkedHashMap<String, ArgumentSpecification> childrenSpecifications = 
@@ -243,21 +243,21 @@ class Instantiator {
     @Accessors(PUBLIC_GETTER)
     val Type requestedType
     
-    /**
-     * null if the switch key was not provided
-     */
-    @Accessors(PUBLIC_GETTER)
-    val Optional<List<String>> argumentValue
+    val Arguments arguments
+
+    def Optional<List<String>> getArgumentValue() {
+      return arguments.argumentValue
+    }
     
-    def public getInstantiationStrategy(Type type) {
+    def InstantiationStrategy getInstantiationStrategy(Type type) {
       return instantiator.getInstantiationStrategy(type)
     }
     
-    def public InstantiationContext newInstance(Type requestedType, Optional<List<String>> argumentValue) {
-      return new InstantiationContext(instantiator, requestedType, argumentValue)
+    def InstantiationContext implementationContext(Type implementationType, boolean consumeValue) {
+      return new InstantiationContext(instantiator, implementationType, arguments.consumeValue)
     }
     
-    def public Class<?> rawType() {
+    def Class<?> rawType() {
       return getRawClass(requestedType)
     }
   }

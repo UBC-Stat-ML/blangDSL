@@ -150,10 +150,11 @@ class Demo {
       "--interf.asdf", "Klingons")
     
     println(parsed)
+    println  
       
     val Instantiator inst = Instantiators::getDefault()
     inst.debug = true
-    inst.globals.put(GLOBAL_KEY, " -- this is global ! ---")
+    inst.globals.put(GLOBAL_KEY, "***this is global***")
     val Optional<MyClass> product = inst.init(MyClass, parsed)
     
     println(inst.lastInitReport)
