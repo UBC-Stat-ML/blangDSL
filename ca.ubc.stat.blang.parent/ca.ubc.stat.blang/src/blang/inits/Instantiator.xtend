@@ -213,10 +213,10 @@ class Instantiator {
   def static Class<?> getRawClass(Type type) {
     switch type {
       Class<?> :            return type
-      ParameterizedType :   return type.rawClass
-      TypeVariable<?> :     return type.rawClass
-      WildcardType :        return type.rawClass
-      GenericArrayType :    return type.rawClass
+      ParameterizedType :   return type.rawType as Class<?>
+      TypeVariable<?> :     throw new RuntimeException
+      WildcardType :        throw new RuntimeException
+      GenericArrayType :    throw new RuntimeException
       default : throw new RuntimeException
     }
   }

@@ -8,6 +8,7 @@ import blang.inits.strategies.ConstructorAnnotation
 import java.util.List
 import com.google.common.base.Joiner
 import blang.inits.strategies.FullyQualifiedImplementation
+import java.lang.reflect.Type
 
 // TODO: move and transform to test
 class Demo {
@@ -28,7 +29,7 @@ class Demo {
     var MyInterface myInterface
      
     @Arg
-    var WithConstr withC
+    var WithConstr<Short> withC
     
     @Arg
     var WithStaticFactory withS
@@ -65,7 +66,7 @@ class Demo {
   }
   
   @InitVia(ConstructorAnnotation)
-  static class WithConstr {
+  static class WithConstr<T> {
     val String contents
     val int number
     
@@ -75,9 +76,15 @@ class Demo {
       @ConstructorArg("second") String second,
       @ConstructorArg(GLOBAL_KEY) String myGlobal,
       @Input(formatDescription = "a number") List<String> input
+      ,
+      @InitInfoName QualifiedName qName
+      ,
+      @InitInfoType Type type
     ) {
       contents = first + ", " + second + " - " + myGlobal
       number = Integer.parseInt(input.get(0))
+      println("--> qName = " + qName)
+      println("--> type = " + type)
     }
     
     override String toString() {

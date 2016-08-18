@@ -21,6 +21,8 @@ import java.util.ArrayList
 import blang.inits.Input
 import java.lang.annotation.Annotation
 import java.util.LinkedHashSet
+import blang.inits.InitInfoName
+import blang.inits.InitInfoType
 
 class ConstructorAnnotation implements InstantiationStrategy {
   
@@ -67,7 +69,7 @@ class ConstructorAnnotation implements InstantiationStrategy {
       return result.get
     }
     
-    val static Set<Class<?>> possibleAnnotations = new LinkedHashSet(#[Input, ConstructorArg])
+    val static Set<Class<?>> possibleAnnotations = new LinkedHashSet(#[Input, ConstructorArg, InitInfoName, InitInfoType])
     
     new (InstantiationContext context) {
       builder = getConstructor(context)
@@ -84,6 +86,8 @@ class ConstructorAnnotation implements InstantiationStrategy {
           Input : {
             inputAnnotation = Optional.of(currentAnnotation)
           }
+          InitInfoName : {}
+          InitInfoType : {}
           default :
             throw new RuntimeException // should not get here
         }
@@ -105,6 +109,10 @@ class ConstructorAnnotation implements InstantiationStrategy {
           sortedArguments.set(i++, context.argumentValue.get)
         ConstructorArg : 
           sortedArguments.set(i++, instantiatedChildren.get(currentAnnotation.value))
+        InitInfoType :
+          sortedArguments.set(i++, context.requestedType)
+        InitInfoName :
+          sortedArguments.set(i++, context.arguments.getQName())
         default : 
           throw new RuntimeException // should not get here
       }
