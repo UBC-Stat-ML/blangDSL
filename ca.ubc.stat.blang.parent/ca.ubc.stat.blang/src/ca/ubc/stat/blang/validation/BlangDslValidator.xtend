@@ -1,5 +1,7 @@
 package ca.ubc.stat.blang.validation
 
+import org.eclipse.xtext.xbase.XExpression
+import org.eclipse.xtext.validation.Check
 
 /**
  * This class contains custom validation rules. 
@@ -18,5 +20,10 @@ class BlangDslValidator extends AbstractBlangDslValidator {
 //					INVALID_NAME)
 //		}
 //	}
+
+//  @Check
+//  def checkXExpressionType(XExpression xexp) {
+//    println(xexp.actualType)
+//  }
 	
 }
