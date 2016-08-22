@@ -44,6 +44,7 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import blang.inits.ConstructorArg
 import blang.inits.DesignatedConstructor
+import org.eclipse.xtext.common.types.JvmVoid
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -69,6 +70,15 @@ class SingleBlangModelInferrer {
   def void infer() {
     setupClass()
     val BlangScope globalScope = setupVariables()
+    // This first call will only generate the auxiliary methods needed 
+    // by the XExpressionProcessor machinery. 
+    StaticUtils::eagerlyEvaluate(componentsMethodBody(globalScope))
+    StaticUtils::eagerlyEvaluate(constructorBody(globalScope))
+    // Once the auxiliary methods have been generated, setup the 
+    // generation of "components(..)" itself.
+    // This two-pass approach is required to work around limitations of 
+    // Xtext (one pass leads to a ConcurrentModificationException)
+    xExpressions.endAuxiliaryMethodGenerationPhase() 
     generateConstructor(globalScope)
     generateFixedParamStaticMethod(globalScope)
     generateMethods(globalScope)
@@ -134,6 +144,15 @@ class SingleBlangModelInferrer {
     output.members += method
   }
   
+  def StringConcatenationClient constructorBody(BlangScope scope) {
+    return '''
+        «FOR BlangVariable variable : scope.variables»
+        this.«variable.boxedName» = «variable.boxedName»;
+        «ENDFOR»
+        «IF model.initBlock !== null»«xExpressions.process(model.initBlock, scope, typeRef(Void.TYPE))»;«ENDIF»
+      '''
+  }
+  
   def private void generateConstructor(BlangScope scope) {
     output.members += model.toConstructor[
       visibility = JvmVisibility.PUBLIC
@@ -145,11 +164,7 @@ class SingleBlangModelInferrer {
         param.annotations += annotationRef(DeboxedName, variable.deboxedName)
         parameters += param
       }
-      body = '''
-        «FOR BlangVariable variable : scope.variables»
-        this.«variable.boxedName» = «variable.boxedName»;
-        «ENDFOR»
-      '''
+      body = constructorBody(scope)
       documentation = '''
         Note: the generated code has the following properties used at runtime:
           - all arguments are annotated with a BlangVariable annotation
@@ -159,22 +174,9 @@ class SingleBlangModelInferrer {
             - second, all the params in the order they occur in the blang file
       '''
     ]
-//    if (withConstantParams) {
-//      output.members += model.toMethod(BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME, typeRef(output), memberBuilder)
-//    } else {
-//      output.members += model.toConstructor(memberBuilder as Procedure1)
-//    }
   }
   
   def private void generateMethods(BlangScope scope) {
-    // This first call will only generate the auxiliary methods needed 
-    // by the XExpressionProcessor machinery. 
-    StaticUtils::eagerlyEvaluate(componentsMethodBody(scope))
-    // Once the auxiliary methods have been generated, setup the 
-    // generation of "components(..)" itself.
-    // This two-pass approach is required to work around limitations of 
-    // Xtext (one pass leads to a ConcurrentModificationException)
-    xExpressions.endAuxiliaryMethodGenerationPhase() 
     output.members += model.toMethod(COMPONENTS_METHOD_NAME, typeRef(Collection, typeRef(ModelComponent))) [
       visibility = JvmVisibility.PUBLIC
       documentation = '''

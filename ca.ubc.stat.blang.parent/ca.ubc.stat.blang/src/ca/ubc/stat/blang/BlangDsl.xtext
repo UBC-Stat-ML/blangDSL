@@ -9,11 +9,13 @@ BlangModel:
 	('package' packageName=QualifiedName)?
 	importSection=XImportSection?
 	'model' '{'
-		(variableDeclarations += VariableDeclaration)*
-		'laws' '{' (lawNodes += LawNode)* '}'
-		(variableDeclarations += VariableDeclaration)*
+	  // TODO: make the order less rigid between those options!
+	  (variableDeclarations += VariableDeclaration)*
+	  ('init' initBlock = XBlockExpression)?
+  	'laws' '{' (lawNodes += LawNode)* '}'
 	'}'
 	;
+	
 	
 VariableDeclaration:
 	(variableType = VariableType) type=JvmTypeReference name=ValidID
