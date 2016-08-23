@@ -18,7 +18,7 @@ BlangModel:
 	
 	
 VariableDeclaration:
-	(variableType = VariableType) type=JvmTypeReference name=ValidID
+	(variableType = VariableType) type=JvmTypeReference ( names+= ValidID) (',' names += ValidID)*
 ;
 
 enum VariableType:   // TODO: poor name: pick something else like randomnessStatus

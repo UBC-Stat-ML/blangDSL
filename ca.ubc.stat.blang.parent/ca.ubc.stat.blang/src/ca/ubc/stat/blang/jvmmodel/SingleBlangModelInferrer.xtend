@@ -44,7 +44,6 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import blang.inits.ConstructorArg
 import blang.inits.DesignatedConstructor
-import org.eclipse.xtext.common.types.JvmVoid
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -94,13 +93,15 @@ class SingleBlangModelInferrer {
   def private BlangScope setupVariables() {
     val BlangScope result = BlangScope::emptyScope
     for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
-      val BlangVariable blangVariable = new BlangVariable(variableDeclaration)
-      result += blangVariable
-      output.members += variableDeclaration.toField(blangVariable.boxedName(), blangVariable.boxedType(_typeReferenceBuilder)) [
-        final = true
-        if (blangVariable.isParam)
-          annotations += annotationRef(Param)
-      ]
+      for (String name : variableDeclaration.getNames()) {
+        val BlangVariable blangVariable = new BlangVariable(variableDeclaration.type, name, StaticUtils::isParam(variableDeclaration.variableType))
+        result += blangVariable
+        output.members += variableDeclaration.toField(blangVariable.boxedName(), blangVariable.boxedType(_typeReferenceBuilder)) [
+          final = true
+          if (blangVariable.isParam)
+            annotations += annotationRef(Param)
+        ]
+      }
     }
     return result
   }

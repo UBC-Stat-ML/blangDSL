@@ -102,10 +102,6 @@ class BlangScope {
       this.deboxedName = deboxedName
       this.isBoxed = isBoxed
     }
-    
-    new (VariableDeclaration variableDeclaration) {
-      this(variableDeclaration.type, variableDeclaration.name, StaticUtils::isParam(variableDeclaration.variableType))
-    }
   
     def String boxedName() {
       if (isBoxed) {
