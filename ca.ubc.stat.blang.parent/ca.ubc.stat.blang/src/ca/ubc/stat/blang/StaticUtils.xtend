@@ -10,6 +10,7 @@ import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtend2.lib.StringConcatenationClient
 import org.eclipse.xtend2.lib.StringConcatenation
 import java.lang.reflect.Field
+import org.eclipse.xtext.util.Strings
 
 class StaticUtils {
   
@@ -61,5 +62,9 @@ class StaticUtils {
 		if (!isAccessible) f.setAccessible(true) 
 		f.set(instance, value) 
 		if (!isAccessible) f.setAccessible(false) 
+	}
+	
+	def static String getterName(String fieldName) {
+    return ("get" + Strings.toFirstUpper(fieldName));
 	}
 }

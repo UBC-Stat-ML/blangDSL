@@ -6,7 +6,7 @@ import "http://www.eclipse.org/xtext/common/JavaVMTypes" as jvmTypes
 
 BlangModel:
 	{BlangModel}
-	('package' packageName=QualifiedName)?
+//	('package' package=QualifiedName)?
 	importSection=XImportSection?
 	'model' '{'
 	  // TODO: make the order less rigid between those options!

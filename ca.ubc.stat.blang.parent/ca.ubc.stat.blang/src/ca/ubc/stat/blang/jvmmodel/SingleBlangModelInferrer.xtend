@@ -84,9 +84,9 @@ class SingleBlangModelInferrer {
   }
   
   def private void setupClass() { 
-    if (model.packageName != null) {
-      output.packageName = model.packageName;
-    }
+//    if (model.package != null) {
+//      output.packageName = model.package
+//    }
     output.superTypes += typeRef(Model)
   }
   
@@ -96,10 +96,17 @@ class SingleBlangModelInferrer {
       for (String name : variableDeclaration.getNames()) {
         val BlangVariable blangVariable = new BlangVariable(variableDeclaration.type, name, StaticUtils::isParam(variableDeclaration.variableType))
         result += blangVariable
+        // field
         output.members += variableDeclaration.toField(blangVariable.boxedName(), blangVariable.boxedType(_typeReferenceBuilder)) [
           final = true
           if (blangVariable.isParam)
             annotations += annotationRef(Param)
+        ]
+        // getter
+        output.members += variableDeclaration.toMethod(StaticUtils::getterName(blangVariable.deboxedName), blangVariable.deboxedType) [
+          body = '''
+            return «blangVariable.deboxingInvocationString»;
+          '''
         ]
       }
     }
@@ -289,7 +296,7 @@ class SingleBlangModelInferrer {
   def private dispatch StringConcatenationClient instantiateFactor(InstantiatedDistribution distribution, BlangScope scope, BlangScope parentScope) {
     // TODO: check # args match!!!
     val List<ConstructorArgument> constructorArguments = constructorParameters(distribution)
-    val int nRandomVariables = constructorArguments.filter[!param].size()
+    val int nRandomVariables = constructorArguments.filter[!param].size()  // TODO: exception here; this is null when reference type not found
     return '''
       new «distribution.distributionType»(
         «FOR int index : 0 ..< constructorArguments.size() SEPARATOR ", "»
@@ -342,9 +349,11 @@ class SingleBlangModelInferrer {
     val VariableType[] order = #[VariableType.RANDOM, VariableType.PARAM]
     for (varType : order) {
       for (VariableDeclaration variableDecl : model.variableDeclarations.filter[it.variableType == varType]) {
-        val boolean isParam = StaticUtils::isParam(variableDecl.variableType)
-        val ConstructorArgument argument = new ConstructorArgument(variableDecl.type, isParam)
-        result.add(argument)
+        for (String name : variableDecl.names) {
+          val boolean isParam = StaticUtils::isParam(variableDecl.variableType)
+          val ConstructorArgument argument = new ConstructorArgument(variableDecl.type, isParam)
+          result.add(argument)
+        }
       }
     }
     return result
