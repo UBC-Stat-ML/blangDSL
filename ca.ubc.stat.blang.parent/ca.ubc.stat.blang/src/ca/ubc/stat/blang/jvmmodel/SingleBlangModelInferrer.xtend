@@ -44,6 +44,7 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import blang.inits.ConstructorArg
 import blang.inits.DesignatedConstructor
+import org.eclipse.xtext.naming.IQualifiedNameConverter
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -65,6 +66,7 @@ class SingleBlangModelInferrer {
   val extension private JvmAnnotationReferenceBuilder _annotationTypesBuilder
   val extension private JvmTypeReferenceBuilder _typeReferenceBuilder
   val extension private IResourceDescriptionsProvider index
+  val IQualifiedNameConverter qualNameConverter
   
   def void infer() {
     setupClass()
@@ -84,9 +86,9 @@ class SingleBlangModelInferrer {
   }
   
   def private void setupClass() { 
-//    if (model.package != null) {
-//      output.packageName = model.package
-//    }
+    if (model.package != null) {
+      output.packageName = model.package
+    }
     output.superTypes += typeRef(Model)
   }
   
@@ -336,8 +338,11 @@ class SingleBlangModelInferrer {
   def private List<ConstructorArgument> _constructorParametersFromXtextIndex(InstantiatedDistribution distribution) {
     val IResourceDescriptions descriptions = index.getResourceDescriptions(distribution.eResource.resourceSet)
     
+    // Get qualified name
+    val QualifiedName qualName = qualNameConverter.toQualifiedName(distribution.distributionType.qualifiedName)
+    
     // get URI using the index
-    val IEObjectDescription objectDescription = first(descriptions.getExportedObjects(distribution.distributionType.eClass, QualifiedName.create(distribution.distributionType.qualifiedName), false))
+    val IEObjectDescription objectDescription = first(descriptions.getExportedObjects(distribution.distributionType.eClass, qualName, false))
     val uri = URI.createURI(objectDescription.EObjectURI.toString().replaceFirst("[.]bl[#].*", ".bl"))
     
     // load object if possible
@@ -412,7 +417,8 @@ class SingleBlangModelInferrer {
     JvmTypesBuilder _typeBuilder, 
     JvmAnnotationReferenceBuilder _annotationTypesBuilder, 
     JvmTypeReferenceBuilder _typeReferenceBuilder, 
-    IResourceDescriptionsProvider index
+    IResourceDescriptionsProvider index,
+    IQualifiedNameConverter qualNameConverter
   ) {
     this.model = model
     this.output = output
@@ -421,6 +427,7 @@ class SingleBlangModelInferrer {
     this._typeReferenceBuilder = _typeReferenceBuilder
     this.index = index
     this.xExpressions = new XExpressionProcessor(output, _typeBuilder, _typeReferenceBuilder)
+    this.qualNameConverter = qualNameConverter
   }
   
   val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model) // = "components", but robust to re-factoring

@@ -7,6 +7,7 @@ import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer
 import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.eclipse.xtext.resource.IResourceDescriptionsProvider
+import org.eclipse.xtext.naming.IQualifiedNameConverter
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -22,6 +23,8 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     @Inject extension JvmTypesBuilder _typeBuilder
     
     @Inject extension IResourceDescriptionsProvider _irdProvider
+    
+    @Inject IQualifiedNameConverter qualNameConverter
 
     /**
      * The dispatch method {@code infer} is called for each instance of the
@@ -51,7 +54,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     def dispatch void infer(BlangModel model, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
       val className = model.eResource.URI.trimFileExtension.lastSegment
       acceptor.accept(model.toClass(className)) [
-        val singleBlangModelInferrer = new SingleBlangModelInferrer(model, it, _typeBuilder, _annotationTypesBuilder, _typeReferenceBuilder, _irdProvider)
+        val singleBlangModelInferrer = new SingleBlangModelInferrer(model, it, _typeBuilder, _annotationTypesBuilder, _typeReferenceBuilder, _irdProvider, qualNameConverter)
         singleBlangModelInferrer.infer()
       ]
   }
