@@ -9,16 +9,20 @@ BlangModel:
 	('package' package=QualifiedName)?
 	importSection=XImportSection?
 	'model' '{'
-	  // TODO: make the order less rigid between those options!
-	  (variableDeclarations += VariableDeclaration)*
-	  ('init' initBlock = XBlockExpression)?
-  	'laws' '{' (lawNodes += LawNode)* '}'
+    (variableDeclarations += VariableDeclaration)*
+    'laws' '{' (lawNodes += LawNode)* '}'
+    (variableDeclarations += VariableDeclaration)*
 	'}'
 	;
 	
 	
 VariableDeclaration:
-	(variableType = VariableType) type=JvmTypeReference ( names+= ValidID) (',' names += ValidID)*
+	(variableType = VariableType) type=JvmTypeReference ( items += NameAndInit) (',' items += NameAndInit)*
+;
+
+NameAndInit:
+  name = ValidID
+  ('?:' varInitBlock = XExpression)?
 ;
 
 enum VariableType:   // TODO: poor name: pick something else like randomnessStatus

@@ -45,6 +45,10 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import blang.inits.ConstructorArg
 import blang.inits.DesignatedConstructor
 import org.eclipse.xtext.naming.IQualifiedNameConverter
+import ca.ubc.stat.blang.blangDsl.NameAndInit
+import org.eclipse.xtext.common.types.JvmGenericType
+import java.util.Optional
+import blang.inits.Arg
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -68,21 +72,24 @@ class SingleBlangModelInferrer {
   val extension private IResourceDescriptionsProvider index
   val IQualifiedNameConverter qualNameConverter
   
+  
   def void infer() {
     setupClass()
-    val BlangScope globalScope = setupVariables()
-    // This first call will only generate the auxiliary methods needed 
+    val JvmGenericType builderOutput = setupBuilder()
+    val BlangScope globalScope = setupVariables(builderOutput)
+    // This first call to the method bodies involving XExpression (below) 
+    // will only generate the auxiliary methods needed 
     // by the XExpressionProcessor machinery. 
-    StaticUtils::eagerlyEvaluate(componentsMethodBody(globalScope))
-    StaticUtils::eagerlyEvaluate(constructorBody(globalScope))
-    // Once the auxiliary methods have been generated, setup the 
-    // generation of "components(..)" itself.
+    StaticUtils::eagerlyEvaluate(componentsMethodBody(globalScope))                  
+    StaticUtils::eagerlyEvaluate(builderBody(globalScope))
+    // Once these auxiliary methods have been generated, we setup the 
+    // generation the methods (ie. adding them to the generated types).
     // This two-pass approach is required to work around limitations of 
     // Xtext (one pass leads to a ConcurrentModificationException)
     xExpressions.endAuxiliaryMethodGenerationPhase() 
     generateConstructor(globalScope)
-    generateFixedParamStaticMethod(globalScope)
-    generateMethods(globalScope)
+    generateBuilder(globalScope, builderOutput)
+    generateComponentsMethod(globalScope)
   }
   
   def private void setupClass() { 
@@ -92,10 +99,19 @@ class SingleBlangModelInferrer {
     output.superTypes += typeRef(Model)
   }
   
-  def private BlangScope setupVariables() {
+  def private JvmGenericType setupBuilder() {
+    val JvmGenericType builderOutput = model.toClass(BUILDER_NAME) [
+      it.static = true
+    ]
+    output.members += builderOutput
+    return builderOutput
+  }
+  
+  def private BlangScope setupVariables(JvmGenericType builderOutput) {
     val BlangScope result = BlangScope::emptyScope
     for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
-      for (String name : variableDeclaration.getNames()) {
+      for (NameAndInit item : variableDeclaration.getItems()) {
+        val String name = item.getName()
         val BlangVariable blangVariable = new BlangVariable(variableDeclaration.type, name, StaticUtils::isParam(variableDeclaration.variableType))
         result += blangVariable
         // field
@@ -110,9 +126,22 @@ class SingleBlangModelInferrer {
             return «blangVariable.deboxingInvocationString»;
           '''
         ]
+        // builder fields
+        builderOutput.members += variableDeclaration.toField(blangVariable.deboxedName, optionalize(blangVariable.deboxedType, item.getVarInitBlock() != null)) [
+          visibility = JvmVisibility.PUBLIC
+          annotations += annotationRef(Arg)
+        ] 
       }
     }
     return result
+  }
+  
+  def JvmTypeReference optionalize(JvmTypeReference deboxedType, boolean makeOptional) {
+    if (makeOptional) {
+      return typeRef(Optional, deboxedType)
+    } else {
+      return deboxedType
+    }
   }
   
   def static private List<BlangVariable> constructorOrder(BlangScope scope) {
@@ -126,41 +155,42 @@ class SingleBlangModelInferrer {
     return result
   }
   
-  def private void generateFixedParamStaticMethod(BlangScope scope) {
-    val JvmOperation method = model.toMethod(BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME, typeRef(output)) [
+  def private void generateBuilder(BlangScope scope, JvmGenericType builderOutput) {
+    val JvmOperation method = model.toMethod(BUILDER_METHOD_NAME, typeRef(output)) [
       visibility = JvmVisibility.PUBLIC
-      static = true
-      for (BlangVariable variable : constructorOrder(scope)) {
-        val JvmFormalParameter param = model.toParameter(variable.deboxedName, variable.deboxedType)
-        if (variable.param) {
-          param.annotations += annotationRef(Param) 
-        }
-        param.annotations += annotationRef(ConstructorArg, variable.deboxedName)
-        parameters += param
-      }
-      body = '''
-        return new «typeRef(output)»(
-          «FOR BlangVariable variable : constructorOrder(scope) SEPARATOR ", "»
-          «IF variable.param»
-            () -> «variable.deboxedName»
-          «ELSE»
-            «variable.deboxedName»
-          «ENDIF»
-          «ENDFOR»
-        );
-      '''
+      body = builderBody(scope)
     ]
-    method.annotations += annotationRef(DesignatedConstructor)
-    output.members += method
+    builderOutput.members += method
   }
   
-  def StringConcatenationClient constructorBody(BlangScope scope) {
+  def private StringConcatenationClient builderBody(BlangScope globalScope) {
+    val BlangScope incrementalScope = BlangScope::emptyScope
     return '''
-        «FOR BlangVariable variable : scope.variables»
-        this.«variable.boxedName» = «variable.boxedName»;
+      // For each optional type, either get the value, or evaluate the ?: expression
+      «FOR variableDeclaration : model.variableDeclarations»
+        «FOR item : variableDeclaration.getItems()»
+          «IF item.getVarInitBlock() != null»
+            «variableDeclaration.getType()» «item.getName()» = null;
+            if (this.«item.getName()».isPresent()) {
+              «item.getName()» = this.«item.getName()».get();
+            } else {
+              «item.getName()» = «xExpressions.process(item.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
+            }
+          «ENDIF»
+          «incrementalScope += new BlangVariable(variableDeclaration.type, item.name, false)»
         «ENDFOR»
-        «IF model.initBlock !== null»«xExpressions.process(model.initBlock, scope, typeRef(Void.TYPE))»;«ENDIF»
-      '''
+      «ENDFOR»
+      // Build the instance after boxing params
+      return new «typeRef(output)»(
+        «FOR BlangVariable variable : constructorOrder(globalScope) SEPARATOR ", "»
+        «IF variable.param»
+          () -> «variable.deboxedName»
+        «ELSE»
+          «variable.deboxedName»
+        «ENDIF»
+        «ENDFOR»
+      );
+    '''
   }
   
   def private void generateConstructor(BlangScope scope) {
@@ -174,7 +204,11 @@ class SingleBlangModelInferrer {
         param.annotations += annotationRef(DeboxedName, variable.deboxedName)
         parameters += param
       }
-      body = constructorBody(scope)
+      body = '''
+        «FOR BlangVariable variable : scope.variables»
+        this.«variable.boxedName» = «variable.boxedName»;
+        «ENDFOR»
+      '''
       documentation = '''
         Note: the generated code has the following properties used at runtime:
           - all arguments are annotated with a BlangVariable annotation
@@ -186,7 +220,7 @@ class SingleBlangModelInferrer {
     ]
   }
   
-  def private void generateMethods(BlangScope scope) {
+  def private void generateComponentsMethod(BlangScope scope) {
     output.members += model.toMethod(COMPONENTS_METHOD_NAME, typeRef(Collection, typeRef(ModelComponent))) [
       visibility = JvmVisibility.PUBLIC
       documentation = '''
@@ -195,6 +229,7 @@ class SingleBlangModelInferrer {
       body = componentsMethodBody(scope)
     ]
   }
+  
 
   /**
    * Entry point of generation of the body of the method components(), the core of a probabilistic model.
@@ -354,7 +389,7 @@ class SingleBlangModelInferrer {
     val VariableType[] order = #[VariableType.RANDOM, VariableType.PARAM]
     for (varType : order) {
       for (VariableDeclaration variableDecl : model.variableDeclarations.filter[it.variableType == varType]) {
-        for (String name : variableDecl.names) {
+        for (NameAndInit item : variableDecl.getItems) {
           val boolean isParam = StaticUtils::isParam(variableDecl.variableType)
           val ConstructorArgument argument = new ConstructorArgument(variableDecl.type, isParam)
           result.add(argument)
@@ -432,6 +467,6 @@ class SingleBlangModelInferrer {
   
   val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model) // = "components", but robust to re-factoring
   val static final String COMPONENTS_LIST_NAME = "components"
-  
-  val static final String BUILD_WITH_CONSTANT_PARAMS_STATIC_METHOD_NAME = "buildWithConstantParams"
+  val static final String BUILDER_NAME = "Builder"
+  val static final String BUILDER_METHOD_NAME = "build"
 }
