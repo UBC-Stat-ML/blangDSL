@@ -34,6 +34,7 @@ class SupportFactorGeneratorTest {
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.core.SupportFactor;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
@@ -41,20 +42,24 @@ class SupportFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real variance;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                () -> variance
+              );
+            }
+          }
+          
           @Param
           private final Supplier<Real> $generated__variance;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
-            this.$generated__variance = $generated__variance;
+          public Real getVariance() {
+            return $generated__variance.get();
           }
           
           /**
@@ -72,6 +77,19 @@ class SupportFactorGeneratorTest {
            */
           private static SupportFactor $generated__0_lazy(final Supplier<Real> $generated__variance) {
             return new SupportFactor(() -> $generated__0($generated__variance.get()));
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+            this.$generated__variance = $generated__variance;
           }
           
           /**
@@ -112,25 +130,30 @@ class SupportFactorGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.SupportFactor;
+        import blang.inits.Arg;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.Random;
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Random rand;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                rand
+              );
+            }
+          }
+          
           private final Random rand;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@DeboxedName("rand") final Random rand) {
-            this.rand = rand;
+          public Random getRand() {
+            return rand;
           }
           
           /**
@@ -147,6 +170,19 @@ class SupportFactorGeneratorTest {
            */
           private static SupportFactor $generated__0_lazy(final Random rand) {
             return new SupportFactor(() -> $generated__0(rand));
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("rand") final Random rand) {
+            this.rand = rand;
           }
           
           /**
@@ -192,6 +228,7 @@ class SupportFactorGeneratorTest {
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.core.SupportFactor;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
@@ -199,24 +236,35 @@ class SupportFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real mean;
+            
+            @Arg
+            public Real variance;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                () -> mean, 
+                () -> variance
+              );
+            }
+          }
+          
           @Param
           private final Supplier<Real> $generated__mean;
+          
+          public Real getMean() {
+            return $generated__mean.get();
+          }
           
           @Param
           private final Supplier<Real> $generated__variance;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
-            this.$generated__mean = $generated__mean;
-            this.$generated__variance = $generated__variance;
+          public Real getVariance() {
+            return $generated__variance.get();
           }
           
           /**
@@ -233,6 +281,20 @@ class SupportFactorGeneratorTest {
            */
           private static SupportFactor $generated__0_lazy(final Supplier<Real> $generated__mean, final Supplier<Real> $generated__variance) {
             return new SupportFactor(() -> $generated__0($generated__mean.get(), $generated__variance.get()));
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+            this.$generated__mean = $generated__mean;
+            this.$generated__variance = $generated__variance;
           }
           
           /**

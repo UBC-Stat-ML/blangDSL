@@ -35,6 +35,7 @@ class LogFactorGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
@@ -42,20 +43,24 @@ class LogFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real variance;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                () -> variance
+              );
+            }
+          }
+          
           @Param
           private final Supplier<Real> $generated__variance;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
-            this.$generated__variance = $generated__variance;
+          public Real getVariance() {
+            return $generated__variance.get();
           }
           
           /**
@@ -76,6 +81,19 @@ class LogFactorGeneratorTest {
            */
           private static LogScaleFactor $generated__0_lazy(final Supplier<Real> $generated__variance) {
             return () -> $generated__0($generated__variance.get());
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+            this.$generated__variance = $generated__variance;
           }
           
           /**
@@ -121,6 +139,7 @@ class LogFactorGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
@@ -128,24 +147,35 @@ class LogFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real mean;
+            
+            @Arg
+            public Real variance;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                () -> mean, 
+                () -> variance
+              );
+            }
+          }
+          
           @Param
           private final Supplier<Real> $generated__mean;
+          
+          public Real getMean() {
+            return $generated__mean.get();
+          }
           
           @Param
           private final Supplier<Real> $generated__variance;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
-            this.$generated__mean = $generated__mean;
-            this.$generated__variance = $generated__variance;
+          public Real getVariance() {
+            return $generated__variance.get();
           }
           
           /**
@@ -165,6 +195,20 @@ class LogFactorGeneratorTest {
            */
           private static LogScaleFactor $generated__0_lazy(final Supplier<Real> $generated__variance, final Supplier<Real> $generated__mean) {
             return () -> $generated__0($generated__variance.get(), $generated__mean.get());
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+            this.$generated__mean = $generated__mean;
+            this.$generated__variance = $generated__variance;
           }
           
           /**
@@ -214,6 +258,7 @@ class LogFactorGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
@@ -221,27 +266,45 @@ class LogFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real mean;
+            
+            @Arg
+            public Real variance;
+            
+            @Arg
+            public Real x;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                x, 
+                () -> mean, 
+                () -> variance
+              );
+            }
+          }
+          
           @Param
           private final Supplier<Real> $generated__mean;
+          
+          public Real getMean() {
+            return $generated__mean.get();
+          }
           
           @Param
           private final Supplier<Real> $generated__variance;
           
+          public Real getVariance() {
+            return $generated__variance.get();
+          }
+          
           private final Real x;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@DeboxedName("x") final Real x, @Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
-            this.$generated__mean = $generated__mean;
-            this.$generated__variance = $generated__variance;
-            this.x = x;
+          public Real getX() {
+            return x;
           }
           
           /**
@@ -264,6 +327,21 @@ class LogFactorGeneratorTest {
            */
           private static LogScaleFactor $generated__0_lazy(final Real x, final Supplier<Real> $generated__mean, final Supplier<Real> $generated__variance) {
             return () -> $generated__0(x, $generated__mean.get(), $generated__variance.get());
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("x") final Real x, @Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+            this.$generated__mean = $generated__mean;
+            this.$generated__variance = $generated__variance;
+            this.x = x;
           }
           
           /**

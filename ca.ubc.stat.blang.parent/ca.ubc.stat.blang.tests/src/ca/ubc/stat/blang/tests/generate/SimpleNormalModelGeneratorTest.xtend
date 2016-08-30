@@ -36,6 +36,7 @@ class SimpleNormalModelGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Normal;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
@@ -44,27 +45,45 @@ class SimpleNormalModelGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real m;
+            
+            @Arg
+            public Real v;
+            
+            @Arg
+            public Real y;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                y, 
+                () -> m, 
+                () -> v
+              );
+            }
+          }
+          
           @Param
           private final Supplier<Real> $generated__m;
+          
+          public Real getM() {
+            return $generated__m.get();
+          }
           
           @Param
           private final Supplier<Real> $generated__v;
           
+          public Real getV() {
+            return $generated__v.get();
+          }
+          
           private final Real y;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@DeboxedName("y") final Real y, @Param @DeboxedName("m") final Supplier<Real> $generated__m, @Param @DeboxedName("v") final Supplier<Real> $generated__v) {
-            this.$generated__m = $generated__m;
-            this.$generated__v = $generated__v;
-            this.y = y;
+          public Real getY() {
+            return y;
           }
           
           /**
@@ -105,6 +124,21 @@ class SimpleNormalModelGeneratorTest {
            */
           private static Supplier<Real> $generated__2_lazy(final Supplier<Real> $generated__m, final Supplier<Real> $generated__v) {
             return () -> $generated__2($generated__m.get(), $generated__v.get());
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("y") final Real y, @Param @DeboxedName("m") final Supplier<Real> $generated__m, @Param @DeboxedName("v") final Supplier<Real> $generated__v) {
+            this.$generated__m = $generated__m;
+            this.$generated__v = $generated__v;
+            this.y = y;
           }
           
           /**

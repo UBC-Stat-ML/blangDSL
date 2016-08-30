@@ -34,6 +34,7 @@ class LoopGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.SupportFactor;
+        import blang.inits.Arg;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.Random;
@@ -41,19 +42,23 @@ class LoopGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Random rand;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                rand
+              );
+            }
+          }
+          
           private final Random rand;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@DeboxedName("rand") final Random rand) {
-            this.rand = rand;
+          public Random getRand() {
+            return rand;
           }
           
           /**
@@ -80,6 +85,19 @@ class LoopGeneratorTest {
            */
           private static SupportFactor $generated__1_lazy(final Random rand) {
             return new SupportFactor(() -> $generated__1(rand));
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("rand") final Random rand) {
+            this.rand = rand;
           }
           
           /**
@@ -125,6 +143,7 @@ class LoopGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.SupportFactor;
+        import blang.inits.Arg;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.Random;
@@ -132,19 +151,23 @@ class LoopGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Random rand;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                rand
+              );
+            }
+          }
+          
           private final Random rand;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@DeboxedName("rand") final Random rand) {
-            this.rand = rand;
+          public Random getRand() {
+            return rand;
           }
           
           /**
@@ -180,6 +203,19 @@ class LoopGeneratorTest {
            */
           private static SupportFactor $generated__2_lazy(final Random rand) {
             return new SupportFactor(() -> $generated__2(rand));
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("rand") final Random rand) {
+            this.rand = rand;
           }
           
           /**
@@ -231,6 +267,7 @@ class LoopGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Normal;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
@@ -241,27 +278,45 @@ class LoopGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real m;
+            
+            @Arg
+            public Real v;
+            
+            @Arg
+            public List<Real> means;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                means, 
+                () -> m, 
+                () -> v
+              );
+            }
+          }
+          
           @Param
           private final Supplier<Real> $generated__m;
+          
+          public Real getM() {
+            return $generated__m.get();
+          }
           
           @Param
           private final Supplier<Real> $generated__v;
           
+          public Real getV() {
+            return $generated__v.get();
+          }
+          
           private final List<Real> means;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@DeboxedName("means") final List<Real> means, @Param @DeboxedName("m") final Supplier<Real> $generated__m, @Param @DeboxedName("v") final Supplier<Real> $generated__v) {
-            this.$generated__m = $generated__m;
-            this.$generated__v = $generated__v;
-            this.means = means;
+          public List<Real> getMeans() {
+            return means;
           }
           
           /**
@@ -277,7 +332,7 @@ class LoopGeneratorTest {
            * Auxiliary method generated to translate:
            * means.get(i)
            */
-          private static Real $generated__1(final int i, final Real m, final Real , final Real m, final List<Real> means) {
+          private static Real $generated__1(final int i, final Real m, final Real v, final List<Real> means) {
             Real _get = means.get(i);
             return _get;
           }
@@ -312,6 +367,21 @@ class LoopGeneratorTest {
            */
           private static Supplier<Real> $generated__3_lazy(final Supplier<Real> $generated__m, final Supplier<Real> $generated__v) {
             return () -> $generated__3($generated__m.get(), $generated__v.get());
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("means") final List<Real> means, @Param @DeboxedName("m") final Supplier<Real> $generated__m, @Param @DeboxedName("v") final Supplier<Real> $generated__v) {
+            this.$generated__m = $generated__m;
+            this.$generated__v = $generated__v;
+            this.means = means;
           }
           
           /**

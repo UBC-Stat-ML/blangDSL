@@ -29,10 +29,19 @@ class ModelParamsGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+              );
+            }
+          }
+          
           /**
            * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
            *   - the order of the arguments is as follows:
            *     - first, all the random variables in the order they occur in the blang file
            *     - second, all the params in the order they occur in the blang file
@@ -73,20 +82,46 @@ class ModelParamsGeneratorTest {
         import blang.core.DeboxedName;
         import blang.core.Model;
         import blang.core.ModelComponent;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real mu;
+            
+            @Arg
+            public Real y;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                mu, 
+                y
+              );
+            }
+          }
+          
           private final Real mu;
+          
+          public Real getMu() {
+            return mu;
+          }
           
           private final Real y;
           
+          public Real getY() {
+            return y;
+          }
+          
           /**
            * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
            *   - the order of the arguments is as follows:
            *     - first, all the random variables in the order they occur in the blang file
            *     - second, all the params in the order they occur in the blang file
@@ -114,7 +149,7 @@ class ModelParamsGeneratorTest {
     
     
     @Test
-    def void simpleNormalModel() {
+    def void normalModelWithNamedParamBlock() {
         '''
             import ca.ubc.stat.blang.tests.types.Real
             import ca.ubc.stat.blang.tests.types.Normal
@@ -134,6 +169,7 @@ class ModelParamsGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Normal;
         import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
@@ -142,23 +178,34 @@ class ModelParamsGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
+          public static class Builder {
+            @Arg
+            public Real mu;
+            
+            @Arg
+            public Real y;
+            
+            public MyFile build() {
+              // For each optional type, either get the value, or evaluate the ?: expression
+              // Build the instance after boxing params
+              return new MyFile(
+                y, 
+                () -> mu
+              );
+            }
+          }
+          
           @Param
           private final Supplier<Real> $generated__mu;
           
+          public Real getMu() {
+            return $generated__mu.get();
+          }
+          
           private final Real y;
           
-          /**
-           * Note: the generated code has the following properties used at runtime:
-           *   - all arguments are annotated with with BlangVariable annotation
-           *   - params have @Param also
-           *   - the order of the arguments is as follows:
-           *     - first, all the random variables in the order they occur in the blang file
-           *     - second, all the params in the order they occur in the blang file
-           * 
-           */
-          public MyFile(@DeboxedName("y") final Real y, @Param @DeboxedName("mu") final Supplier<Real> $generated__mu) {
-            this.$generated__mu = $generated__mu;
-            this.y = y;
+          public Real getY() {
+            return y;
           }
           
           /**
@@ -213,6 +260,20 @@ class ModelParamsGeneratorTest {
            */
           private static Supplier<Real> $generated__3_lazy(final Real mean) {
             return () -> $generated__3(mean);
+          }
+          
+          /**
+           * Note: the generated code has the following properties used at runtime:
+           *   - all arguments are annotated with a BlangVariable annotation
+           *   - params additionally have a Param annotation
+           *   - the order of the arguments is as follows:
+           *     - first, all the random variables in the order they occur in the blang file
+           *     - second, all the params in the order they occur in the blang file
+           * 
+           */
+          public MyFile(@DeboxedName("y") final Real y, @Param @DeboxedName("mu") final Supplier<Real> $generated__mu) {
+            this.$generated__mu = $generated__mu;
+            this.y = y;
           }
           
           /**
