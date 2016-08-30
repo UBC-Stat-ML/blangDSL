@@ -11,6 +11,7 @@ import java.util.Collection;
  * @author Alexandre Bouchard (alexandre.bouchard@gmail.com)
  *
  */
+@FunctionalInterface
 public interface Model extends ModelComponent
 {
   public Collection<? extends ModelComponent> components();

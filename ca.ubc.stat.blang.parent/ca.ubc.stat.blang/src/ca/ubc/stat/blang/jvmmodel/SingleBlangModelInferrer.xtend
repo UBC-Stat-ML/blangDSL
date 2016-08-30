@@ -49,6 +49,7 @@ import ca.ubc.stat.blang.blangDsl.NameAndInit
 import org.eclipse.xtext.common.types.JvmGenericType
 import java.util.Optional
 import blang.inits.Arg
+import blang.core.ModelBuilder
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -103,6 +104,7 @@ class SingleBlangModelInferrer {
     val JvmGenericType builderOutput = model.toClass(BUILDER_NAME) [
       it.static = true
     ]
+    builderOutput.superTypes += typeRef(ModelBuilder)
     output.members += builderOutput
     return builderOutput
   }
@@ -468,5 +470,5 @@ class SingleBlangModelInferrer {
   val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model) // = "components", but robust to re-factoring
   val static final String COMPONENTS_LIST_NAME = "components"
   val static final String BUILDER_NAME = "Builder"
-  val static final String BUILDER_METHOD_NAME = "build"
+  val static final String BUILDER_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(ModelBuilder)
 }
