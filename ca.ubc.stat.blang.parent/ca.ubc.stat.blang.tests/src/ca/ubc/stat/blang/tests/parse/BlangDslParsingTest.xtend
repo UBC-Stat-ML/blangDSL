@@ -63,8 +63,7 @@ class BlangDslParsingTest {
 			import ca.ubc.stat.blang.tests.types.Normal
 			
 			model {
-				random Real mu
-				random Real y
+				random Real mu, y
 				
 				laws {
 					y ~ Normal(0, 1)
