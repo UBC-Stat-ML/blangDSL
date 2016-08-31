@@ -94,6 +94,12 @@
 							</includes>
 						</fileset>
 						<fileset>
+							<directory>${basedir}/../ca.ubc.stat.blang.ui.web/src-gen/</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>
+						<fileset>
 							<directory>${basedir}/model/generated/</directory>
 						</fileset>
 					</filesets>
