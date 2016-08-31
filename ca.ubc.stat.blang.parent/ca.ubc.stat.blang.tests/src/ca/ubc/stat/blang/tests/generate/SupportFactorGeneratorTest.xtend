@@ -31,6 +31,7 @@ class SupportFactorGeneratorTest {
         '''
         import blang.core.DeboxedName;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.core.SupportFactor;
@@ -42,7 +43,7 @@ class SupportFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Real variance;
             
@@ -128,6 +129,7 @@ class SupportFactorGeneratorTest {
         '''
         import blang.core.DeboxedName;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.SupportFactor;
         import blang.inits.Arg;
@@ -137,7 +139,7 @@ class SupportFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Random rand;
             
@@ -225,6 +227,7 @@ class SupportFactorGeneratorTest {
         '''
         import blang.core.DeboxedName;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.core.SupportFactor;
@@ -236,7 +239,7 @@ class SupportFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Real mean;
             

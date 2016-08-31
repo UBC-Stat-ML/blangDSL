@@ -32,6 +32,7 @@ class LoopGeneratorTest {
         '''
         import blang.core.DeboxedName;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.SupportFactor;
         import blang.inits.Arg;
@@ -42,7 +43,7 @@ class LoopGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Random rand;
             
@@ -141,6 +142,7 @@ class LoopGeneratorTest {
         '''
         import blang.core.DeboxedName;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.SupportFactor;
         import blang.inits.Arg;
@@ -151,7 +153,7 @@ class LoopGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Random rand;
             
@@ -265,6 +267,7 @@ class LoopGeneratorTest {
         '''
         import blang.core.DeboxedName;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.inits.Arg;
@@ -278,7 +281,7 @@ class LoopGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Real m;
             

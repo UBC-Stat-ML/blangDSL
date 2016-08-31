@@ -23,13 +23,14 @@ class ModelParamsGeneratorTest {
         '''.assertCompilesTo(
         '''
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import java.util.ArrayList;
         import java.util.Collection;
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
               // Build the instance after boxing params
@@ -81,6 +82,7 @@ class ModelParamsGeneratorTest {
         '''
         import blang.core.DeboxedName;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.inits.Arg;
         import ca.ubc.stat.blang.tests.types.Real;
@@ -89,7 +91,7 @@ class ModelParamsGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Real mu;
             
@@ -167,6 +169,7 @@ class ModelParamsGeneratorTest {
         '''
         import blang.core.DeboxedName;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.inits.Arg;
@@ -178,7 +181,7 @@ class ModelParamsGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Real mu;
             
