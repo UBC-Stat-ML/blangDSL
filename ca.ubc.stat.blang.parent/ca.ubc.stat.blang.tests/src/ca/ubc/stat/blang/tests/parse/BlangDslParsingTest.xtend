@@ -66,7 +66,7 @@ class BlangDslParsingTest {
 				random Real mu, y
 				
 				laws {
-					y ~ Normal(0, 1)
+					y ~ Normal([0], [1])
 				}
 			}
 		'''.parse
