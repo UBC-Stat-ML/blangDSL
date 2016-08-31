@@ -50,6 +50,8 @@ import org.eclipse.xtext.common.types.JvmGenericType
 import java.util.Optional
 import blang.inits.Arg
 import blang.core.ModelBuilder
+import java.lang.reflect.Type
+import java.lang.reflect.ParameterizedType
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -420,7 +422,7 @@ class SingleBlangModelInferrer {
       }
       val JvmTypeReference typeRef = 
         if (isParam)
-          extractSupplierType(parameter.getType())
+          extractSupplierType(parameter)
         else 
           typeRef(parameter.getType())
           
@@ -430,16 +432,18 @@ class SingleBlangModelInferrer {
     return result
   }
   
-  def JvmTypeReference extractSupplierType(Class<?> supplier) {
-    if (!Supplier.isAssignableFrom(supplier)) {
+  def JvmTypeReference extractSupplierType(Parameter supplier) {
+    if (!Supplier.isAssignableFrom(supplier.getType())) {
       throw new RuntimeException
     }
-    for (Method method : supplier.methods) {
-      if (method.name === "get") {
-        return typeRef(method.returnType)
-      }
+    
+    val supplierType = supplier.parameterizedType as ParameterizedType
+    val Type[] supplierTypeArgs = supplierType.actualTypeArguments
+    if (supplierTypeArgs.length != 1) {
+        throw new RuntimeException("Supplier must have exactly one type argument: " + supplierType)
     }
-    throw new RuntimeException
+    
+    return typeRef(supplierTypeArgs.get(0).typeName)
   }
   
   @Data
