@@ -171,19 +171,21 @@ class SingleBlangModelInferrer {
   }
   
   def private StringConcatenationClient builderBody(BlangScope globalScope) {
+    val String prefixForFinalVariable = "__"
     val BlangScope incrementalScope = BlangScope::emptyScope
     return '''
       // For each optional type, either get the value, or evaluate the ?: expression
       «FOR variableDeclaration : model.variableDeclarations»
         «FOR item : variableDeclaration.getItems()»
           «IF item.getVarInitBlock() != null»
-            «variableDeclaration.getType()» «item.getName()» = null;
+            «variableDeclaration.getType()» «item.getName()»;
             if (this.«item.getName()».isPresent()) {
               «item.getName()» = this.«item.getName()».get();
             } else {
               «item.getName()» = «xExpressions.process(item.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
             }
           «ENDIF»
+          final «variableDeclaration.getType()» «prefixForFinalVariable»«item.getName()» = «item.getName()»;
           «incrementalScope += new BlangVariable(variableDeclaration.type, item.name, false)»
         «ENDFOR»
       «ENDFOR»
@@ -191,9 +193,9 @@ class SingleBlangModelInferrer {
       return new «typeRef(output)»(
         «FOR BlangVariable variable : constructorOrder(globalScope) SEPARATOR ", "»
         «IF variable.param»
-          () -> «variable.deboxedName»
+          () -> «prefixForFinalVariable»«variable.deboxedName»
         «ELSE»
-          «variable.deboxedName»
+          «prefixForFinalVariable»«variable.deboxedName»
         «ENDIF»
         «ENDFOR»
       );
