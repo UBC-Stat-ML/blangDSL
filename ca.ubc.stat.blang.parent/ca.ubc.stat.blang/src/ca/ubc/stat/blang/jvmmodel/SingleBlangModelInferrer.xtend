@@ -99,6 +99,9 @@ class SingleBlangModelInferrer {
     if (model.package != null) {
       output.packageName = model.package
     }
+    for (annotation : model.annotations) {
+      output.addAnnotation(annotation)
+    }
     output.superTypes += typeRef(Model)
   }
   

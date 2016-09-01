@@ -1,4 +1,4 @@
-grammar ca.ubc.stat.blang.BlangDsl with org.eclipse.xtext.xbase.Xbase
+grammar ca.ubc.stat.blang.BlangDsl with org.eclipse.xtext.xbase.annotations.XbaseWithAnnotations
 
 generate blangDsl "http://www.ubc.ca/stat/blang/BlangDsl"
 
@@ -8,13 +8,13 @@ BlangModel:
 	{BlangModel}
 	('package' package=QualifiedName)?
 	importSection=XImportSection?
+	(annotations += XAnnotation)*
 	'model' name=ID '{'
     (variableDeclarations += VariableDeclaration)*
     'laws' '{' (lawNodes += LawNode)* '}'
     (variableDeclarations += VariableDeclaration)*
 	'}'
-	;
-	
+;
 	
 VariableDeclaration:
 	(variableType = VariableType) type=JvmTypeReference ( items += NameAndInit) (',' items += NameAndInit)*
