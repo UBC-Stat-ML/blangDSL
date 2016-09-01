@@ -52,6 +52,7 @@ import blang.inits.Arg
 import blang.core.ModelBuilder
 import java.lang.reflect.Type
 import java.lang.reflect.ParameterizedType
+import blang.core.SamplerTypes
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -100,7 +101,7 @@ class SingleBlangModelInferrer {
       output.packageName = model.package
     }
     for (annotation : model.annotations) {
-      output.addAnnotation(annotation)
+      output.annotations += annotationRef(SamplerTypes, annotation.arguments)
     }
     output.superTypes += typeRef(Model)
   }
