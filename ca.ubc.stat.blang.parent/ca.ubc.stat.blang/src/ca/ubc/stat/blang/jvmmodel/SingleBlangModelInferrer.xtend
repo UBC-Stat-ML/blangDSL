@@ -471,7 +471,7 @@ class SingleBlangModelInferrer {
   }
   
   val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model) // = "components", but robust to re-factoring
-  val static final String COMPONENTS_LIST_NAME = "components"
-  val static final String BUILDER_NAME = "Builder"
+  val public static final String COMPONENTS_LIST_NAME = "components"
+  val public static final String BUILDER_NAME = "Builder"
   val static final String BUILDER_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(ModelBuilder)
 }
