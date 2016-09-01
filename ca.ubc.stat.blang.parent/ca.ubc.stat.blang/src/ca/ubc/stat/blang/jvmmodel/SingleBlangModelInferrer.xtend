@@ -45,7 +45,7 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import blang.inits.ConstructorArg
 import blang.inits.DesignatedConstructor
 import org.eclipse.xtext.naming.IQualifiedNameConverter
-import ca.ubc.stat.blang.blangDsl.NameAndInit
+import ca.ubc.stat.blang.blangDsl.VariableDeclarationComponent
 import org.eclipse.xtext.common.types.JvmGenericType
 import java.util.Optional
 import blang.inits.Arg
@@ -117,8 +117,8 @@ class SingleBlangModelInferrer {
   def private BlangScope setupVariables(JvmGenericType builderOutput) {
     val BlangScope result = BlangScope::emptyScope
     for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
-      for (NameAndInit item : variableDeclaration.getItems()) {
-        val String name = item.getName()
+      for (VariableDeclarationComponent varDeclComponent : variableDeclaration.getComponents()) {
+        val String name = varDeclComponent.getName()
         val BlangVariable blangVariable = new BlangVariable(variableDeclaration.type, name, StaticUtils::isParam(variableDeclaration.variableType))
         result += blangVariable
         // field
@@ -134,7 +134,7 @@ class SingleBlangModelInferrer {
           '''
         ]
         // builder fields
-        builderOutput.members += variableDeclaration.toField(blangVariable.deboxedName, optionalize(blangVariable.deboxedType, item.getVarInitBlock() != null)) [
+        builderOutput.members += variableDeclaration.toField(blangVariable.deboxedName, optionalize(blangVariable.deboxedType, varDeclComponent.getVarInitBlock() != null)) [
           visibility = JvmVisibility.PUBLIC
           annotations += annotationRef(Arg)
         ] 
@@ -176,17 +176,17 @@ class SingleBlangModelInferrer {
     return '''
       // For each optional type, either get the value, or evaluate the ?: expression
       «FOR variableDeclaration : model.variableDeclarations»
-        «FOR item : variableDeclaration.getItems()»
-          «IF item.getVarInitBlock() != null»
-            «variableDeclaration.getType()» «item.getName()»;
-            if (this.«item.getName()».isPresent()) {
-              «item.getName()» = this.«item.getName()».get();
+        «FOR varDeclComponent : variableDeclaration.components»
+          «IF varDeclComponent.getVarInitBlock() != null»
+            «variableDeclaration.getType()» «varDeclComponent.getName()»;
+            if (this.«varDeclComponent.getName()».isPresent()) {
+              «varDeclComponent.getName()» = this.«varDeclComponent.getName()».get();
             } else {
-              «item.getName()» = «xExpressions.process(item.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
+              «varDeclComponent.getName()» = «xExpressions.process(varDeclComponent.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
             }
           «ENDIF»
-          final «variableDeclaration.getType()» «prefixForFinalVariable»«item.getName()» = «item.getName()»;
-          «incrementalScope += new BlangVariable(variableDeclaration.type, item.name, false)»
+          final «variableDeclaration.getType()» «prefixForFinalVariable»«varDeclComponent.getName()» = «varDeclComponent.getName()»;
+          «incrementalScope += new BlangVariable(variableDeclaration.type, varDeclComponent.name, false)»
         «ENDFOR»
       «ENDFOR»
       // Build the instance after boxing params
@@ -378,7 +378,7 @@ class SingleBlangModelInferrer {
     val VariableType[] order = #[VariableType.RANDOM, VariableType.PARAM]
     for (varType : order) {
       for (VariableDeclaration variableDecl : model.variableDeclarations.filter[it.variableType == varType]) {
-        for (NameAndInit item : variableDecl.getItems) {
+        for (VariableDeclarationComponent item : variableDecl.components) {
           val boolean isParam = StaticUtils::isParam(variableDecl.variableType)
           val ConstructorArgument argument = new ConstructorArgument(variableDecl.type, isParam)
           result.add(argument)

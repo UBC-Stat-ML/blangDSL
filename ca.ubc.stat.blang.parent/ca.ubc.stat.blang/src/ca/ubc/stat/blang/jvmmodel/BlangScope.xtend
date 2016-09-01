@@ -126,11 +126,12 @@ class BlangScope {
     for (Dependency dependency : dependencies) {
       switch dependency {
         SimpleDependency : {
-          val BlangVariable additional = this.find(dependency.name)
+          val BlangVariable additional = this.find(dependency.variable.name)
           if (additional !== null)
             result += additional
           // else
-          //   TODO: error message: dependency not found
+          //   TODO: error message: dependency not found 
+          //   *However*: now detected by the fact SimpleDependency uses a link to a variable
         }
         InitializerDependency :
           result += new BlangVariable(dependency.type, dependency.name, false)

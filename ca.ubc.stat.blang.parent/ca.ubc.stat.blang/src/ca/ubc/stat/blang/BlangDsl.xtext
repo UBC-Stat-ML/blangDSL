@@ -17,10 +17,10 @@ BlangModel:
 ;
 	
 VariableDeclaration:
-	(variableType = VariableType) type=JvmTypeReference ( items += NameAndInit) (',' items += NameAndInit)*
+	(variableType = VariableType) type=JvmTypeReference ( components += VariableDeclarationComponent) (',' components += VariableDeclarationComponent)*
 ;
 
-NameAndInit:
+VariableDeclarationComponent:
   name = ValidID
   ('?:' varInitBlock = XExpression)?
 ;
@@ -83,5 +83,5 @@ InitializerDependency:
 ;
 
 SimpleDependency:
-  name = ValidID
+  variable = [VariableDeclarationComponent]
 ;
