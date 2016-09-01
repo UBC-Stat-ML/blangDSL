@@ -33,6 +33,7 @@ class LogFactorGeneratorTest {
         import blang.core.DeboxedName;
         import blang.core.LogScaleFactor;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.inits.Arg;
@@ -43,7 +44,7 @@ class LogFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Real variance;
             
@@ -137,6 +138,7 @@ class LogFactorGeneratorTest {
         import blang.core.DeboxedName;
         import blang.core.LogScaleFactor;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.inits.Arg;
@@ -147,7 +149,7 @@ class LogFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Real mean;
             
@@ -256,6 +258,7 @@ class LogFactorGeneratorTest {
         import blang.core.DeboxedName;
         import blang.core.LogScaleFactor;
         import blang.core.Model;
+        import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
         import blang.inits.Arg;
@@ -266,7 +269,7 @@ class LogFactorGeneratorTest {
         
         @SuppressWarnings("all")
         public class MyFile implements Model {
-          public static class Builder {
+          public static class Builder implements ModelBuilder {
             @Arg
             public Real mean;
             

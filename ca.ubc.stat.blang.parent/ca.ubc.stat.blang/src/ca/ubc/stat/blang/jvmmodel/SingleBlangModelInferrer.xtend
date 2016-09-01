@@ -50,6 +50,8 @@ import org.eclipse.xtext.common.types.JvmGenericType
 import java.util.Optional
 import blang.inits.Arg
 import blang.core.ModelBuilder
+import java.lang.reflect.Type
+import java.lang.reflect.ParameterizedType
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -360,35 +362,12 @@ class SingleBlangModelInferrer {
   
   def private List<ConstructorArgument> constructorParameters(InstantiatedDistribution distribution) {
     try { return _constructorParametersFromXtextIndex(distribution) } catch (Exception e) { e.printStackTrace }
-//    try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) { e.printStackTrace }
+    try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) { e.printStackTrace }
     return null   // TODO: error handling
   }
   
-  def private <T> T first(Iterable<T> iterable) {
-    if (iterable.size() != 1) {
-      System.err.println("Warning: number of matches was expected to be 1, found: " + iterable.size()) // TODO: make this more robust
-      System.err.println(iterable)
-    }
-    return iterable.iterator().next()
-  }
-  
   def private List<ConstructorArgument> _constructorParametersFromXtextIndex(InstantiatedDistribution distribution) {
-    val IResourceDescriptions descriptions = index.getResourceDescriptions(distribution.eResource.resourceSet)
-    
-//    // Get qualified name
-//    distribution.distributionType.
-//    val QualifiedName qualName = qualNameConverter.toQualifiedName(distribution.distributionType.qualifiedName)
-//    
-//    // get URI using the index
-//    val IEObjectDescription objectDescription = first(descriptions.getExportedObjects(distribution.distributionType.eClass, qualName, false))
-//    val uri = URI.createURI(objectDescription.EObjectURI.toString().replaceFirst("[.]bl[#].*", ".bl"))
-//    
-//    // load object if possible
-//    val Resource resource = distribution.eResource.resourceSet.getResource(uri, false)
-//    val BlangModel model = first(resource.contents.filter[it instanceof BlangModel]) as BlangModel
-
     val BlangModel model = distribution.distributionType
-    
     // infer constructor ordering
     val List<ConstructorArgument> result = new ArrayList
     val VariableType[] order = #[VariableType.RANDOM, VariableType.PARAM]
@@ -403,46 +382,48 @@ class SingleBlangModelInferrer {
     }
     return result
   }
+
+  def private List<ConstructorArgument> _constructorParametersFromJavaObject(InstantiatedDistribution distribution) {
+    val Class<?> distributionClass = Class.forName(StaticUtils::fullyQualifiedNameString(distribution.distributionType))
+    val Constructor<?> constructor = {
+      val Constructor<?>[] constructors = distributionClass.constructors
+      if (constructors.size() !== 1) {
+        throw new RuntimeException
+      }
+      constructors.get(0)
+    }
+    val List<ConstructorArgument> result = new ArrayList
+    for (Parameter parameter : constructor.parameters) {
+      var isParam = false
+      for (Annotation annotation : parameter.annotations) {
+        if (annotation.annotationType == Param) {
+          isParam = true
+        }
+      }
+      val JvmTypeReference typeRef = 
+        if (isParam)
+          extractSupplierType(parameter)
+        else 
+          typeRef(parameter.getType())
+          
+      val ConstructorArgument argument = new ConstructorArgument(typeRef, isParam)
+      result.add(argument)
+    }
+    return result
+  }
   
-//  def private List<ConstructorArgument> _constructorParametersFromJavaObject(InstantiatedDistribution distribution) {
-//    val Class<?> distributionClass = Class.forName(distribution.distributionType.identifier)
-//    val Constructor<?> constructor = {
-//      val Constructor<?>[] constructors = distributionClass.constructors
-//      if (constructors.size() !== 1) {
-//        throw new RuntimeException
-//      }
-//      constructors.get(0)
-//    }
-//    val List<ConstructorArgument> result = new ArrayList
-//    for (Parameter parameter : constructor.parameters) {
-//      var isParam = false
-//      for (Annotation annotation : parameter.annotations) {
-//        if (annotation.annotationType == Param) {
-//          isParam = true
-//        }
-//      }
-//      val JvmTypeReference typeRef = 
-//        if (isParam)
-//          extractSupplierType(parameter.getType())
-//        else 
-//          typeRef(parameter.getType())
-//          
-//      val ConstructorArgument argument = new ConstructorArgument(typeRef, isParam)
-//      result.add(argument)
-//    }
-//    return result
-//  }
-  
-  def JvmTypeReference extractSupplierType(Class<?> supplier) {
-    if (!Supplier.isAssignableFrom(supplier)) {
+  def JvmTypeReference extractSupplierType(Parameter supplier) {
+    if (!Supplier.isAssignableFrom(supplier.getType())) {
       throw new RuntimeException
     }
-    for (Method method : supplier.methods) {
-      if (method.name === "get") {
-        return typeRef(method.returnType)
-      }
+    
+    val supplierType = supplier.parameterizedType as ParameterizedType
+    val Type[] supplierTypeArgs = supplierType.actualTypeArguments
+    if (supplierTypeArgs.length != 1) {
+        throw new RuntimeException("Supplier must have exactly one type argument: " + supplierType)
     }
-    throw new RuntimeException
+    
+    return typeRef(supplierTypeArgs.get(0).typeName)
   }
   
   @Data

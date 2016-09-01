@@ -11,6 +11,7 @@ import org.eclipse.xtend2.lib.StringConcatenationClient
 import org.eclipse.xtend2.lib.StringConcatenation
 import java.lang.reflect.Field
 import org.eclipse.xtext.util.Strings
+import ca.ubc.stat.blang.blangDsl.BlangModel
 
 class StaticUtils {
   
@@ -66,5 +67,15 @@ class StaticUtils {
 	
 	def static String getterName(String fieldName) {
     return ("get" + Strings.toFirstUpper(fieldName));
+	}
+	
+	def static String fullyQualifiedNameString(BlangModel model) {
+	  val String prefix = 
+      if (model.package.nullOrEmpty) {
+        ""
+      } else {
+        model.package
+      }
+	  return prefix + model.name
 	}
 }
