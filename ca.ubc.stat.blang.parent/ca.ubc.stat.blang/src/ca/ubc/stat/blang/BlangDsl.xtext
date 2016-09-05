@@ -73,11 +73,23 @@ InstantiatedDistribution:
 	// dependencies on other variables
 	('|' (dependencies += Dependency) (',' dependencies += Dependency)* )?  
 	// type of the distribution
-	'~' distributionType = [BlangModel|QualifiedName] 
+	'~' typeSpec = DistributionTypeSpecification //distributionType = [BlangModel|QualifiedName] 
 	// arguments in the constructor of the distribution
 	'('
 	  ( (arguments += XExpression) ( ',' arguments += XExpression)* )?
 	')'
+;
+
+DistributionTypeSpecification:
+  'blang.javafactors.' JavaDist  |  BlangDist
+;
+
+BlangDist:
+  distributionType = [BlangModel|QualifiedName]
+;
+
+JavaDist:
+  distributionType = QualifiedName
 ;
 
 Dependency:

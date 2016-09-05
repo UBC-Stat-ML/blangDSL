@@ -53,6 +53,8 @@ import blang.core.ModelBuilder
 import java.lang.reflect.Type
 import java.lang.reflect.ParameterizedType
 import blang.core.SamplerTypes
+import ca.ubc.stat.blang.blangDsl.BlangDist
+import ca.ubc.stat.blang.blangDsl.JavaDist
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -340,12 +342,28 @@ class SingleBlangModelInferrer {
     return '''«xExpressions.process_via_constructionOfAnotherType(indic.contents.factorBody, scope, typeRef(Boolean), typeRef(SupportFactor))»'''
   }
   
+  def private dispatch String fullyQualifiedName(BlangDist blangDist) {
+    val String prefix = 
+      if (blangDist.distributionType.package == null) {
+        ""
+      } else {
+        blangDist.distributionType.package + "."
+      }
+    return prefix + blangDist.distributionType.name
+  }
+  
+  def private dispatch String fullyQualifiedName(JavaDist javaDist) {
+    return JAVA_FACTORS_PACKAGE + "." + javaDist.distributionType
+  }
+  
+  val public static String JAVA_FACTORS_PACKAGE = "blang.javafactors"
+  
   def private dispatch StringConcatenationClient instantiateFactor(InstantiatedDistribution distribution, BlangScope scope, BlangScope parentScope) {
     // TODO: check # args match!!!
-    val List<ConstructorArgument> constructorArguments = constructorParameters(distribution)
+    val List<ConstructorArgument> constructorArguments = constructorParameters(distribution.typeSpec)
     val int nRandomVariables = constructorArguments.filter[!param].size()  // TODO: exception here; this is null when reference type not found
     return '''
-      new «distribution.distributionType.package».«distribution.distributionType.name»(
+      new «fullyQualifiedName(distribution.typeSpec)»(
         «FOR int index : 0 ..< constructorArguments.size() SEPARATOR ", "»
         «IF constructorArguments.get(index).param»
 «««       For each argument that are param's, generate two methods:
@@ -366,13 +384,7 @@ class SingleBlangModelInferrer {
    * which are random. The following deal with this aspect.
    */
   
-  def private List<ConstructorArgument> constructorParameters(InstantiatedDistribution distribution) {
-    try { return _constructorParametersFromXtextIndex(distribution) } catch (Exception e) { e.printStackTrace }
-    try { return _constructorParametersFromJavaObject(distribution) } catch (Exception e) { e.printStackTrace }
-    return null   // TODO: error handling
-  }
-  
-  def private List<ConstructorArgument> _constructorParametersFromXtextIndex(InstantiatedDistribution distribution) {
+  def private dispatch List<ConstructorArgument> constructorParameters(BlangDist distribution) {
     val BlangModel model = distribution.distributionType
     // infer constructor ordering
     val List<ConstructorArgument> result = new ArrayList
@@ -389,8 +401,8 @@ class SingleBlangModelInferrer {
     return result
   }
 
-  def private List<ConstructorArgument> _constructorParametersFromJavaObject(InstantiatedDistribution distribution) {
-    val Class<?> distributionClass = Class.forName(StaticUtils::fullyQualifiedNameString(distribution.distributionType))
+  def private dispatch List<ConstructorArgument> constructorParameters(JavaDist distribution) {
+    val Class<?> distributionClass = Class.forName(JAVA_FACTORS_PACKAGE + "." + distribution.distributionType)
     val Constructor<?> constructor = {
       val Constructor<?>[] constructors = distributionClass.constructors
       if (constructors.size() !== 1) {
