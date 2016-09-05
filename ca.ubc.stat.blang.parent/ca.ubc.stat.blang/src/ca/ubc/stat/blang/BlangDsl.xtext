@@ -81,7 +81,7 @@ InstantiatedDistribution:
 ;
 
 DistributionTypeSpecification:
-  'blang.javafactors.' JavaDist  |  BlangDist
+  'new' JavaDist  |  BlangDist
 ;
 
 BlangDist:

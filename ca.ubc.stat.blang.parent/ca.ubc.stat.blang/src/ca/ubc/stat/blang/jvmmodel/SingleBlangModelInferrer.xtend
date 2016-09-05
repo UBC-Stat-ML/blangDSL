@@ -353,10 +353,8 @@ class SingleBlangModelInferrer {
   }
   
   def private dispatch String fullyQualifiedName(JavaDist javaDist) {
-    return JAVA_FACTORS_PACKAGE + "." + javaDist.distributionType
+    return javaDist.distributionType
   }
-  
-  val public static String JAVA_FACTORS_PACKAGE = "blang.javafactors"
   
   def private dispatch StringConcatenationClient instantiateFactor(InstantiatedDistribution distribution, BlangScope scope, BlangScope parentScope) {
     // TODO: check # args match!!!
@@ -402,7 +400,7 @@ class SingleBlangModelInferrer {
   }
 
   def private dispatch List<ConstructorArgument> constructorParameters(JavaDist distribution) {
-    val Class<?> distributionClass = Class.forName(JAVA_FACTORS_PACKAGE + "." + distribution.distributionType)
+    val Class<?> distributionClass = Class.forName(distribution.distributionType)
     val Constructor<?> constructor = {
       val Constructor<?>[] constructors = distributionClass.constructors
       if (constructors.size() !== 1) {
