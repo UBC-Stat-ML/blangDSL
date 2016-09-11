@@ -1,4 +1,4 @@
-Running the code
+Running the code [![Build Status](https://travis-ci.org/UBC-Stat-ML/blangDSL.png?branch=master)](https://travis-ci.org/UBC-Stat-ML/blangDSL.png) 
 ================
 
 - import in eclipse as ``Existing project``
