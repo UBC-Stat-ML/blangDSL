@@ -1,6 +1,6 @@
 language: java
 script:
-   - cd ca.ubc.stat.blang.parent && ./gradlew check -i --stacktrace
+   - ./gradlew check -i --stacktrace
 jdk:
   - oraclejdk8
 install: cd ca.ubc.stat.blang.parent && ./gradlew assemble -i --stacktrace
