@@ -18,10 +18,10 @@ class SupportFactorGeneratorTest {
     @Test
     def void supportFactor() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                param Real variance
+                param RealVar variance
                 
                 laws {
                     indicator(variance) variance.doubleValue > 0
@@ -34,9 +34,9 @@ class SupportFactorGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.core.SupportFactor;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -45,11 +45,11 @@ class SupportFactorGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real variance;
+            public RealVar variance;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __variance = variance;
+              final RealVar __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
                 () -> __variance
@@ -58,9 +58,9 @@ class SupportFactorGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__variance;
+          private final Supplier<RealVar> $generated__variance;
           
-          public Real getVariance() {
+          public RealVar getVariance() {
             return $generated__variance.get();
           }
           
@@ -68,7 +68,7 @@ class SupportFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * variance.doubleValue > 0 }
            */
-          private static Boolean $generated__0(final Real variance) {
+          private static Boolean $generated__0(final RealVar variance) {
             double _doubleValue = variance.doubleValue();
             return Boolean.valueOf((_doubleValue > 0));
           }
@@ -77,7 +77,7 @@ class SupportFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * variance.doubleValue > 0 }
            */
-          private static SupportFactor $generated__0_lazy(final Supplier<Real> $generated__variance) {
+          private static SupportFactor $generated__0_lazy(final Supplier<RealVar> $generated__variance) {
             return new SupportFactor(() -> $generated__0($generated__variance.get()));
           }
           
@@ -90,7 +90,7 @@ class SupportFactorGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+          public MyFile(@Param @DeboxedName("variance") final Supplier<RealVar> $generated__variance) {
             this.$generated__variance = $generated__variance;
           }
           
@@ -214,12 +214,12 @@ class SupportFactorGeneratorTest {
     @Test
     def void supportFactorMultiParam() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                param Real mean
+                param RealVar mean
 
-                param Real variance
+                param RealVar variance
                 
                 laws {
                     indicator(mean, variance) { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
@@ -232,9 +232,9 @@ class SupportFactorGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.core.SupportFactor;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -243,15 +243,15 @@ class SupportFactorGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real mean;
+            public RealVar mean;
             
             @Arg
-            public Real variance;
+            public RealVar variance;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __mean = mean;
-              final Real __variance = variance;
+              final RealVar __mean = mean;
+              final RealVar __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
                 () -> __mean, 
@@ -261,16 +261,16 @@ class SupportFactorGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__mean;
+          private final Supplier<RealVar> $generated__mean;
           
-          public Real getMean() {
+          public RealVar getMean() {
             return $generated__mean.get();
           }
           
           @Param
-          private final Supplier<Real> $generated__variance;
+          private final Supplier<RealVar> $generated__variance;
           
-          public Real getVariance() {
+          public RealVar getVariance() {
             return $generated__variance.get();
           }
           
@@ -278,7 +278,7 @@ class SupportFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
            */
-          private static Boolean $generated__0(final Real mean, final Real variance) {
+          private static Boolean $generated__0(final RealVar mean, final RealVar variance) {
             return Boolean.valueOf(((mean.doubleValue() > 0.5) && (variance.doubleValue() > 0)));
           }
           
@@ -286,7 +286,7 @@ class SupportFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
            */
-          private static SupportFactor $generated__0_lazy(final Supplier<Real> $generated__mean, final Supplier<Real> $generated__variance) {
+          private static SupportFactor $generated__0_lazy(final Supplier<RealVar> $generated__mean, final Supplier<RealVar> $generated__variance) {
             return new SupportFactor(() -> $generated__0($generated__mean.get(), $generated__variance.get()));
           }
           
@@ -299,7 +299,7 @@ class SupportFactorGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+          public MyFile(@Param @DeboxedName("mean") final Supplier<RealVar> $generated__mean, @Param @DeboxedName("variance") final Supplier<RealVar> $generated__variance) {
             this.$generated__mean = $generated__mean;
             this.$generated__variance = $generated__variance;
           }

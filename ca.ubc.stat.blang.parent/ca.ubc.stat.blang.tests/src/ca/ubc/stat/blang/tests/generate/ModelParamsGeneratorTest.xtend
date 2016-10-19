@@ -72,11 +72,11 @@ class ModelParamsGeneratorTest {
     @Test
     def void randomParams() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                random Real mu
-                random Real y
+                random RealVar mu
+                random RealVar y
             }
         '''.assertCompilesTo(
         '''
@@ -84,8 +84,8 @@ class ModelParamsGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         
@@ -93,15 +93,15 @@ class ModelParamsGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real mu;
+            public RealVar mu;
             
             @Arg
-            public Real y;
+            public RealVar y;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __mu = mu;
-              final Real __y = y;
+              final RealVar __mu = mu;
+              final RealVar __y = y;
               // Build the instance after boxing params
               return new MyFile(
                 __mu, 
@@ -110,15 +110,15 @@ class ModelParamsGeneratorTest {
             }
           }
           
-          private final Real mu;
+          private final RealVar mu;
           
-          public Real getMu() {
+          public RealVar getMu() {
             return mu;
           }
           
-          private final Real y;
+          private final RealVar y;
           
-          public Real getY() {
+          public RealVar getY() {
             return y;
           }
           
@@ -131,7 +131,7 @@ class ModelParamsGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@DeboxedName("mu") final Real mu, @DeboxedName("y") final Real y) {
+          public MyFile(@DeboxedName("mu") final RealVar mu, @DeboxedName("y") final RealVar y) {
             this.mu = mu;
             this.y = y;
           }
@@ -155,16 +155,16 @@ class ModelParamsGeneratorTest {
     @Test
     def void normalModelWithNamedParamBlock() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             import ca.ubc.stat.blang.tests.types.Normal
             
             model {
-                param Real mu
+                param RealVar mu
                 
-                random Real y
+                random RealVar y
                 
                 laws {
-                    y | Real mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, [mean.doubleValue ** 2])
+                    y | RealVar mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, [mean.doubleValue ** 2])
                 }
             }
         '''.assertCompilesTo(
@@ -174,8 +174,8 @@ class ModelParamsGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -184,15 +184,15 @@ class ModelParamsGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real mu;
+            public RealVar mu;
             
             @Arg
-            public Real y;
+            public RealVar y;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __mu = mu;
-              final Real __y = y;
+              final RealVar __mu = mu;
+              final RealVar __y = y;
               // Build the instance after boxing params
               return new MyFile(
                 __y, 
@@ -202,15 +202,15 @@ class ModelParamsGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__mu;
+          private final Supplier<RealVar> $generated__mu;
           
-          public Real getMu() {
+          public RealVar getMu() {
             return $generated__mu.get();
           }
           
-          private final Real y;
+          private final RealVar y;
           
-          public Real getY() {
+          public RealVar getY() {
             return y;
           }
           
@@ -218,7 +218,7 @@ class ModelParamsGeneratorTest {
            * Auxiliary method generated to translate:
            * mu
            */
-          private static Real $generated__0(final Real mu, final Real y) {
+          private static RealVar $generated__0(final RealVar mu, final RealVar y) {
             return mu;
           }
           
@@ -226,7 +226,7 @@ class ModelParamsGeneratorTest {
            * Auxiliary method generated to translate:
            * y
            */
-          private static Real $generated__1(final Real mu, final Real y) {
+          private static RealVar $generated__1(final RealVar mu, final RealVar y) {
             return y;
           }
           
@@ -234,7 +234,7 @@ class ModelParamsGeneratorTest {
            * Auxiliary method generated to translate:
            * mean
            */
-          private static Real $generated__2(final Real mean) {
+          private static RealVar $generated__2(final RealVar mean) {
             return mean;
           }
           
@@ -242,7 +242,7 @@ class ModelParamsGeneratorTest {
            * Auxiliary method generated to translate:
            * mean
            */
-          private static Supplier<Real> $generated__2_lazy(final Real mean) {
+          private static Supplier<RealVar> $generated__2_lazy(final RealVar mean) {
             return () -> $generated__2(mean);
           }
           
@@ -250,8 +250,8 @@ class ModelParamsGeneratorTest {
            * Auxiliary method generated to translate:
            * [mean.doubleValue ** 2]
            */
-          private static Real $generated__3(final Real mean) {
-            final Real _function = new Real() {
+          private static RealVar $generated__3(final RealVar mean) {
+            final RealVar _function = new RealVar() {
               public double doubleValue() {
                 double _doubleValue = mean.doubleValue();
                 return Math.pow(_doubleValue, 2);
@@ -264,7 +264,7 @@ class ModelParamsGeneratorTest {
            * Auxiliary method generated to translate:
            * [mean.doubleValue ** 2]
            */
-          private static Supplier<Real> $generated__3_lazy(final Real mean) {
+          private static Supplier<RealVar> $generated__3_lazy(final RealVar mean) {
             return () -> $generated__3(mean);
           }
           
@@ -277,7 +277,7 @@ class ModelParamsGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@DeboxedName("y") final Real y, @Param @DeboxedName("mu") final Supplier<Real> $generated__mu) {
+          public MyFile(@DeboxedName("y") final RealVar y, @Param @DeboxedName("mu") final Supplier<RealVar> $generated__mu) {
             this.$generated__mu = $generated__mu;
             this.y = y;
           }
@@ -289,9 +289,9 @@ class ModelParamsGeneratorTest {
           public Collection<ModelComponent> components() {
             ArrayList<ModelComponent> components = new ArrayList();
             
-            { // Code generated by: y | Real mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, [mean.doubleValue ** 2])
+            { // Code generated by: y | RealVar mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, [mean.doubleValue ** 2])
               // Required initialization:
-              Real mean = $generated__0($generated__mu.get(), y);
+              RealVar mean = $generated__0($generated__mu.get(), y);
               // Construction and addition of the factor/model:
               components.add(
                 new ca.ubc.stat.blang.tests.types.Normal(

@@ -18,10 +18,10 @@ class LogFactorGeneratorTest {
     @Test
     def void logFactor() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                param Real variance
+                param RealVar variance
                 
                 // TODO: const double LOG2PI = Math.log(2 * Math.PI)
                 laws {
@@ -36,8 +36,8 @@ class LogFactorGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -46,11 +46,11 @@ class LogFactorGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real variance;
+            public RealVar variance;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __variance = variance;
+              final RealVar __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
                 () -> __variance
@@ -59,9 +59,9 @@ class LogFactorGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__variance;
+          private final Supplier<RealVar> $generated__variance;
           
-          public Real getVariance() {
+          public RealVar getVariance() {
             return $generated__variance.get();
           }
           
@@ -69,7 +69,7 @@ class LogFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * { -0.5 * ( Math.log(variance.doubleValue) + Math.log(2 * Math.PI) ) }
            */
-          private static Double $generated__0(final Real variance) {
+          private static Double $generated__0(final RealVar variance) {
             double _doubleValue = variance.doubleValue();
             double _log = Math.log(_doubleValue);
             double _log_1 = Math.log((2 * Math.PI));
@@ -81,7 +81,7 @@ class LogFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * { -0.5 * ( Math.log(variance.doubleValue) + Math.log(2 * Math.PI) ) }
            */
-          private static LogScaleFactor $generated__0_lazy(final Supplier<Real> $generated__variance) {
+          private static LogScaleFactor $generated__0_lazy(final Supplier<RealVar> $generated__variance) {
             return () -> $generated__0($generated__variance.get());
           }
           
@@ -94,7 +94,7 @@ class LogFactorGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+          public MyFile(@Param @DeboxedName("variance") final Supplier<RealVar> $generated__variance) {
             this.$generated__variance = $generated__variance;
           }
           
@@ -123,12 +123,12 @@ class LogFactorGeneratorTest {
     @Test
     def void logFactorMultiParam() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                param Real mean
+                param RealVar mean
                 
-                param Real variance
+                param RealVar variance
                 
                 laws {
                     logf(variance, mean) { -0.5 * mean.doubleValue / variance.doubleValue }
@@ -142,8 +142,8 @@ class LogFactorGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -152,15 +152,15 @@ class LogFactorGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real mean;
+            public RealVar mean;
             
             @Arg
-            public Real variance;
+            public RealVar variance;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __mean = mean;
-              final Real __variance = variance;
+              final RealVar __mean = mean;
+              final RealVar __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
                 () -> __mean, 
@@ -170,16 +170,16 @@ class LogFactorGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__mean;
+          private final Supplier<RealVar> $generated__mean;
           
-          public Real getMean() {
+          public RealVar getMean() {
             return $generated__mean.get();
           }
           
           @Param
-          private final Supplier<Real> $generated__variance;
+          private final Supplier<RealVar> $generated__variance;
           
-          public Real getVariance() {
+          public RealVar getVariance() {
             return $generated__variance.get();
           }
           
@@ -187,7 +187,7 @@ class LogFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * { -0.5 * mean.doubleValue / variance.doubleValue }
            */
-          private static Double $generated__0(final Real variance, final Real mean) {
+          private static Double $generated__0(final RealVar variance, final RealVar mean) {
             double _doubleValue = mean.doubleValue();
             double _multiply = ((-0.5) * _doubleValue);
             double _doubleValue_1 = variance.doubleValue();
@@ -198,7 +198,7 @@ class LogFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * { -0.5 * mean.doubleValue / variance.doubleValue }
            */
-          private static LogScaleFactor $generated__0_lazy(final Supplier<Real> $generated__variance, final Supplier<Real> $generated__mean) {
+          private static LogScaleFactor $generated__0_lazy(final Supplier<RealVar> $generated__variance, final Supplier<RealVar> $generated__mean) {
             return () -> $generated__0($generated__variance.get(), $generated__mean.get());
           }
           
@@ -211,7 +211,7 @@ class LogFactorGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+          public MyFile(@Param @DeboxedName("mean") final Supplier<RealVar> $generated__mean, @Param @DeboxedName("variance") final Supplier<RealVar> $generated__variance) {
             this.$generated__mean = $generated__mean;
             this.$generated__variance = $generated__variance;
           }
@@ -241,14 +241,14 @@ class LogFactorGeneratorTest {
     @Test
     def void logScaleFactorMultiVar() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                param Real mean
+                param RealVar mean
 
-                param Real variance
+                param RealVar variance
                 
-                random Real x
+                random RealVar x
                 
                 laws {
                     logf(x, mean, variance) {
@@ -264,8 +264,8 @@ class LogFactorGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -274,19 +274,19 @@ class LogFactorGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real mean;
+            public RealVar mean;
             
             @Arg
-            public Real variance;
+            public RealVar variance;
             
             @Arg
-            public Real x;
+            public RealVar x;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __mean = mean;
-              final Real __variance = variance;
-              final Real __x = x;
+              final RealVar __mean = mean;
+              final RealVar __variance = variance;
+              final RealVar __x = x;
               // Build the instance after boxing params
               return new MyFile(
                 __x, 
@@ -297,22 +297,22 @@ class LogFactorGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__mean;
+          private final Supplier<RealVar> $generated__mean;
           
-          public Real getMean() {
+          public RealVar getMean() {
             return $generated__mean.get();
           }
           
           @Param
-          private final Supplier<Real> $generated__variance;
+          private final Supplier<RealVar> $generated__variance;
           
-          public Real getVariance() {
+          public RealVar getVariance() {
             return $generated__variance.get();
           }
           
-          private final Real x;
+          private final RealVar x;
           
-          public Real getX() {
+          public RealVar getX() {
             return x;
           }
           
@@ -320,7 +320,7 @@ class LogFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * { -0.5 * (x.doubleValue - mean.doubleValue)**2 / variance.doubleValue }
            */
-          private static Double $generated__0(final Real x, final Real mean, final Real variance) {
+          private static Double $generated__0(final RealVar x, final RealVar mean, final RealVar variance) {
             double _doubleValue = x.doubleValue();
             double _doubleValue_1 = mean.doubleValue();
             double _minus = (_doubleValue - _doubleValue_1);
@@ -334,7 +334,7 @@ class LogFactorGeneratorTest {
            * Auxiliary method generated to translate:
            * { -0.5 * (x.doubleValue - mean.doubleValue)**2 / variance.doubleValue }
            */
-          private static LogScaleFactor $generated__0_lazy(final Real x, final Supplier<Real> $generated__mean, final Supplier<Real> $generated__variance) {
+          private static LogScaleFactor $generated__0_lazy(final RealVar x, final Supplier<RealVar> $generated__mean, final Supplier<RealVar> $generated__variance) {
             return () -> $generated__0(x, $generated__mean.get(), $generated__variance.get());
           }
           
@@ -347,7 +347,7 @@ class LogFactorGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@DeboxedName("x") final Real x, @Param @DeboxedName("mean") final Supplier<Real> $generated__mean, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+          public MyFile(@DeboxedName("x") final RealVar x, @Param @DeboxedName("mean") final Supplier<RealVar> $generated__mean, @Param @DeboxedName("variance") final Supplier<RealVar> $generated__variance) {
             this.$generated__mean = $generated__mean;
             this.$generated__variance = $generated__variance;
             this.x = x;

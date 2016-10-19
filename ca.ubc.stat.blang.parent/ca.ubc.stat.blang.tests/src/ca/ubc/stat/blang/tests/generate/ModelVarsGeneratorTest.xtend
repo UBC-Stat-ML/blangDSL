@@ -71,11 +71,11 @@ class ModelVarsGeneratorTest {
     @Test
     def void randomVars() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                random Real mu
-                random Real y
+                random RealVar mu
+                random RealVar y
             }
         '''.assertCompilesTo(
         '''
@@ -83,8 +83,8 @@ class ModelVarsGeneratorTest {
         import blang.core.Model;
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         
@@ -92,15 +92,15 @@ class ModelVarsGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real mu;
+            public RealVar mu;
             
             @Arg
-            public Real y;
+            public RealVar y;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __mu = mu;
-              final Real __y = y;
+              final RealVar __mu = mu;
+              final RealVar __y = y;
               // Build the instance after boxing params
               return new MyFile(
                 __mu, 
@@ -109,15 +109,15 @@ class ModelVarsGeneratorTest {
             }
           }
           
-          private final Real mu;
+          private final RealVar mu;
           
-          public Real getMu() {
+          public RealVar getMu() {
             return mu;
           }
           
-          private final Real y;
+          private final RealVar y;
           
-          public Real getY() {
+          public RealVar getY() {
             return y;
           }
           
@@ -130,7 +130,7 @@ class ModelVarsGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@DeboxedName("mu") final Real mu, @DeboxedName("y") final Real y) {
+          public MyFile(@DeboxedName("mu") final RealVar mu, @DeboxedName("y") final RealVar y) {
             this.mu = mu;
             this.y = y;
           }
@@ -154,11 +154,11 @@ class ModelVarsGeneratorTest {
     @Test
     def void paramVars() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                param Real mu
-                param Real variance
+                param RealVar mu
+                param RealVar variance
             }
         '''.assertCompilesTo(
         '''
@@ -167,8 +167,8 @@ class ModelVarsGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -177,15 +177,15 @@ class ModelVarsGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real mu;
+            public RealVar mu;
             
             @Arg
-            public Real variance;
+            public RealVar variance;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __mu = mu;
-              final Real __variance = variance;
+              final RealVar __mu = mu;
+              final RealVar __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
                 () -> __mu, 
@@ -195,16 +195,16 @@ class ModelVarsGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__mu;
+          private final Supplier<RealVar> $generated__mu;
           
-          public Real getMu() {
+          public RealVar getMu() {
             return $generated__mu.get();
           }
           
           @Param
-          private final Supplier<Real> $generated__variance;
+          private final Supplier<RealVar> $generated__variance;
           
-          public Real getVariance() {
+          public RealVar getVariance() {
             return $generated__variance.get();
           }
           
@@ -217,7 +217,7 @@ class ModelVarsGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@Param @DeboxedName("mu") final Supplier<Real> $generated__mu, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+          public MyFile(@Param @DeboxedName("mu") final Supplier<RealVar> $generated__mu, @Param @DeboxedName("variance") final Supplier<RealVar> $generated__variance) {
             this.$generated__mu = $generated__mu;
             this.$generated__variance = $generated__variance;
           }
@@ -241,12 +241,12 @@ class ModelVarsGeneratorTest {
     @Test
     def void mixedVars() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model {
-                param Real mu
-                param Real variance
-                random Real y
+                param RealVar mu
+                param RealVar variance
+                random RealVar y
             }
         '''.assertCompilesTo(
         '''
@@ -255,8 +255,8 @@ class ModelVarsGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -265,19 +265,19 @@ class ModelVarsGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real mu;
+            public RealVar mu;
             
             @Arg
-            public Real variance;
+            public RealVar variance;
             
             @Arg
-            public Real y;
+            public RealVar y;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __mu = mu;
-              final Real __variance = variance;
-              final Real __y = y;
+              final RealVar __mu = mu;
+              final RealVar __variance = variance;
+              final RealVar __y = y;
               // Build the instance after boxing params
               return new MyFile(
                 __y, 
@@ -288,22 +288,22 @@ class ModelVarsGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__mu;
+          private final Supplier<RealVar> $generated__mu;
           
-          public Real getMu() {
+          public RealVar getMu() {
             return $generated__mu.get();
           }
           
           @Param
-          private final Supplier<Real> $generated__variance;
+          private final Supplier<RealVar> $generated__variance;
           
-          public Real getVariance() {
+          public RealVar getVariance() {
             return $generated__variance.get();
           }
           
-          private final Real y;
+          private final RealVar y;
           
-          public Real getY() {
+          public RealVar getY() {
             return y;
           }
           
@@ -316,7 +316,7 @@ class ModelVarsGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@DeboxedName("y") final Real y, @Param @DeboxedName("mu") final Supplier<Real> $generated__mu, @Param @DeboxedName("variance") final Supplier<Real> $generated__variance) {
+          public MyFile(@DeboxedName("y") final RealVar y, @Param @DeboxedName("mu") final Supplier<RealVar> $generated__mu, @Param @DeboxedName("variance") final Supplier<RealVar> $generated__variance) {
             this.$generated__mu = $generated__mu;
             this.$generated__variance = $generated__variance;
             this.y = y;

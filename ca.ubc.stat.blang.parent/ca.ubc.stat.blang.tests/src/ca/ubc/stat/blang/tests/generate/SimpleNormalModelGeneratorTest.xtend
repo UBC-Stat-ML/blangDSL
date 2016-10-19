@@ -18,13 +18,13 @@ class SimpleNormalModelGeneratorTest {
     @Test
     def void simpleNormalModel() {
         '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             import ca.ubc.stat.blang.tests.types.Normal
             
             model {
-                param Real m
-                param Real v
-                random Real y
+                param RealVar m
+                param RealVar v
+                random RealVar y
                 
                 laws {
                 	y | m, v ~ new ca.ubc.stat.blang.tests.types.Normal(m, v)
@@ -37,8 +37,8 @@ class SimpleNormalModelGeneratorTest {
         import blang.core.ModelBuilder;
         import blang.core.ModelComponent;
         import blang.core.Param;
+        import blang.core.RealVar;
         import blang.inits.Arg;
-        import ca.ubc.stat.blang.tests.types.Real;
         import java.util.ArrayList;
         import java.util.Collection;
         import java.util.function.Supplier;
@@ -47,19 +47,19 @@ class SimpleNormalModelGeneratorTest {
         public class MyFile implements Model {
           public static class Builder implements ModelBuilder {
             @Arg
-            public Real m;
+            public RealVar m;
             
             @Arg
-            public Real v;
+            public RealVar v;
             
             @Arg
-            public Real y;
+            public RealVar y;
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
-              final Real __m = m;
-              final Real __v = v;
-              final Real __y = y;
+              final RealVar __m = m;
+              final RealVar __v = v;
+              final RealVar __y = y;
               // Build the instance after boxing params
               return new MyFile(
                 __y, 
@@ -70,22 +70,22 @@ class SimpleNormalModelGeneratorTest {
           }
           
           @Param
-          private final Supplier<Real> $generated__m;
+          private final Supplier<RealVar> $generated__m;
           
-          public Real getM() {
+          public RealVar getM() {
             return $generated__m.get();
           }
           
           @Param
-          private final Supplier<Real> $generated__v;
+          private final Supplier<RealVar> $generated__v;
           
-          public Real getV() {
+          public RealVar getV() {
             return $generated__v.get();
           }
           
-          private final Real y;
+          private final RealVar y;
           
-          public Real getY() {
+          public RealVar getY() {
             return y;
           }
           
@@ -93,7 +93,7 @@ class SimpleNormalModelGeneratorTest {
            * Auxiliary method generated to translate:
            * y
            */
-          private static Real $generated__0(final Real m, final Real v, final Real y) {
+          private static RealVar $generated__0(final RealVar m, final RealVar v, final RealVar y) {
             return y;
           }
           
@@ -101,7 +101,7 @@ class SimpleNormalModelGeneratorTest {
            * Auxiliary method generated to translate:
            * m
            */
-          private static Real $generated__1(final Real m, final Real v) {
+          private static RealVar $generated__1(final RealVar m, final RealVar v) {
             return m;
           }
           
@@ -109,7 +109,7 @@ class SimpleNormalModelGeneratorTest {
            * Auxiliary method generated to translate:
            * m
            */
-          private static Supplier<Real> $generated__1_lazy(final Supplier<Real> $generated__m, final Supplier<Real> $generated__v) {
+          private static Supplier<RealVar> $generated__1_lazy(final Supplier<RealVar> $generated__m, final Supplier<RealVar> $generated__v) {
             return () -> $generated__1($generated__m.get(), $generated__v.get());
           }
           
@@ -117,7 +117,7 @@ class SimpleNormalModelGeneratorTest {
            * Auxiliary method generated to translate:
            * v
            */
-          private static Real $generated__2(final Real m, final Real v) {
+          private static RealVar $generated__2(final RealVar m, final RealVar v) {
             return v;
           }
           
@@ -125,7 +125,7 @@ class SimpleNormalModelGeneratorTest {
            * Auxiliary method generated to translate:
            * v
            */
-          private static Supplier<Real> $generated__2_lazy(final Supplier<Real> $generated__m, final Supplier<Real> $generated__v) {
+          private static Supplier<RealVar> $generated__2_lazy(final Supplier<RealVar> $generated__m, final Supplier<RealVar> $generated__v) {
             return () -> $generated__2($generated__m.get(), $generated__v.get());
           }
           
@@ -138,7 +138,7 @@ class SimpleNormalModelGeneratorTest {
            *     - second, all the params in the order they occur in the blang file
            * 
            */
-          public MyFile(@DeboxedName("y") final Real y, @Param @DeboxedName("m") final Supplier<Real> $generated__m, @Param @DeboxedName("v") final Supplier<Real> $generated__v) {
+          public MyFile(@DeboxedName("y") final RealVar y, @Param @DeboxedName("m") final Supplier<RealVar> $generated__m, @Param @DeboxedName("v") final Supplier<RealVar> $generated__v) {
             this.$generated__m = $generated__m;
             this.$generated__v = $generated__v;
             this.y = y;

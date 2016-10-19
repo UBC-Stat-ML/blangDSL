@@ -59,11 +59,11 @@ class BlangDslParsingTest {
 	@Test
 	def void randomNoDependencies() {
 		val model = '''
-			import ca.ubc.stat.blang.tests.types.Real
+			import blang.core.RealVar
 			import ca.ubc.stat.blang.tests.types.Normal
 			
 			model RandomNoDependencies {
-				random Real mu, y
+				random RealVar mu, y
 				
 				laws {
 					y ~ new ca.ubc.stat.blang.tests.types.Normal([0], [1])
@@ -76,15 +76,15 @@ class BlangDslParsingTest {
     @Test
     def void randomOneDependency() {
         val model = '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             import ca.ubc.stat.blang.tests.types.Normal
             
             model RandomOneDependency {
-                random Real mu
-                random Real y
+                random RealVar mu
+                random RealVar y
                 
                 laws {
-                    y | Real mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, [mean.doubleValue * 2])
+                    y | RealVar mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, [mean.doubleValue * 2])
                 }
             }
         '''.parse
@@ -94,16 +94,16 @@ class BlangDslParsingTest {
     @Test
     def void randomMultiDependencies() {
         val model = '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             import ca.ubc.stat.blang.tests.types.Normal
             
             model RandomMultiDependencies {
-                random Real y
-                param Real test1
-                param Real test2
+                random RealVar y
+                param RealVar test1
+                param RealVar test2
                 
                 laws {
-                    y | Real t1 = test1, Real t2 = test2 ~ new ca.ubc.stat.blang.tests.types.Normal(t1, t2)
+                    y | RealVar t1 = test1, RealVar t2 = test2 ~ new ca.ubc.stat.blang.tests.types.Normal(t1, t2)
                 }
             }
         '''.parse
@@ -113,10 +113,10 @@ class BlangDslParsingTest {
     @Test
     def void supportFactor() {
         val model = '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model SupportFactor {
-                param Real variance
+                param RealVar variance
                 
                 laws {
                     indicator(variance) { variance.doubleValue > 0 }
@@ -129,12 +129,12 @@ class BlangDslParsingTest {
     @Test
     def void supportFactorMultiParam() {
         val model = '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model SupportFactorMultiParam {
-                param Real mean
+                param RealVar mean
 
-                param Real variance
+                param RealVar variance
                 
                 laws {
                     indicator(mean, variance) { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
@@ -147,12 +147,12 @@ class BlangDslParsingTest {
     @Test
     def void logFactor() {
         val model = '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model LogFactor {
-                param Real mean
+                param RealVar mean
                 
-                param Real variance
+                param RealVar variance
                 
                 // const double LOG2PI = Math.log(2 * Math.PI)
                 
@@ -167,12 +167,12 @@ class BlangDslParsingTest {
     @Test
     def void logFactorMultiParam() {
         val model = '''
-            import ca.ubc.stat.blang.tests.types.Real
+            import blang.core.RealVar
             
             model LogFactorMultiParam {
-                param Real mean
+                param RealVar mean
                 
-                param Real variance
+                param RealVar variance
                 
                 laws {
                     logf(variance, mean) { -0.5 * mean.doubleValue / variance.doubleValue }
