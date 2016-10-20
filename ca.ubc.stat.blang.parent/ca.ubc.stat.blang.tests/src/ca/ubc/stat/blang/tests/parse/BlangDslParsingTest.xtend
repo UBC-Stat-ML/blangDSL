@@ -119,7 +119,7 @@ class BlangDslParsingTest {
                 param RealVar variance
                 
                 laws {
-                    indicator(variance) { variance.doubleValue > 0 }
+                    indicator(variance) { variance > 0 }
                 }
             }
         '''.parse
@@ -137,7 +137,7 @@ class BlangDslParsingTest {
                 param RealVar variance
                 
                 laws {
-                    indicator(mean, variance) { mean.doubleValue > 0.5 && variance.doubleValue > 0 }
+                    indicator(mean, variance) { mean > 0.5 && variance > 0 }
                 }
             }
         '''.parse
@@ -157,7 +157,7 @@ class BlangDslParsingTest {
                 // const double LOG2PI = Math.log(2 * Math.PI)
                 
                 laws {
-                    logf(variance) { -0.5 * ( Math.log(variance.doubleValue) + /* LOG2PI */ Math.log(2 * Math.PI)) }
+                    logf(variance) { -0.5 * ( Math.log(variance) + /* LOG2PI */ Math.log(2 * Math.PI)) }
                 }
             }
         '''.parse
@@ -175,7 +175,7 @@ class BlangDslParsingTest {
                 param RealVar variance
                 
                 laws {
-                    logf(variance, mean) { -0.5 * mean.doubleValue / variance.doubleValue }
+                    logf(variance, mean) { -0.5 * mean / variance }
                 }
             }
         '''.parse

@@ -25,7 +25,7 @@ class LogFactorGeneratorTest {
                 
                 // TODO: const double LOG2PI = Math.log(2 * Math.PI)
                 laws {
-                    logf(variance) { -0.5 * ( Math.log(variance.doubleValue) + /* LOG2PI */ Math.log(2 * Math.PI) ) }
+                    logf(variance) { -0.5 * ( Math.log(variance) + /* LOG2PI */ Math.log(2 * Math.PI) ) }
                 }
             }
         '''.assertCompilesTo(
