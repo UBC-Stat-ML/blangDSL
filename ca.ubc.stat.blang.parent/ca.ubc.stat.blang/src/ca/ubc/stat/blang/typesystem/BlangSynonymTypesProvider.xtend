@@ -7,12 +7,16 @@ import org.eclipse.xtext.xbase.typesystem.references.ITypeReferenceOwner
 import org.eclipse.xtext.xbase.typesystem.references.LightweightTypeReference
 import org.eclipse.xtext.xbase.typesystem.references.ParameterizedTypeReference
 import org.eclipse.xtext.xbase.typesystem.conformance.ConformanceFlags
+import ca.ubc.stat.blang.compiler.BlangXbaseCompiler
 
 class BlangSynonymTypesProvider extends SynonymTypesProvider {
     
     override protected boolean collectCustomSynonymTypes(LightweightTypeReference type, Acceptor acceptor) {
-        if (type.invariantBoundSubstitute.isType(RealVar)) {
-            return announceModelType(type.owner, "java.lang.Double", acceptor)
+        val synonyms = BlangXbaseCompiler.typeConversionMap.get(type.identifier)
+        if (synonyms != null) {
+            return synonyms.keySet.fold(true,
+                [rc, synonym | announceModelType(type.owner, synonym, acceptor)]
+            )
         }
         super.collectCustomSynonymTypes(type, acceptor)
     }

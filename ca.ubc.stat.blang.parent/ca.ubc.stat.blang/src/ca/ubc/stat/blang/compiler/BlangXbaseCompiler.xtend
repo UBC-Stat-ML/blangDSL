@@ -1,16 +1,32 @@
 package ca.ubc.stat.blang.compiler
 
-import org.eclipse.xtext.xbase.compiler.XbaseCompiler
-import org.eclipse.xtext.xbase.XExpression
-import org.eclipse.xtext.xbase.compiler.output.ITreeAppendable
-import org.eclipse.xtext.xbase.typesystem.references.LightweightTypeReference
-import org.eclipse.xtext.xbase.XAbstractFeatureCall
 import org.eclipse.xtext.common.types.JvmIdentifiableElement
 import org.eclipse.xtext.common.types.JvmOperation
+import org.eclipse.xtext.xbase.XAbstractFeatureCall
+import org.eclipse.xtext.xbase.XExpression
 import org.eclipse.xtext.xbase.compiler.Later
-import blang.core.RealVar
+import org.eclipse.xtext.xbase.compiler.XbaseCompiler
+import org.eclipse.xtext.xbase.compiler.output.ITreeAppendable
+import org.eclipse.xtext.xbase.typesystem.references.LightweightTypeReference
 
 class BlangXbaseCompiler extends XbaseCompiler {
+
+    /**
+     * Map of available type conversions. It works in two steps: sourceType -> targetType -> converter.
+     * Converters are lambdas taking two arguments, {@link Later} and {@link ITreeAppendable}, as given to {@link #doConversion()}
+     */
+    public static val typeConversionMap = newHashMap(
+        'blang.core.RealVar' -> newHashMap(
+            'double' -> unbox('doubleValue()')),
+        'double' -> newHashMap(
+            'blang.core.IntVar' -> box(),
+            'blang.core.RealVar' -> box()),
+        'blang.core.IntVar' -> newHashMap(
+            'int' -> unbox('intValue()')),
+        'int' -> newHashMap(
+            'blang.core.IntVar' -> box(),
+            'blang.core.RealVar' -> box())
+    )
 
     override protected doConversion(
         LightweightTypeReference left,
@@ -19,33 +35,37 @@ class BlangXbaseCompiler extends XbaseCompiler {
         XExpression context,
         Later expression
     ) {
-        if (right.isType(RealVar) && left.isType(double)) {
+        val targetMap = typeConversionMap.get(right.identifier)
+        val converter = targetMap?.get(left.identifier)
+        if (converter != null) {
             // this code is lifted from {@link org.eclipse.xtext.xbase.compiler.TypeConvertingCompiler#convertWrapperToPrimitive}
             val XExpression normalized = normalizeBlockExpression(context);
-            if (normalized instanceof XAbstractFeatureCall &&
-                !(context.eContainer() instanceof XAbstractFeatureCall)) {
-                // Avoid javac bug
-                // https://bugs.eclipse.org/bugs/show_bug.cgi?id=410797
-                // TODO make that dependent on the compiler version (javac 1.7 fixed that bug)
-                val XAbstractFeatureCall featureCall = normalized as XAbstractFeatureCall;
-                if (featureCall.isStatic()) {
-                    val JvmIdentifiableElement feature = featureCall.getFeature();
-                    if (feature instanceof JvmOperation) {
-                        if (!(feature as JvmOperation).getTypeParameters().isEmpty()) {
-                            appendable.append("(double)");
-                            expression.exec(appendable);
-                            return;
-                        }
-                    }
-                }
-            }
+            converter.apply(expression, appendable)
+        } else
+            super.doConversion(left, right, appendable, context, expression)
+    }
+
+    /**
+     * Helper that returns a lambda that compiles the unboxing conversion using the {@code method}.
+     */
+    private static def unbox(String method) {
+        [ Later expression, ITreeAppendable appendable |
             appendable.append("(");
             expression.exec(appendable);
             appendable.append(")");
             appendable.append(".");
-            appendable.append("doubleValue()");
-        }
-        else super.doConversion(left, right, appendable, context, expression)
+            appendable.append(method)
+        ]
     }
     
+    /**
+     * Helper that returns a lambda that compiles the boxing conversion to the lazy value.
+     */
+    private static def box() {
+        [ Later expression, ITreeAppendable appendable |
+            appendable.append("() -> (");
+            expression.exec(appendable);
+            appendable.append(")");
+        ]
+    }
 }

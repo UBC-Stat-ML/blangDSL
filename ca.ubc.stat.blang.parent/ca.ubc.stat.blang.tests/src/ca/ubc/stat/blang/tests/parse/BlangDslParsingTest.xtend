@@ -66,7 +66,7 @@ class BlangDslParsingTest {
 				random RealVar mu, y
 				
 				laws {
-					y ~ new ca.ubc.stat.blang.tests.types.Normal([0], [1])
+					y ~ new ca.ubc.stat.blang.tests.types.Normal(0, 1)
 				}
 			}
 		'''.parse
@@ -84,7 +84,7 @@ class BlangDslParsingTest {
                 random RealVar y
                 
                 laws {
-                    y | RealVar mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, [mean.doubleValue * 2])
+                    y | RealVar mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, mean.doubleValue * 2)
                 }
             }
         '''.parse
