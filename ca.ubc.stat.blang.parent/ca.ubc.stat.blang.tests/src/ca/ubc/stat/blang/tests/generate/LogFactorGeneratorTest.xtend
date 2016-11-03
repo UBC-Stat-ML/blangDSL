@@ -50,9 +50,10 @@ class LogFactorGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Real __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
-                () -> variance
+                () -> __variance
               );
             }
           }
@@ -158,10 +159,12 @@ class LogFactorGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Real __mean = mean;
+              final Real __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
-                () -> mean, 
-                () -> variance
+                () -> __mean, 
+                () -> __variance
               );
             }
           }
@@ -281,11 +284,14 @@ class LogFactorGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Real __mean = mean;
+              final Real __variance = variance;
+              final Real __x = x;
               // Build the instance after boxing params
               return new MyFile(
-                x, 
-                () -> mean, 
-                () -> variance
+                __x, 
+                () -> __mean, 
+                () -> __variance
               );
             }
           }

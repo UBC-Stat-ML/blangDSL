@@ -24,7 +24,7 @@ class BlangDslParsingTest {
 	@Test 
 	def void emptyModel() {
 		val model = '''
-			model {
+			model Empty {
 				
 			}
 		'''.parse
@@ -37,7 +37,7 @@ class BlangDslParsingTest {
 	 */
 	def void arithmeticOperations() {
 	  val model = '''
-	    model {
+	    model ArithmeticOperations {
 	      param Object test
 	      laws {
 	        logf(test) { 1.0 + 1.0 }
@@ -62,11 +62,11 @@ class BlangDslParsingTest {
 			import ca.ubc.stat.blang.tests.types.Real
 			import ca.ubc.stat.blang.tests.types.Normal
 			
-			model {
+			model RandomNoDependencies {
 				random Real mu, y
 				
 				laws {
-					y ~ Normal([0], [1])
+					y ~ new ca.ubc.stat.blang.tests.types.Normal([0], [1])
 				}
 			}
 		'''.parse
@@ -79,12 +79,12 @@ class BlangDslParsingTest {
             import ca.ubc.stat.blang.tests.types.Real
             import ca.ubc.stat.blang.tests.types.Normal
             
-            model {
+            model RandomOneDependency {
                 random Real mu
                 random Real y
                 
                 laws {
-                    y | Real mean = mu ~ Normal(mean, [mean.doubleValue * 2])
+                    y | Real mean = mu ~ new ca.ubc.stat.blang.tests.types.Normal(mean, [mean.doubleValue * 2])
                 }
             }
         '''.parse
@@ -97,13 +97,13 @@ class BlangDslParsingTest {
             import ca.ubc.stat.blang.tests.types.Real
             import ca.ubc.stat.blang.tests.types.Normal
             
-            model {
+            model RandomMultiDependencies {
                 random Real y
                 param Real test1
                 param Real test2
                 
                 laws {
-                    y | Real t1 = test1, Real t2 = test2 ~ Normal(t1, t2)
+                    y | Real t1 = test1, Real t2 = test2 ~ new ca.ubc.stat.blang.tests.types.Normal(t1, t2)
                 }
             }
         '''.parse
@@ -115,7 +115,7 @@ class BlangDslParsingTest {
         val model = '''
             import ca.ubc.stat.blang.tests.types.Real
             
-            model {
+            model SupportFactor {
                 param Real variance
                 
                 laws {
@@ -131,7 +131,7 @@ class BlangDslParsingTest {
         val model = '''
             import ca.ubc.stat.blang.tests.types.Real
             
-            model {
+            model SupportFactorMultiParam {
                 param Real mean
 
                 param Real variance
@@ -149,7 +149,7 @@ class BlangDslParsingTest {
         val model = '''
             import ca.ubc.stat.blang.tests.types.Real
             
-            model {
+            model LogFactor {
                 param Real mean
                 
                 param Real variance
@@ -169,7 +169,7 @@ class BlangDslParsingTest {
         val model = '''
             import ca.ubc.stat.blang.tests.types.Real
             
-            model {
+            model LogFactorMultiParam {
                 param Real mean
                 
                 param Real variance
@@ -185,7 +185,7 @@ class BlangDslParsingTest {
     @Test
     def void forLoop() {
     val model = '''
-        model {
+        model ForLoop {
             random java.util.Random rand
             
             laws {

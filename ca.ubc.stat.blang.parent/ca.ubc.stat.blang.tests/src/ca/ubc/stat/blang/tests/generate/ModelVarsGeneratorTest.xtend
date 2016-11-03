@@ -99,10 +99,12 @@ class ModelVarsGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Real __mu = mu;
+              final Real __y = y;
               // Build the instance after boxing params
               return new MyFile(
-                mu, 
-                y
+                __mu, 
+                __y
               );
             }
           }
@@ -182,10 +184,12 @@ class ModelVarsGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Real __mu = mu;
+              final Real __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
-                () -> mu, 
-                () -> variance
+                () -> __mu, 
+                () -> __variance
               );
             }
           }
@@ -271,11 +275,14 @@ class ModelVarsGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Real __mu = mu;
+              final Real __variance = variance;
+              final Real __y = y;
               // Build the instance after boxing params
               return new MyFile(
-                y, 
-                () -> mu, 
-                () -> variance
+                __y, 
+                () -> __mu, 
+                () -> __variance
               );
             }
           }

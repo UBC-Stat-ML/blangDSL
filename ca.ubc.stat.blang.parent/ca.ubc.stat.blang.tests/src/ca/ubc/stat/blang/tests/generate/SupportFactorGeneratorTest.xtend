@@ -49,9 +49,10 @@ class SupportFactorGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Real __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
-                () -> variance
+                () -> __variance
               );
             }
           }
@@ -145,9 +146,10 @@ class SupportFactorGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Random __rand = rand;
               // Build the instance after boxing params
               return new MyFile(
-                rand
+                __rand
               );
             }
           }
@@ -248,10 +250,12 @@ class SupportFactorGeneratorTest {
             
             public MyFile build() {
               // For each optional type, either get the value, or evaluate the ?: expression
+              final Real __mean = mean;
+              final Real __variance = variance;
               // Build the instance after boxing params
               return new MyFile(
-                () -> mean, 
-                () -> variance
+                () -> __mean, 
+                () -> __variance
               );
             }
           }
