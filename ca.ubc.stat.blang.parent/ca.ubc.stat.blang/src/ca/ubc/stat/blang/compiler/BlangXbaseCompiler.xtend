@@ -38,8 +38,6 @@ class BlangXbaseCompiler extends XbaseCompiler {
         val targetMap = typeConversionMap.get(right.identifier)
         val converter = targetMap?.get(left.identifier)
         if (converter != null) {
-            // this code is lifted from {@link org.eclipse.xtext.xbase.compiler.TypeConvertingCompiler#convertWrapperToPrimitive}
-            val XExpression normalized = normalizeBlockExpression(context);
             converter.apply(expression, appendable)
         } else
             super.doConversion(left, right, appendable, context, expression)
