@@ -89,7 +89,7 @@ BlangDist:
 ;
 
 JavaDist:
-  distributionType = QualifiedName
+  distributionType = JvmTypeReference
 ;
 
 Dependency:
