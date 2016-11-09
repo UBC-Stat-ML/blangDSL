@@ -19,9 +19,9 @@ class BlangXbaseCompiler extends XbaseCompiler {
         'blang.core.RealVar' -> newHashMap(
             'double' -> unbox('doubleValue()')),
         'double' -> newHashMap(
-            'blang.core.IntVar' -> box(),
             'blang.core.RealVar' -> box()),
         'blang.core.IntVar' -> newHashMap(
+            'double' -> unbox('doubleValue()'),
             'int' -> unbox('intValue()')),
         'int' -> newHashMap(
             'blang.core.IntVar' -> box(),
