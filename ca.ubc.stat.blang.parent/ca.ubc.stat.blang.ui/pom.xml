@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>ca.ubc.stat.blang</groupId>
 		<artifactId>ca.ubc.stat.blang.parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>3.8.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>ca.ubc.stat.blang.ui</artifactId>
 	<packaging>eclipse-plugin</packaging>
