@@ -20,8 +20,6 @@
 		<module>ca.ubc.stat.blang.target</module>
 		<module>ca.ubc.stat.blang.feature</module>
 		<module>ca.ubc.stat.blang.repository</module>
-		<module>ca.ubc.stat.blang.tests</module>
-		<module>ca.ubc.stat.blang.ui.tests</module>
 	</modules>
 	<build>
 		<plugins>
