@@ -47,7 +47,6 @@ import org.eclipse.xtext.resource.IResourceDescriptionsProvider
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import blang.core.ModelBase
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -98,7 +97,6 @@ class SingleBlangModelInferrer {
     for (annotation : model.annotations) {
       output.annotations += annotationRef(SamplerTypes, annotation.arguments)
     }
-    output.superTypes += typeRef(ModelBase)
     output.superTypes += typeRef(Model)
   }
   
