@@ -13,7 +13,9 @@ class ImplicitImportsScopeProvider extends org.eclipse.xtext.xbase.scoping.XImpo
       addPack("blang", "core")
       addPack("blang", "types")
       addPack("blang", "distributions")
+      addPack("blang", "mcmc")
       addPack("java",  "util")
+      addPack("xlinear")
     ]
     return normalizers;
   }
