@@ -16,7 +16,7 @@ public class StaticJavaUtils
       }
       modifiedArgs[args.length] = "--model";
       modifiedArgs[args.length + 1] = modelBuilderClass.getName();
-      mainMethod.invoke(null, modifiedArgs);
+      mainMethod.invoke(null, new Object[]{modifiedArgs});
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
