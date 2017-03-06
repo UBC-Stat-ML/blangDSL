@@ -10,7 +10,7 @@ public class StaticJavaUtils
     try {
       Class<?> runnerClass = Class.forName("blang.runtime.Runner");
       Method mainMethod = runnerClass.getMethod("main", String[].class);
-      Object [] modifiedArgs = new Object[args.length + 2];
+      String [] modifiedArgs = new String[args.length + 2];
       for (int i = 0; i < args.length; i++) {
         modifiedArgs[i] = args[i];
       }
