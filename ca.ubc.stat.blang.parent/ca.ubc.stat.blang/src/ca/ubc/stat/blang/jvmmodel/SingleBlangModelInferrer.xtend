@@ -47,6 +47,7 @@ import org.eclipse.xtext.resource.IResourceDescriptionsProvider
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
+import ca.ubc.stat.blang.StaticJavaUtils
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -75,6 +76,7 @@ class SingleBlangModelInferrer {
     setupClass()
     val JvmGenericType builderOutput = setupBuilder()
     val BlangScope globalScope = setupVariables(builderOutput)
+    setupMain(builderOutput)
     // This first call to the method bodies involving XExpression (below) 
     // will only generate the auxiliary methods needed 
     // by the XExpressionProcessor machinery. 
@@ -88,6 +90,19 @@ class SingleBlangModelInferrer {
     generateConstructor(globalScope)
     generateBuilder(globalScope, builderOutput)
     generateComponentsMethod(globalScope)
+  } 
+  
+  def setupMain(JvmGenericType type) {
+    val main = model.toMethod("main", typeRef(Void.TYPE)) [
+      documentation = '''Utility main method for posterior inference on this model'''
+      val String paramName = "arguments"
+      parameters += model.toParameter(paramName, typeRef(StaticJavaUtils.STRING_ARRAY))
+      body = '''
+        «typeRef(StaticJavaUtils)».callRunner(«BUILDER_NAME».class, «paramName»);
+      ''' 
+    ]
+    main.static = true
+    output.members += main
   }
   
   def private void setupClass() { 

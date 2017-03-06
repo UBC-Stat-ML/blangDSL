@@ -25,7 +25,7 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
     @Inject extension IResourceDescriptionsProvider _irdProvider
     
     @Inject IQualifiedNameConverter qualNameConverter
-
+    
     /**
      * The dispatch method {@code infer} is called for each instance of the
      * given element's type that is contained in a resource.
