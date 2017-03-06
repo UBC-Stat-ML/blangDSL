@@ -14,3 +14,4 @@ ca.ubc.stat.blang.parent/ca.ubc.stat.blang.tests/build
 ca.ubc.stat.blang.parent/ca.ubc.stat.blang/build
 BlangDslParsingTest.xtend
 ca.ubc.stat.blang.parent/ca.ubc.stat.blang.web/build
+ca.ubc.stat.blang.parent/ca.ubc.stat.blang.tests/actuals
