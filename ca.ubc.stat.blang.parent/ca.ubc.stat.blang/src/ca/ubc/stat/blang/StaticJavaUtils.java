@@ -7,7 +7,7 @@ import blang.core.ModelBuilder;
 
 public class StaticJavaUtils
 {
-  public static void callRunner(Class<ModelBuilder> modelBuilderClass, String [] args) throws 
+  public static void callRunner(Class<? extends ModelBuilder> modelBuilderClass, String [] args) throws 
       ClassNotFoundException, 
       NoSuchMethodException, 
       SecurityException, 
