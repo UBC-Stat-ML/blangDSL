@@ -12,9 +12,11 @@ BlangModel:
 	'model' name=ID '{'
     (variableDeclarations += VariableDeclaration)*
     'laws' '{' (lawNodes += LawNode)* '}'
+    ('generate' '(' generationRandom = ValidID ')' generationAlgorithm = XBlockExpression )?
     (variableDeclarations += VariableDeclaration)*
 	'}'
 ;
+
 
 // note: we are avoiding XbaseWithAnnotation since it created a problem 
 // indirectly (see Issue #24 in blangSDK)

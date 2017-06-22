@@ -48,6 +48,12 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import ca.ubc.stat.blang.StaticJavaUtils
+import blang.core.ForwardSimulator
+import blang.core.WritableRealVar
+import blang.core.RealVar
+import blang.core.IntVar
+import java.util.Random
+import blang.core.WritableIntVar
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -62,7 +68,7 @@ class SingleBlangModelInferrer {
   
   // used to work around some xText limitations when
   // working with XExpressions 
-  val private XExpressionProcessor xExpressions
+  val private XExpressionProcessor xExpressions 
 
   // extension facilities provided by xtext
   val extension private JvmTypesBuilder _typeBuilder
@@ -82,6 +88,9 @@ class SingleBlangModelInferrer {
     // by the XExpressionProcessor machinery. 
     StaticUtils::eagerlyEvaluate(componentsMethodBody(globalScope))                  
     StaticUtils::eagerlyEvaluate(builderBody(globalScope))
+    if (hasForwardGenerationBlock) { 
+      StaticUtils::eagerlyEvaluate(forwardSimulationMethodBody(globalScope))
+    }
     // Once these auxiliary methods have been generated, we setup the 
     // generation the methods (ie. adding them to the generated types).
     // This two-pass approach is required to work around limitations of 
@@ -90,6 +99,7 @@ class SingleBlangModelInferrer {
     generateConstructor(globalScope)
     generateBuilder(globalScope, builderOutput)
     generateComponentsMethod(globalScope)
+    generateForwardSimulationMethod(globalScope)
   } 
   
   def setupMain(JvmGenericType type) {
@@ -113,6 +123,13 @@ class SingleBlangModelInferrer {
       output.annotations += annotationRef(SamplerTypes, annotation.arguments)
     }
     output.superTypes += typeRef(Model)
+    if (hasForwardGenerationBlock) {
+      output.superTypes += typeRef(ForwardSimulator)
+    }
+  }
+  
+  def private boolean hasForwardGenerationBlock() {
+    return model.generationAlgorithm !== null
   }
   
   def private JvmGenericType setupBuilder() {
@@ -122,6 +139,23 @@ class SingleBlangModelInferrer {
     builderOutput.superTypes += typeRef(ModelBuilder)
     output.members += builderOutput
     return builderOutput
+  }
+  
+  // null if none or more than one 'random' defined
+  def private Optional<BlangVariable> uniqueRandomVariable() {
+    var Optional<BlangVariable> result = Optional.empty
+    for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
+      if (variableDeclaration.variableType == VariableType.RANDOM) {
+        for (VariableDeclarationComponent varDeclComponent : variableDeclaration.getComponents()) {
+          if (result.isPresent) {
+            return Optional.empty
+          } else {
+            result = Optional.of(new BlangVariable(variableDeclaration.type, varDeclComponent.getName(), false))
+          }
+        }  
+      }
+    }
+    return result
   }
   
   def private BlangScope setupVariables(JvmGenericType builderOutput) {
@@ -237,6 +271,45 @@ class SingleBlangModelInferrer {
             - second, all the params in the order they occur in the blang file
       '''
     ]
+  }
+  
+  def private void generateForwardSimulationMethod(BlangScope scope) {
+    if (!hasForwardGenerationBlock) {
+      return
+    }
+    output.members += model.toMethod(FWD_SIM_METHOD_NAME, typeRef(Void.TYPE)) [
+      visibility = JvmVisibility.PUBLIC
+      parameters += model.generationAlgorithm.toParameter(model.generationRandom, typeRef(Random))
+      body = forwardSimulationMethodBody(scope)
+    ]
+  }
+  
+  def private StringConcatenationClient forwardSimulationMethodBody(BlangScope scope) {
+    val Optional<BlangVariable> uniqueRandomVariable = uniqueRandomVariable()
+    val deboxedType = 
+      switch uniqueRandomVariable.get.deboxedType.qualifiedName {
+        case RealVar.canonicalName : Double
+        case IntVar.canonicalName :  Integer
+        default : null
+      }
+    val writableType = 
+      switch uniqueRandomVariable.get.deboxedType.qualifiedName {
+        case RealVar.canonicalName : WritableRealVar
+        case IntVar.canonicalName :  WritableIntVar
+        default : null
+      }
+    val scopeWithRandom = scope.child(new BlangVariable(typeRef(Random), model.generationRandom, false))
+    return 
+      if (uniqueRandomVariable.isPresent && deboxedType != null) {
+        '''
+          double sample = «xExpressions.process(model.generationAlgorithm, scopeWithRandom, typeRef(deboxedType))»;
+          ((«typeRef(writableType)») «uniqueRandomVariable.get.deboxedName»).set(sample);
+        '''
+      } else {
+        '''
+          «xExpressions.process(model.generationAlgorithm, scopeWithRandom, typeRef(Void.TYPE))»;
+        '''
+      }
   }
   
   def private void generateComponentsMethod(BlangScope scope) {
@@ -474,6 +547,7 @@ class SingleBlangModelInferrer {
     this.qualNameConverter = qualNameConverter
   }
   
+  val static final String FWD_SIM_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(ForwardSimulator) 
   val static final String COMPONENTS_METHOD_NAME = StaticUtils::uniqueDeclaredMethod(Model) // = "components", but robust to re-factoring
   val public static final String COMPONENTS_LIST_NAME = "components"
   val public static final String BUILDER_NAME = "Builder"
