@@ -302,8 +302,9 @@ class SingleBlangModelInferrer {
     return 
       if (uniqueRandomVariable.isPresent && deboxedType != null) {
         '''
-          double sample = «xExpressions.process(model.generationAlgorithm, scopeWithRandom, typeRef(deboxedType))»;
-          ((«typeRef(writableType)») «uniqueRandomVariable.get.deboxedName»).set(sample);
+          ((«typeRef(writableType)») «uniqueRandomVariable.get.deboxedName»).set(
+            «xExpressions.process(model.generationAlgorithm, scopeWithRandom, typeRef(deboxedType))»
+          );
         '''
       } else {
         '''
