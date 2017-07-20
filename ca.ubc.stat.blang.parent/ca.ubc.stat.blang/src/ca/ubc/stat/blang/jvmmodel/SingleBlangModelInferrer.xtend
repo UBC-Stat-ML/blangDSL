@@ -322,7 +322,7 @@ class SingleBlangModelInferrer {
   }
   
   def private void generateComponentsMethod(BlangScope scope) {
-    output.members += model.toMethod(COMPONENTS_METHOD_NAME, typeRef(Collection, typeRef(ModelComponent))) [
+    output.members += model.toMethod(COMPONENTS_METHOD_NAME, typeRef(ModelComponents)) [
       visibility = JvmVisibility.PUBLIC
       documentation = '''
         A component can be either a distribution, support constraint, or another model  
