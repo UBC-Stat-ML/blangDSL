@@ -78,4 +78,15 @@ class StaticUtils {
       }
 	  return prefix + model.name
 	}
+	
+	/**
+	 * Transforms a blang string into a string that can be 
+	 * inserted into Java code inside an expression of the form
+	 * String str = "<output string pasted here>";
+	 */
+	def static String escape(String blangString) {
+	  return blangString
+	   .replace("\\", "\\\\") // order important
+	   .replace("\"", "\\\""); 
+	}
 }

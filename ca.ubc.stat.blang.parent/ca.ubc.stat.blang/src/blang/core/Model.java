@@ -1,6 +1,5 @@
 package blang.core;
 
-import java.util.Collection;
 
 
 
@@ -14,5 +13,5 @@ import java.util.Collection;
 @FunctionalInterface
 public interface Model extends ModelComponent
 {
-  public Collection<? extends ModelComponent> components();
+  public ModelComponents components();
 }
