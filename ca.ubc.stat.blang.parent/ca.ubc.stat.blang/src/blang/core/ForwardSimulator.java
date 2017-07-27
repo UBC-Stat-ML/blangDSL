@@ -2,8 +2,7 @@ package blang.core;
 
 import java.util.Random;
 
-@FunctionalInterface
-public interface ForwardSimulator
+public interface ForwardSimulator extends Model
 {
   public void generate(Random random);
 }
