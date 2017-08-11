@@ -17,28 +17,40 @@ class BlangXbaseCompiler extends XbaseCompiler {
      */
     public static val typeConversionMap = newHashMap(
       
+        // Tests are in AutoBoxDeboxTest; see that file for test #s
+      
         'blang.core.RealVar' 
         -> newHashMap(
-            'java.lang.Double'   -> unbox('doubleValue()'), // eg: RealVar x is converted to Double via x.doubleValue() (plus standard Java autoboxing which can be skipped here since we generate Java source) 
-            'double'             -> unbox('doubleValue()')),
+            'java.lang.Double'   -> unbox('doubleValue()'), // test 1 // eg: RealVar x is converted to Double via x.doubleValue() (plus standard Java autoboxing which can be skipped here since we generate Java source) 
+            'double'             -> unbox('doubleValue()')),// test 4
             // Note do not add Integer/int here since we can't always convert double to int without loss of information
             
         'double' 
         -> newHashMap(
-            'blang.core.RealVar' -> box()),
+            'blang.core.RealVar' -> box()),                  // test 7        
+            // Note do not add IntVar here for same reason as above Note
+            
+        'java.lang.Double' 
+        -> newHashMap(
+            'blang.core.RealVar' -> box()),                  // test 8
             // Note do not add IntVar here for same reason as above Note
             
         'blang.core.IntVar' 
         -> newHashMap(
-            'Double'             -> unbox('intValue()'), // All the four here needs to be intValue() since that's the only method available on IntVar, standard Java autoboxing takes care of the rest
-            'Integer'            -> unbox('intValue()'),
-            'double'             -> unbox('intValue()'),
-            'int'                -> unbox('intValue()')),
+            'java.lang.Double'   -> unbox('intValue()'),  // test 2 // All the four here needs to be intValue() since that's the only method available on IntVar, standard Java autoboxing takes care of the rest
+            'java.lang.Integer'  -> unbox('intValue()'),  // test 3
+            'double'             -> unbox('intValue()'),  // test 5
+            'int'                -> unbox('intValue()')), // test 6
             
         'int' 
         -> newHashMap(
-            'blang.core.IntVar' -> box(),
-            'blang.core.RealVar' -> box())
+            'blang.core.IntVar'  -> box(),   // test 9
+            'blang.core.RealVar' -> box()),  // test 10
+            
+        'java.lang.Integer' 
+        -> newHashMap(
+            'blang.core.IntVar'  -> box(),  // test 11
+            'blang.core.RealVar' -> box())  // test 12
             
     )
 

@@ -12,7 +12,6 @@ import ca.ubc.stat.blang.tests.TestSupport
 @RunWith(XtextRunner)
 @InjectWith(BlangDslInjectorProvider)
 class LogFactorGeneratorTest {
-    @Inject public TemporaryFolder temporaryFolder
     
     @Inject
     extension TestSupport support  
@@ -50,7 +49,6 @@ class LogFactorGeneratorTest {
             }
         '''.check
     }
-    
     
     @Test
     def void logScaleFactorMultiVar() {
