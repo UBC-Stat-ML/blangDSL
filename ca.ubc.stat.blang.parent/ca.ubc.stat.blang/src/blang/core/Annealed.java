@@ -5,10 +5,10 @@ package blang.core;
  * ranges between 0 (maximum annealing corresponding to an easy distribution)
  * and 1 (no annealing, corresponding to the target distribution).
  */
+@FunctionalInterface
 public interface Annealed extends Factor
 {
   void setExponent(double value);
-  double getExponent();
   
   public static void check(double value) 
   {

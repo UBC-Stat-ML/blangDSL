@@ -44,7 +44,6 @@ public final class SupportFactor implements Annealed, LogScaleFactor
     this.exponent = value;
   }
 
-  @Override
   public double getExponent()
   {
     return exponent;

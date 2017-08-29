@@ -20,7 +20,6 @@ public class AnnealedLogScaleFactor implements Annealed, LogScaleFactor
     this.exponent = value;
   }
 
-  @Override
   public double getExponent()
   {
     return exponent;
