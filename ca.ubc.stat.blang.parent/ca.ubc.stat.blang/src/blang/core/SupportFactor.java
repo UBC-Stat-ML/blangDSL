@@ -10,9 +10,10 @@ package blang.core;
  * @author Alexandre Bouchard (alexandre.bouchard@gmail.com)
  *
  */
-public final class SupportFactor implements LogScaleFactor
+public final class SupportFactor implements Annealed, LogScaleFactor
 {
   private final Support support;
+  private double exponent = 1.0;
   
   public SupportFactor(Support support)
   {
@@ -27,12 +28,25 @@ public final class SupportFactor implements LogScaleFactor
   @Override
   public double logDensity()
   {
-    return isInSupport() ? 0.0 : Double.NEGATIVE_INFINITY;
+    return isInSupport() ? 0.0 : (0.5 + 0.5 * exponent) * Double.NEGATIVE_INFINITY;
   }
   
   @FunctionalInterface
   public static interface Support
   {
     public boolean isInSupport();
+  }
+
+  @Override
+  public void setExponent(double value)
+  {
+    Annealed.check(value);
+    this.exponent = value;
+  }
+
+  @Override
+  public double getExponent()
+  {
+    return exponent;
   }
 }

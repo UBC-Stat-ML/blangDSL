@@ -1,7 +1,7 @@
 package blang.core;
 
 
-
+@FunctionalInterface
 public interface LogScaleFactor extends Factor
 {
   /**

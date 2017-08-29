@@ -62,6 +62,7 @@ import static ca.ubc.stat.blang.StaticUtils.getterName
 import static ca.ubc.stat.blang.StaticUtils.initializerDependencies
 import static ca.ubc.stat.blang.StaticUtils.isParam
 import static ca.ubc.stat.blang.StaticUtils.uniqueDeclaredMethod
+import blang.core.AnnealedLogScaleFactor
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -421,7 +422,7 @@ class SingleBlangModelInferrer {
     // 1. "static LogScaleFactor method1(..)": with body "return () -> method2(..)" (the fact that LogScaleFactor is a functional interface is exploited here)
     // 2. "static Double method2(..)": with body given by the XExpression
     // In the components(..) body, method1() is called inside the line "components.add(___);" 
-    return '''«xExpressions.process_via_functionalInterface(logScaleFactor.contents.factorBody, scope, typeRef(Double), typeRef(LogScaleFactor))»'''
+    return '''«xExpressions.process_via_constructionOfAnotherType(logScaleFactor.contents.factorBody, scope, typeRef(Double),  typeRef(AnnealedLogScaleFactor))»'''
   }
   
   def private dispatch StringConcatenationClient instantiateFactor(IndicatorDeclaration indic, BlangScope scope, BlangScope parentScope) {
@@ -429,7 +430,7 @@ class SingleBlangModelInferrer {
     // 1. "static LogScaleFactor method1(..)": with body "return new IndicatorDeclaration(() -> method2(..))" (the fact that IndicatorDeclaration's constructor argument (Support) is a functional interface is exploited here)
     // 2. "static Boolean method2(..)": with body given by the XExpression
     // In the components(..) body, method1() is called inside the line "components.add(___);" 
-    return '''«xExpressions.process_via_constructionOfAnotherType(indic.contents.factorBody, scope, typeRef(Boolean), typeRef(SupportFactor))»'''
+    return '''«xExpressions.process_via_constructionOfAnotherType(indic.contents.factorBody,          scope, typeRef(Boolean), typeRef(SupportFactor))»'''
   }
   
   def private dispatch String fullyQualifiedName(BlangDist blangDist) {
