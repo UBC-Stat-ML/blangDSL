@@ -4,7 +4,6 @@ import blang.core.DeboxedName
 import blang.core.LogScaleFactor
 import blang.core.Model
 import blang.core.ModelBuilder
-import blang.core.ModelComponent
 import blang.core.Param
 import blang.core.SamplerTypes
 import blang.core.SupportFactor
@@ -29,7 +28,6 @@ import java.lang.reflect.Parameter
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.util.ArrayList
-import java.util.Collection
 import java.util.List
 import java.util.Optional
 import java.util.function.Supplier
@@ -62,7 +60,6 @@ import static ca.ubc.stat.blang.StaticUtils.getterName
 import static ca.ubc.stat.blang.StaticUtils.initializerDependencies
 import static ca.ubc.stat.blang.StaticUtils.isParam
 import static ca.ubc.stat.blang.StaticUtils.uniqueDeclaredMethod
-import blang.core.AnnealedLogScaleFactor
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -422,7 +419,7 @@ class SingleBlangModelInferrer {
     // 1. "static LogScaleFactor method1(..)": with body "return () -> method2(..)" (the fact that LogScaleFactor is a functional interface is exploited here)
     // 2. "static Double method2(..)": with body given by the XExpression
     // In the components(..) body, method1() is called inside the line "components.add(___);" 
-    return '''«xExpressions.process_via_constructionOfAnotherType(logScaleFactor.contents.factorBody, scope, typeRef(Double),  typeRef(AnnealedLogScaleFactor))»'''
+    return '''«xExpressions.process_via_functionalInterface(logScaleFactor.contents.factorBody, scope, typeRef(Double), typeRef(LogScaleFactor))»'''
   }
   
   def private dispatch StringConcatenationClient instantiateFactor(IndicatorDeclaration indic, BlangScope scope, BlangScope parentScope) {
@@ -430,7 +427,7 @@ class SingleBlangModelInferrer {
     // 1. "static LogScaleFactor method1(..)": with body "return new IndicatorDeclaration(() -> method2(..))" (the fact that IndicatorDeclaration's constructor argument (Support) is a functional interface is exploited here)
     // 2. "static Boolean method2(..)": with body given by the XExpression
     // In the components(..) body, method1() is called inside the line "components.add(___);" 
-    return '''«xExpressions.process_via_constructionOfAnotherType(indic.contents.factorBody,          scope, typeRef(Boolean), typeRef(SupportFactor))»'''
+    return '''«xExpressions.process_via_constructionOfAnotherType(indic.contents.factorBody, scope, typeRef(Boolean), typeRef(SupportFactor))»'''
   }
   
   def private dispatch String fullyQualifiedName(BlangDist blangDist) {
