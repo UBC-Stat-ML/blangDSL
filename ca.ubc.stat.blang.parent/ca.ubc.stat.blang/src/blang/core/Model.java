@@ -1,7 +1,6 @@
 package blang.core;
 
-
-
+import java.util.Collection;
 
 /**
  * A class which is not necessarily a factor itself, but that contains 
@@ -13,5 +12,5 @@ package blang.core;
 @FunctionalInterface
 public interface Model extends ModelComponent
 {
-  public ModelComponents components();
+  public Collection<ModelComponent> components();
 }

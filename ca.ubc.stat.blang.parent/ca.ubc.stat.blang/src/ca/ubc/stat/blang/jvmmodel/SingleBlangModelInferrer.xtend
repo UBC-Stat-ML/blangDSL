@@ -5,7 +5,6 @@ import blang.core.ForwardSimulator
 import blang.core.IntVar
 import blang.core.Model
 import blang.core.ModelBuilder
-import blang.core.ModelComponents
 import blang.core.Param
 import blang.core.RealVar
 import blang.core.SamplerTypes
@@ -58,6 +57,8 @@ import static ca.ubc.stat.blang.StaticUtils.getterName
 import static ca.ubc.stat.blang.StaticUtils.initializerDependencies
 import static ca.ubc.stat.blang.StaticUtils.isParam
 import static ca.ubc.stat.blang.StaticUtils.uniqueDeclaredMethod
+import blang.core.ModelComponent
+import java.util.Collection
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -318,7 +319,7 @@ class SingleBlangModelInferrer {
   }
   
   def private void generateComponentsMethod(BlangScope scope) {
-    output.members += model.toMethod(COMPONENTS_METHOD_NAME, typeRef(ModelComponents)) [
+    output.members += model.toMethod(COMPONENTS_METHOD_NAME, typeRef(Collection, typeRef(ModelComponent))) [
       visibility = JvmVisibility.PUBLIC
       documentation = '''
         A component can be either a distribution, support constraint, or another model  
@@ -333,7 +334,7 @@ class SingleBlangModelInferrer {
    */
   def private StringConcatenationClient componentsMethodBody(BlangScope scope) {
     return '''
-      «typeRef(ModelComponents)» «COMPONENTS_LIST_NAME» = new «typeRef(ModelComponents)»();
+      «typeRef(ArrayList, typeRef(ModelComponent))» «COMPONENTS_LIST_NAME» = new «typeRef(ArrayList)»();
       
       «FOR LawNode node : model.lawNodes»
         «componentsMethodBody(node, scope)»
@@ -395,9 +396,7 @@ class SingleBlangModelInferrer {
           scope.restrict(dependencies), 
           /* Outer scope still needed in arguments of distributions instantiations: */ 
           scope
-        )»,
-        "«escape(expressionText(node))»"
-      );
+        )»);
     }
     '''
   }
