@@ -32,53 +32,45 @@ class XExpressionProcessor {
     phaseTracker.endMethodGenerationPhase()
   }
   
-  def StringConcatenationClient process(
+  def public StringConcatenationClient process(
     XExpression xExpression, 
     BlangScope scope, 
     JvmTypeReference xExpressionReturnType
   ) {
-    return _processXExpression(xExpression, scope, xExpressionReturnType, null, null)
+    val String xExpressionGeneratedName = generatedMethodName(xExpression)
+    val String generatedDoc = '''
+          Auxiliary method generated to translate:
+          «StaticUtils::expressionText(xExpression)»'''
+    if (phaseTracker.methodGenerationPhase()) {
+      output.members += xExpression.toMethod(xExpressionGeneratedName, xExpressionReturnType) [ 
+        visibility = JvmVisibility.PRIVATE
+        static = true
+        documentation = generatedDoc
+        for (BlangVariable variable : scope.variables) {
+          parameters += xExpression.toParameter(variable.deboxedName, variable.deboxedType)  
+        }
+        body = xExpression
+      ]
+      return '''<methodGenerationPhase>'''
+    }
+    return '''«xExpressionGeneratedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»)'''
   }
-  
-  /**
-   * requiredReturnType is assumed to be a FunctionalInterface of the form ()->xExpressionReturnType
-   */
-  def StringConcatenationClient process_via_functionalInterface(
-    XExpression xExpression, 
-    BlangScope scope, 
-    JvmTypeReference xExpressionReturnType, 
-    JvmTypeReference processedReturnType
-  ) {
-    return _processXExpression(xExpression, scope, xExpressionReturnType, processedReturnType, false)
-  }
-  
-  /**
-   * processedReturnType is assumed to have a constructor that consumes ()->xExpressionReturnType
-   */
-  def StringConcatenationClient process_via_constructionOfAnotherType(
-    XExpression xExpression, 
-    BlangScope scope, 
-    JvmTypeReference xExpressionReturnType, 
-    JvmTypeReference processedReturnType
-  ) {
-    return _processXExpression(xExpression, scope, xExpressionReturnType, processedReturnType, true)
-  }
-  
+
   def StringConcatenationClient processSupplier(XExpression xExpression, BlangScope scope, JvmTypeReference suppliedType) {
-    return processLazyExpression(xExpression, scope, typeRef(Supplier, suppliedType), StaticUtils::uniqueDeclaredMethod(Supplier), suppliedType)
+    return processViaFunctionalInterfaceImplementation(xExpression, scope, typeRef(Supplier, suppliedType), StaticUtils::uniqueDeclaredMethod(Supplier), suppliedType)
   }
   
   def StringConcatenationClient processLogScaleFactor(XExpression xExpression, BlangScope scope) {
-    return processLazyExpression(xExpression, scope, typeRef(LogScaleFactor), StaticUtils::uniqueDeclaredMethod(LogScaleFactor), typeRef("double"))
+    return processViaFunctionalInterfaceImplementation(xExpression, scope, typeRef(LogScaleFactor), StaticUtils::uniqueDeclaredMethod(LogScaleFactor), typeRef("double"))
   }
   
   def StringConcatenationClient processSupportFactor(XExpression xExpression, BlangScope scope) {
     return '''
-      new «typeRef(SupportFactor)»(«processLazyExpression(xExpression, scope, typeRef(Support), StaticUtils::uniqueDeclaredMethod(Support), typeRef("boolean"))»)
+      new «typeRef(SupportFactor)»(«processViaFunctionalInterfaceImplementation(xExpression, scope, typeRef(Support), StaticUtils::uniqueDeclaredMethod(Support), typeRef("boolean"))»)
     '''
   } 
   
-  def private StringConcatenationClient processLazyExpression(
+  def private StringConcatenationClient processViaFunctionalInterfaceImplementation(
     XExpression xExpression, 
     BlangScope scope, 
     JvmTypeReference functionalInterfaceTypeRef,
@@ -111,6 +103,10 @@ class XExpressionProcessor {
         visibility = JvmVisibility.PUBLIC
         body = '''return «xExpressionGeneratedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»);'''
       ]
+      implementation.members += xExpression.toMethod("toString", typeRef(String)) [
+        visibility = JvmVisibility.PUBLIC
+        body = '''return "«StaticUtils::escape(StaticUtils::expressionText(xExpression))»";'''
+      ]
       for (BlangVariable variable : scope.variables()) {
         implementation.members += xExpression.toField(variable.boxedName, variable.boxedType(_typeReferenceBuilder)) 
       }
@@ -128,62 +124,6 @@ class XExpressionProcessor {
       return '''<methodGenerationPhase>'''
     } else {
       return '''new «generatedAuxiliaryClassName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.boxedName»«ENDFOR»)'''
-    }
-  }
-  
-  
-  /**
-   * returnType should NOT include Supplier<..>
-   * 
-   * if typeConversionViaConstructor, assume requiredReturnTypeIfDifferent has a constructor that consumes
-   * ()->xExpressionReturnType, otherwise, requiredReturnTypeIfDifferent is assumed to be a FunctionalInteface of the form ()->xExpressionReturnType
-   */
-  def private StringConcatenationClient _processXExpression(
-    XExpression xExpression, 
-    BlangScope scope, 
-    JvmTypeReference xExpressionReturnType, 
-    JvmTypeReference requiredReturnTypeIfDifferent,
-    Boolean typeConversionViaConstructor
-  ) {
-    val lambdaCallNeeded = requiredReturnTypeIfDifferent !== null
-    val String xExpressionGeneratedName = generatedMethodName(xExpression)
-    val String lazyGeneratedName = xExpressionGeneratedName + "_lazy"
-    val String generatedDoc = '''
-          Auxiliary method generated to translate:
-          «StaticUtils::expressionText(xExpression)»'''
-    val StringConcatenationClient invokeString = '''
-      «xExpressionGeneratedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.deboxingInvocationString()»«ENDFOR»)'''
-    if (phaseTracker.methodGenerationPhase()) {
-      output.members += xExpression.toMethod(xExpressionGeneratedName, xExpressionReturnType) [ 
-        visibility = JvmVisibility.PRIVATE
-        static = true
-        documentation = generatedDoc
-        for (BlangVariable variable : scope.variables) {
-          parameters += xExpression.toParameter(variable.deboxedName, variable.deboxedType)  
-        }
-        body = xExpression
-      ]
-      if (lambdaCallNeeded) {
-        val StringConcatenationClient prefix = if (typeConversionViaConstructor) '''new «requiredReturnTypeIfDifferent»(''' else ''''''
-        val StringConcatenationClient suffix = if (typeConversionViaConstructor) ''')''' else ''''''
-        output.members += xExpression.toMethod(lazyGeneratedName, requiredReturnTypeIfDifferent) [
-          visibility = JvmVisibility.PRIVATE
-          static = true
-          documentation = generatedDoc
-          for (BlangVariable variable : scope.variables) {
-            parameters += xExpression.toParameter(variable.boxedName, variable.boxedType(_typeReferenceBuilder))  
-          }
-          body = '''
-            return «prefix»() -> «invokeString»«suffix»;
-          '''
-        ]
-      }
-      return '''<methodGenerationPhase>'''
-    }
-    return if (lambdaCallNeeded) {
-      '''«lazyGeneratedName»(«FOR BlangVariable variable : scope.variables() SEPARATOR ", "»«variable.boxedName»«ENDFOR»)'''
-    } else {
-      invokeString
     }
   }
   
