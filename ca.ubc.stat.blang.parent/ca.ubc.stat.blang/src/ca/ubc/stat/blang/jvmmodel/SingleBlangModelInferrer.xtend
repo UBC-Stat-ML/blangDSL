@@ -51,7 +51,6 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 
 import static ca.ubc.stat.blang.StaticUtils.eagerlyEvaluate
-import static ca.ubc.stat.blang.StaticUtils.escape
 import static ca.ubc.stat.blang.StaticUtils.expressionText
 import static ca.ubc.stat.blang.StaticUtils.getterName
 import static ca.ubc.stat.blang.StaticUtils.initializerDependencies
@@ -59,6 +58,7 @@ import static ca.ubc.stat.blang.StaticUtils.isParam
 import static ca.ubc.stat.blang.StaticUtils.uniqueDeclaredMethod
 import blang.core.ModelComponent
 import java.util.Collection
+import blang.core.ConstantSupplier
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -242,7 +242,7 @@ class SingleBlangModelInferrer {
       return new «typeRef(output)»(
         «FOR BlangVariable variable : constructorOrder(globalScope) SEPARATOR ", "»
         «IF variable.param»
-          () -> «prefixForFinalVariable»«variable.deboxedName»
+          new «typeRef(ConstantSupplier)»(«prefixForFinalVariable»«variable.deboxedName»)
         «ELSE»
           «prefixForFinalVariable»«variable.deboxedName»
         «ENDIF»
