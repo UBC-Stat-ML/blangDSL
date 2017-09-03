@@ -1,13 +1,18 @@
 package ca.ubc.stat.blang.jvmmodel
 
 import blang.core.DeboxedName
-import blang.core.LogScaleFactor
+import blang.core.ForwardSimulator
+import blang.core.IntVar
 import blang.core.Model
 import blang.core.ModelBuilder
+import blang.core.ModelComponents
 import blang.core.Param
+import blang.core.RealVar
 import blang.core.SamplerTypes
-import blang.core.SupportFactor
+import blang.core.WritableIntVar
+import blang.core.WritableRealVar
 import blang.inits.Arg
+import ca.ubc.stat.blang.StaticJavaUtils
 import ca.ubc.stat.blang.blangDsl.BlangDist
 import ca.ubc.stat.blang.blangDsl.BlangModel
 import ca.ubc.stat.blang.blangDsl.Dependency
@@ -30,6 +35,7 @@ import java.lang.reflect.Type
 import java.util.ArrayList
 import java.util.List
 import java.util.Optional
+import java.util.Random
 import java.util.function.Supplier
 import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtend2.lib.StringConcatenationClient
@@ -44,14 +50,6 @@ import org.eclipse.xtext.resource.IResourceDescriptionsProvider
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import ca.ubc.stat.blang.StaticJavaUtils
-import blang.core.ForwardSimulator
-import blang.core.WritableRealVar
-import blang.core.RealVar
-import blang.core.IntVar
-import java.util.Random
-import blang.core.WritableIntVar
-import blang.core.ModelComponents
 
 import static ca.ubc.stat.blang.StaticUtils.eagerlyEvaluate
 import static ca.ubc.stat.blang.StaticUtils.escape
@@ -419,7 +417,7 @@ class SingleBlangModelInferrer {
     // 1. "static LogScaleFactor method1(..)": with body "return () -> method2(..)" (the fact that LogScaleFactor is a functional interface is exploited here)
     // 2. "static Double method2(..)": with body given by the XExpression
     // In the components(..) body, method1() is called inside the line "components.add(___);" 
-    return '''«xExpressions.process_via_functionalInterface(logScaleFactor.contents.factorBody, scope, typeRef(Double), typeRef(LogScaleFactor))»'''
+    return '''«xExpressions.processLogScaleFactor(logScaleFactor.contents.factorBody, scope)»'''
   }
   
   def private dispatch StringConcatenationClient instantiateFactor(IndicatorDeclaration indic, BlangScope scope, BlangScope parentScope) {
@@ -427,7 +425,7 @@ class SingleBlangModelInferrer {
     // 1. "static LogScaleFactor method1(..)": with body "return new IndicatorDeclaration(() -> method2(..))" (the fact that IndicatorDeclaration's constructor argument (Support) is a functional interface is exploited here)
     // 2. "static Boolean method2(..)": with body given by the XExpression
     // In the components(..) body, method1() is called inside the line "components.add(___);" 
-    return '''«xExpressions.process_via_constructionOfAnotherType(indic.contents.factorBody, scope, typeRef(Boolean), typeRef(SupportFactor))»'''
+    return '''«xExpressions.processSupportFactor(indic.contents.factorBody, scope)»'''
   }
   
   def private dispatch String fullyQualifiedName(BlangDist blangDist) {
@@ -456,7 +454,7 @@ class SingleBlangModelInferrer {
 «««       1. "static Supplier<ArgType> method1(..)": with body "return () -> method2()" (the fact that Supplier is a functional interface is exploited here)
 «««       2. "static ArgType method2()": with body given by the XExpression
 «««       In the components(..) body, method1() is called inside the segment constructed by the present method.
-        «xExpressions.process_via_functionalInterface(distribution.arguments.get(index - nRandomVariables), scope, constructorArguments.get(index).deboxedType, typeRef(Supplier, constructorArguments.get(index).deboxedType))»
+        «xExpressions.processSupplier(distribution.arguments.get(index - nRandomVariables), scope, constructorArguments.get(index).deboxedType)»
         «ELSE»
         «xExpressions.process(distribution.generatedVariables.get(index), parentScope, constructorArguments.get(index).deboxedType)»
         «ENDIF»
