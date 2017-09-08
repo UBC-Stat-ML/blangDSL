@@ -1,10 +1,12 @@
 import blang.core.DeboxedName;
 import blang.core.Model;
 import blang.core.ModelBuilder;
-import blang.core.ModelComponents;
+import blang.core.ModelComponent;
 import blang.core.RealVar;
 import blang.inits.Arg;
 import ca.ubc.stat.blang.StaticJavaUtils;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @SuppressWarnings("all")
 public class MyFile implements Model {
@@ -64,8 +66,8 @@ public class MyFile implements Model {
    * A component can be either a distribution, support constraint, or another model  
    * which recursively defines additional components.
    */
-  public ModelComponents components() {
-    ModelComponents components = new ModelComponents();
+  public Collection<ModelComponent> components() {
+    ArrayList<ModelComponent> components = new ArrayList();
     
     
     return components;
