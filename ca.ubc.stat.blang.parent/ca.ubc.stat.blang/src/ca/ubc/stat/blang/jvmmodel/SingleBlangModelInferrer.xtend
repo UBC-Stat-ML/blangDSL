@@ -59,6 +59,15 @@ import static ca.ubc.stat.blang.StaticUtils.uniqueDeclaredMethod
 import blang.core.ModelComponent
 import java.util.Collection
 import blang.core.ConstantSupplier
+import blang.core.Distribution
+import blang.core.UnivariateModel
+import blang.core.DistributionAdaptor
+import blang.core.RealDistribution
+import blang.core.RealDistributionAdaptor.WritableRealVarImpl
+import blang.core.RealDistributionAdaptor
+import blang.core.IntDistributionAdaptor
+import blang.core.IntDistribution
+import blang.core.IntDistributionAdaptor.WritableIntVarImpl
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -105,6 +114,10 @@ class SingleBlangModelInferrer {
     generateBuilder(globalScope, builderOutput)
     generateComponentsMethod(globalScope)
     generateForwardSimulationMethod(globalScope)
+    if (uniqueRandomVariable.present) {
+      generateGetRealization
+      generateStaticDistributionBuilder(globalScope)
+    }
   } 
   
   def setupMain(JvmGenericType type) {
@@ -128,6 +141,9 @@ class SingleBlangModelInferrer {
       output.annotations += annotationRef(SamplerTypes, annotation.arguments)
     }
     output.superTypes += typeRef(Model)
+    if (uniqueRandomVariable.present) {
+      output.superTypes += typeRef(UnivariateModel, uniqueRandomVariable.get.deboxedType)
+    }
     if (hasForwardGenerationBlock) {
       output.superTypes += typeRef(ForwardSimulator)
     }
@@ -146,7 +162,7 @@ class SingleBlangModelInferrer {
     return builderOutput
   }
   
-  // null if none or more than one 'random' defined
+  // empty if none or more than one 'random' defined
   def private Optional<BlangVariable> uniqueRandomVariable() {
     var Optional<BlangVariable> result = Optional.empty
     for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
@@ -251,6 +267,88 @@ class SingleBlangModelInferrer {
     '''
   }
   
+  def private void generateGetRealization() {
+    output.members += model.toMethod(uniqueDeclaredMethod(UnivariateModel), uniqueRandomVariable.get.deboxedType) [
+      visibility = JvmVisibility.PUBLIC
+      body = '''
+        return «uniqueRandomVariable.get.deboxedName»;
+      '''
+    ]
+  }
+  
+  def private void generateStaticDistributionBuilder(BlangScope scope) {
+    output.members += model.toMethod("distribution", distributionType) [
+      visibility = JvmVisibility.PUBLIC
+      static = true
+      for (BlangVariable variable : constructorOrder(scope)) {
+        if (!isRealOrIntDistributionType || variable.isParam) {
+          val JvmFormalParameter param = model.toParameter(variable.deboxedName, variable.deboxedType) 
+          if (variable.param) {
+            param.annotations += annotationRef(Param) 
+          }
+          parameters += param
+        }
+      }
+      body = '''
+        «typeRef(UnivariateModel, uniqueRandomVariable.get.deboxedType)» univariateModel = new «model.name»(
+          «FOR BlangVariable variable : constructorOrder(scope) SEPARATOR ", "»
+            «IF variable.param»
+              new «typeRef(ConstantSupplier)»(«variable.deboxedName»)
+            «ELSE»
+              «IF isRealOrIntDistributionType»
+                new «writableVariableImpl»()
+              «ELSE»
+                «variable.deboxedName»
+              «ENDIF»
+            «ENDIF»
+          «ENDFOR»
+        );
+        «typeRef(Distribution, uniqueRandomVariable.get.deboxedType)» distribution = «typeRef(DistributionAdaptor)»(univariateModel);
+        «IF isRealOrIntDistributionType»
+          return new «adaptorType»(distribution);
+        «ELSE»
+          return distribution;
+        «ENDIF»
+      '''
+      documentation = '''
+        Returns an instance with fixed parameters values and conforming the Distribution interface. 
+        Useful when passing around distributions as parameters, e.g. for Dirichlet Process mixtures. 
+      '''
+    ]
+  }
+  
+  def JvmTypeReference adaptorType() {
+    return switch uniqueRandomVariable.get.deboxedType.qualifiedName {
+        case RealVar.canonicalName : typeRef(RealDistributionAdaptor)
+        case IntVar.canonicalName :  typeRef(IntDistributionAdaptor)
+        default : throw new RuntimeException
+      }
+  }
+  
+  def JvmTypeReference distributionType() {
+    return switch uniqueRandomVariable.get.deboxedType.qualifiedName {
+        case RealVar.canonicalName : typeRef(RealDistribution)
+        case IntVar.canonicalName :  typeRef(IntDistribution)
+        default : typeRef(Distribution, uniqueRandomVariable.get.deboxedType)
+      }
+  }
+  
+  def JvmTypeReference writableVariableImpl() {
+    return switch uniqueRandomVariable.get.deboxedType.qualifiedName {
+        case RealVar.canonicalName : typeRef(WritableRealVarImpl)
+        case IntVar.canonicalName :  typeRef(WritableIntVarImpl)
+        default : throw new RuntimeException
+      }
+  }
+  
+  def boolean isRealOrIntDistributionType() {
+    return switch uniqueRandomVariable.get.deboxedType.qualifiedName {
+        case RealVar.canonicalName : true
+        case IntVar.canonicalName :  true
+        default : false
+      }
+  }
+  
   def private void generateConstructor(BlangScope scope) {
     output.members += model.toConstructor[
       visibility = JvmVisibility.PUBLIC
@@ -328,7 +426,6 @@ class SingleBlangModelInferrer {
     ]
   }
   
-
   /**
    * Entry point of generation of the body of the method components(), the core of a probabilistic model.
    */
