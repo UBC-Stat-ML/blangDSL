@@ -303,7 +303,7 @@ class SingleBlangModelInferrer {
             «ENDIF»
           «ENDFOR»
         );
-        «typeRef(Distribution, uniqueRandomVariable.get.deboxedType)» distribution = «typeRef(DistributionAdaptor)»(univariateModel);
+        «typeRef(Distribution, uniqueRandomVariable.get.deboxedType)» distribution = new «typeRef(DistributionAdaptor)»(univariateModel);
         «IF isRealOrIntDistributionType»
           return new «adaptorType»(distribution);
         «ELSE»
