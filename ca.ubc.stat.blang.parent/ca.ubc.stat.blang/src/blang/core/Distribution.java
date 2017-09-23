@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public interface Distribution<T> 
 {
-  void sample(Random random);
-  double logDensity();
-  T realization();
+  public void sample(Random random);
+  public double logDensity();
+  public T realization();
 }
