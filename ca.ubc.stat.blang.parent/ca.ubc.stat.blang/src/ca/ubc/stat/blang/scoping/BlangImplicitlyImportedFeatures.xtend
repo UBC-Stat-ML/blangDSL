@@ -21,7 +21,7 @@ class BlangImplicitlyImportedFeatures extends ImplicitlyImportedFeatures {
     val List<Class<?>> classes = getExtensionClasses()
     val List<JvmType> result = getTypes(classes, context)
     result.add(typeReferences.findDeclaredType("xlinear.MatrixExtensions", context))
-    result.add(typeReferences.findDeclaredType("blang.utils.ExtensionUtils", context))
+    result.add(typeReferences.findDeclaredType("blang.types.ExtensionUtils", context))
     return result
   }
   
@@ -38,7 +38,7 @@ class BlangImplicitlyImportedFeatures extends ImplicitlyImportedFeatures {
     result.add(typeReferences.findDeclaredType("xlinear.MatrixOperations", context))
     result.add(typeReferences.findDeclaredType("bayonet.math.SpecialFunctions", context))
     result.add(typeReferences.findDeclaredType("org.apache.commons.math3.util.CombinatoricsUtils", context))
-    result.add(typeReferences.findDeclaredType("blang.utils.StaticUtils", context))
+    result.add(typeReferences.findDeclaredType("blang.types.StaticUtils", context))
     return result
   }
   

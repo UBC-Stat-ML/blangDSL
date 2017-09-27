@@ -33,7 +33,7 @@ VariableDeclarationComponent:
   ('?:' varInitBlock = XExpression)?
 ;
 
-enum VariableType:   // TODO: poor name: pick something else like randomnessStatus
+enum VariableType:   
   RANDOM = 'random' | PARAM = 'param'
 ;
 
@@ -62,13 +62,13 @@ ForLoop:
   '}'
 ;
 
-// indicator(variance) = variance.doubleValue > 0
+// e.g.: indicator(variance) = variance.doubleValue > 0
 FactorDeclaration:
   '(' ((dependencies += Dependency) (',' dependencies += Dependency)* )? ')' 
   (factorBody = XBlockExpression)
 ;
 
-// y1, y2 | Matrix mean = means.get(z), variance ~ BivariateNormal(mean, [variance ** 2])
+// e.g.: y1, y2 | Matrix mean = means.get(z), variance ~ BivariateNormal(mean, [variance ** 2])
 InstantiatedDistribution:
   // random variables generated
 	( generatedVariables += XExpression  (',' generatedVariables += XExpression)* )?

@@ -10,12 +10,14 @@ class ImplicitImportsScopeProvider extends org.eclipse.xtext.xbase.scoping.XImpo
   override getImplicitImports(boolean ignoreCase) {
     val normalizers = new ArrayList<ImportNormalizer>(super.getImplicitImports(ignoreCase));
     normalizers => [
-      addPack("blang", "io")
       addPack("blang", "core")
-      addPack("blang", "types")
       addPack("blang", "distributions")
+      addPack("blang", "io")
+      addPack("blang", "types")
       addPack("blang", "mcmc")
+      
       addPack("java",  "util")
+      
       addPack("xlinear")
     ]
     return normalizers;
