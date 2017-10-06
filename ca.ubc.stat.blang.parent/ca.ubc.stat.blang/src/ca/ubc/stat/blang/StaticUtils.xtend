@@ -69,6 +69,10 @@ class StaticUtils {
     return ("get" + Strings.toFirstUpper(fieldName));
 	}
 	
+	def static String setterName(String fieldName) {
+    return ("set" + Strings.toFirstUpper(fieldName));
+  }
+	
 	def static String fullyQualifiedNameString(BlangModel model) {
 	  val String prefix = 
       if (model.package.nullOrEmpty) {

@@ -53,6 +53,7 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import static ca.ubc.stat.blang.StaticUtils.eagerlyEvaluate
 import static ca.ubc.stat.blang.StaticUtils.expressionText
 import static ca.ubc.stat.blang.StaticUtils.getterName
+import static ca.ubc.stat.blang.StaticUtils.setterName
 import static ca.ubc.stat.blang.StaticUtils.initializerDependencies
 import static ca.ubc.stat.blang.StaticUtils.isParam
 import static ca.ubc.stat.blang.StaticUtils.uniqueDeclaredMethod
@@ -179,6 +180,10 @@ class SingleBlangModelInferrer {
     return result
   }
   
+  def private String isInitializedMethodName(String deboxedName) {
+    return deboxedName + "_initialized";
+  }
+  
   def private BlangScope setupVariables(JvmGenericType builderOutput) {
     val BlangScope result = BlangScope::emptyScope
     for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
@@ -198,11 +203,33 @@ class SingleBlangModelInferrer {
             return «blangVariable.deboxingInvocationString»;
           '''
         ]
-        // builder fields
-        builderOutput.members += variableDeclaration.toField(blangVariable.deboxedName, optionalize(blangVariable.deboxedType, varDeclComponent.getVarInitBlock() != null)) [
+        // builder fields and setters
+        val boolean optional = varDeclComponent.getVarInitBlock() != null
+        builderOutput.members += variableDeclaration.toField(blangVariable.deboxedName, optionalize(blangVariable.deboxedType, optional)) [
           visibility = JvmVisibility.PUBLIC
           annotations += annotationRef(Arg)
-        ] 
+        ]
+        if (!optional) {
+          builderOutput.members += variableDeclaration.toField(isInitializedMethodName(blangVariable.deboxedName), typeRef("boolean")) [
+            visibility = JvmVisibility.PUBLIC
+            annotations += annotationRef(Arg)
+          ]
+        }
+        builderOutput.members += variableDeclaration.toMethod(setterName(blangVariable.deboxedName), typeRef(builderOutput)) [
+          parameters += model.toParameter(blangVariable.deboxedName, blangVariable.deboxedType)
+          visibility = JvmVisibility.PUBLIC
+          body = 
+            '''
+            «IF optional»
+            // work around typeRef(..) limitation
+            «typeRef(Optional, blangVariable.deboxedType)» dummy = null;
+            «ELSE»
+            «isInitializedMethodName(blangVariable.deboxedName)» = true;
+            «ENDIF»
+            this.«blangVariable.deboxedName» = «IF optional»Optional.of(«blangVariable.deboxedName»)«ELSE»«blangVariable.deboxedName»«ENDIF»;
+            return this;
+            '''
+        ]
       }
     }
     return result
@@ -244,11 +271,14 @@ class SingleBlangModelInferrer {
         «FOR varDeclComponent : variableDeclaration.components»
           «IF varDeclComponent.getVarInitBlock() != null»
             «variableDeclaration.getType()» «varDeclComponent.getName()»;
-            if (this.«varDeclComponent.getName()».isPresent()) {
+            if (this.«varDeclComponent.getName()» != null && this.«varDeclComponent.getName()».isPresent()) {
               «varDeclComponent.getName()» = this.«varDeclComponent.getName()».get();
             } else {
               «varDeclComponent.getName()» = «xExpressions.process(varDeclComponent.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
             }
+          «ELSE»
+            if (!«isInitializedMethodName(varDeclComponent.getName())»)
+              throw new RuntimeException("Not all fields were set in the builder, e.g. missing «varDeclComponent.getName()»");
           «ENDIF»
           final «variableDeclaration.getType()» «prefixForFinalVariable»«varDeclComponent.getName()» = «varDeclComponent.getName()»;
           «incrementalScope += new BlangVariable(variableDeclaration.type, varDeclComponent.name, false)»
