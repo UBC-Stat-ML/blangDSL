@@ -35,4 +35,10 @@ public final class SupportFactor implements LogScaleFactor
   {
     public boolean isInSupport();
   }
+  
+  @Override
+  public String toString()
+  {
+    return support.toString();
+  }
 }
