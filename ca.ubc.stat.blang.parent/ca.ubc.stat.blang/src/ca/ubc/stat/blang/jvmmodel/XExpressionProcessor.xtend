@@ -108,7 +108,9 @@ class XExpressionProcessor {
         body = '''return "«StaticUtils::escape(StaticUtils::expressionText(xExpression))»";'''
       ]
       for (BlangVariable variable : scope.variables()) {
-        implementation.members += xExpression.toField(variable.boxedName, variable.boxedType(_typeReferenceBuilder)) 
+        implementation.members += xExpression.toField(variable.boxedName, variable.boxedType(_typeReferenceBuilder)) [
+          final = true
+        ] 
       }
       implementation.members += xExpression.toConstructor[
         for (BlangVariable variable : scope.variables) {
