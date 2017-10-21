@@ -27,11 +27,11 @@ class BlangExtensions {
     return v1.doubleValue + n
   }
   
-  def static double +(IntVar v1, Integer n) {
+  def static int +(IntVar v1, Integer n) {
     return v1.intValue + n
   }
   
-  def static double +(IntVar v1, int n) {
+  def static int +(IntVar v1, int n) {
     return v1.intValue + n
   }
   
