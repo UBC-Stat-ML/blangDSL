@@ -211,8 +211,7 @@ class SingleBlangModelInferrer {
         ]
         if (!optional) {
           builderOutput.members += variableDeclaration.toField(isInitializedMethodName(blangVariable.deboxedName), typeRef("boolean")) [
-            visibility = JvmVisibility.PUBLIC
-            annotations += annotationRef(Arg)
+            visibility = JvmVisibility.PRIVATE
           ]
         }
         builderOutput.members += variableDeclaration.toMethod(setterName(blangVariable.deboxedName), typeRef(builderOutput)) [
