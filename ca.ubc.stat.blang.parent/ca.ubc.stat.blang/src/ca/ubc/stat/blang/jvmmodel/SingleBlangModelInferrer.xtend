@@ -69,6 +69,7 @@ import blang.core.RealDistributionAdaptor
 import blang.core.IntDistributionAdaptor
 import blang.core.IntDistribution
 import blang.core.IntDistributionAdaptor.WritableIntVarImpl
+import ca.ubc.stat.blang.StaticUtils
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -221,7 +222,7 @@ class SingleBlangModelInferrer {
             '''
             «IF optional»
             // work around typeRef(..) limitation
-            «typeRef(Optional, blangVariable.deboxedType)» dummy = null;
+            «typeRef(Optional, blangVariable.deboxedType)» «StaticUtils::generatedName("dummy")» = null;
             «ELSE»
             «isInitializedMethodName(blangVariable.deboxedName)» = true;
             «ENDIF»

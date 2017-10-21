@@ -4,7 +4,6 @@ import ca.ubc.stat.blang.StaticUtils
 import ca.ubc.stat.blang.blangDsl.Dependency
 import ca.ubc.stat.blang.blangDsl.InitializerDependency
 import ca.ubc.stat.blang.blangDsl.SimpleDependency
-import ca.ubc.stat.blang.blangDsl.VariableDeclaration
 import com.google.common.collect.Iterables
 import java.util.LinkedHashMap
 import java.util.List
@@ -105,7 +104,7 @@ class BlangScope {
   
     def String boxedName() {
       if (isBoxed) {
-        return StaticUtils::generatedMethodName(deboxedName)
+        return StaticUtils::generatedName(deboxedName)
       } else {
         return deboxedName
       }

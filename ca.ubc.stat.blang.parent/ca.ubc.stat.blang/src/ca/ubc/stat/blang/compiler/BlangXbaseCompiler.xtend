@@ -37,9 +37,9 @@ class BlangXbaseCompiler extends XbaseCompiler {
             
         'blang.core.IntVar' 
         -> newHashMap(
-            'java.lang.Double'   -> unbox('intValue()'),  // test 2 // All the four here needs to be intValue() since that's the only method available on IntVar, standard Java autoboxing takes care of the rest
+//            'java.lang.Double'   -> unbox('intValue()'),  // test 2 // unboxing doesn't do int -> Double apparently
             'java.lang.Integer'  -> unbox('intValue()'),  // test 3
-            'double'             -> unbox('intValue()'),  // test 5
+            'double'             -> unbox('intValue()'),  // test 5 // this one taken care of by unboxing
             'int'                -> unbox('intValue()')), // test 6
             
         'int' 

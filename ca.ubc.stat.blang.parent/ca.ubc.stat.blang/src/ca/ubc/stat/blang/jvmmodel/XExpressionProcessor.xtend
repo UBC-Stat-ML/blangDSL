@@ -133,10 +133,10 @@ class XExpressionProcessor {
   def String generatedMethodName(Object object) {
     val int hashCode = object.hashCode
     if (_generatedIds.containsKey(hashCode))
-      return StaticUtils::generatedMethodName("" + _generatedIds.get(hashCode))
+      return StaticUtils::generatedName("" + _generatedIds.get(hashCode))
     val int newSerialId = _generatedIds.size()
     _generatedIds.put(hashCode, newSerialId)
-    return StaticUtils::generatedMethodName("" + newSerialId)
+    return StaticUtils::generatedName("" + newSerialId)
   }
   
   static class PhaseTracker {

@@ -35,7 +35,7 @@ class StaticUtils {
     }
   }
   
-  def static String generatedMethodName(String uniqueName) {
+  def static String generatedName(String uniqueName) {
     return '''$generated__«uniqueName»'''
   }
   

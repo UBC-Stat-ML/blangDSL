@@ -23,6 +23,18 @@ class BlangExtensions {
     return v1.intValue + v2.doubleValue
   }
   
+  def static double +(RealVar v1, Number n) {
+    return v1.doubleValue + n
+  }
+  
+  def static double +(IntVar v1, Integer n) {
+    return v1.intValue + n
+  }
+  
+  def static double +(IntVar v1, int n) {
+    return v1.intValue + n
+  }
+  
   //// These are not covered by the unbox/boxing either
   
   def static boolean ==(RealVar v1, RealVar v2) {
