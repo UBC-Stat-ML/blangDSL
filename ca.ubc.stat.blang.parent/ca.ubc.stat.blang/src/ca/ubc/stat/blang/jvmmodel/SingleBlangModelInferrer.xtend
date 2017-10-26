@@ -7,7 +7,6 @@ import blang.core.Model
 import blang.core.ModelBuilder
 import blang.core.Param
 import blang.core.RealVar
-import blang.core.SamplerTypes
 import blang.core.WritableIntVar
 import blang.core.WritableRealVar
 import blang.inits.Arg
@@ -140,7 +139,7 @@ class SingleBlangModelInferrer {
       output.packageName = model.package
     }
     for (annotation : model.annotations) {
-      output.annotations += annotationRef(SamplerTypes, annotation.arguments)
+      output.annotations += annotationRef(annotation.type.qualifiedName, annotation.arguments)
     }
     output.superTypes += typeRef(Model)
     if (uniqueRandomVariable.present) {
@@ -667,7 +666,8 @@ class SingleBlangModelInferrer {
     JvmAnnotationReferenceBuilder _annotationTypesBuilder, 
     JvmTypeReferenceBuilder _typeReferenceBuilder, 
     IResourceDescriptionsProvider index,
-    IQualifiedNameConverter qualNameConverter
+    IQualifiedNameConverter qualNameConverter,
+    boolean isPreIndexing
   ) {
     this.model = model
     this.output = output
@@ -675,7 +675,7 @@ class SingleBlangModelInferrer {
     this._annotationTypesBuilder = _annotationTypesBuilder
     this._typeReferenceBuilder = _typeReferenceBuilder
     this.index = index
-    this.xExpressions = new XExpressionProcessor(output, _typeBuilder, _typeReferenceBuilder)
+    this.xExpressions = new XExpressionProcessor(output, _typeBuilder, _typeReferenceBuilder, isPreIndexing)
     this.qualNameConverter = qualNameConverter
   }
   
