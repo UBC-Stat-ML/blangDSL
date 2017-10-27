@@ -52,9 +52,9 @@ class XExpressionProcessor {
           parameters += xExpression.toParameter(variable.deboxedName, variable.deboxedType)  
         }
         if (preIndexing)
-          body = xExpression
-        else
           body = PRE_INDEXING_EXCEPTION
+        else
+          body = xExpression
       ]
       return '''<methodGenerationPhase>'''
     }
@@ -97,9 +97,9 @@ class XExpressionProcessor {
           parameters += xExpression.toParameter(variable.deboxedName, variable.deboxedType)  
         }
         if (preIndexing)
-          body = xExpression
-        else
           body = PRE_INDEXING_EXCEPTION
+        else
+          body = xExpression
       ]
       
       val JvmGenericType implementation = xExpression.toClass(generatedAuxiliaryClassName) [
