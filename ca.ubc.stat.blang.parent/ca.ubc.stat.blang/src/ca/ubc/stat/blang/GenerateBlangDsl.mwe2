@@ -12,13 +12,7 @@ Workflow {
 			project = StandardProjectConfig {
 				baseName = "ca.ubc.stat.blang"
 				rootPath = rootPath
-				runtimeTest = {
-					enabled = true
-				}
 				eclipsePlugin = {
-					enabled = true
-				}
-				eclipsePluginTest = {
 					enabled = true
 				}
 				web = {
