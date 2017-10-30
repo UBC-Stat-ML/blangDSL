@@ -28,8 +28,6 @@ class XExpressionProcessor {
   val extension private JvmTypesBuilder _typeBuilder
   val extension private JvmTypeReferenceBuilder _typeReferenceBuilder
   
-  val private boolean isPreIndexing
-  
   def void endAuxiliaryMethodGenerationPhase() {
     phaseTracker.endMethodGenerationPhase()
   }
@@ -51,10 +49,7 @@ class XExpressionProcessor {
         for (BlangVariable variable : scope.variables) {
           parameters += xExpression.toParameter(variable.deboxedName, variable.deboxedType)  
         }
-        if (preIndexing)
-          body = PRE_INDEXING_EXCEPTION
-        else
-          body = xExpression
+        body = xExpression
       ]
       return '''<methodGenerationPhase>'''
     }
@@ -96,10 +91,7 @@ class XExpressionProcessor {
         for (BlangVariable variable : scope.variables) {
           parameters += xExpression.toParameter(variable.deboxedName, variable.deboxedType)  
         }
-        if (preIndexing)
-          body = PRE_INDEXING_EXCEPTION
-        else
-          body = xExpression
+        body = xExpression
       ]
       
       val JvmGenericType implementation = xExpression.toClass(generatedAuxiliaryClassName) [
@@ -156,6 +148,4 @@ class XExpressionProcessor {
       methodGenerationPhase = false
     }
   }
-  
-  static private val StringConcatenationClient PRE_INDEXING_EXCEPTION = '''throw new RuntimeException("Preindexing");'''
 }

@@ -666,8 +666,7 @@ class SingleBlangModelInferrer {
     JvmAnnotationReferenceBuilder _annotationTypesBuilder, 
     JvmTypeReferenceBuilder _typeReferenceBuilder, 
     IResourceDescriptionsProvider index,
-    IQualifiedNameConverter qualNameConverter,
-    boolean isPreIndexing
+    IQualifiedNameConverter qualNameConverter
   ) {
     this.model = model
     this.output = output
@@ -675,7 +674,7 @@ class SingleBlangModelInferrer {
     this._annotationTypesBuilder = _annotationTypesBuilder
     this._typeReferenceBuilder = _typeReferenceBuilder
     this.index = index
-    this.xExpressions = new XExpressionProcessor(output, _typeBuilder, _typeReferenceBuilder, isPreIndexing)
+    this.xExpressions = new XExpressionProcessor(output, _typeBuilder, _typeReferenceBuilder)
     this.qualNameConverter = qualNameConverter
   }
   
