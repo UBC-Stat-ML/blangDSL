@@ -22,7 +22,7 @@ class BlangDslWebSetup extends BlangDslStandaloneSetup {
 	
 	override Injector createInjector() {
 		val runtimeModule = new BlangDslRuntimeModule()
-		val webModule = new BlangDslWebModule(executorServiceProvider)
+		val webModule = new BlangDslWebModule() //executorServiceProvider)
 		return Guice.createInjector(Modules.override(runtimeModule).with(webModule))
 	}
 	
