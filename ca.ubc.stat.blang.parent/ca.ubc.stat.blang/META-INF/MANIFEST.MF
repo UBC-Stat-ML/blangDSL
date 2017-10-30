@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ca.ubc.stat.blang
 Bundle-Vendor: My Company
-Bundle-Version: 3.8.2.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-SymbolicName: ca.ubc.stat.blang; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
@@ -17,8 +17,7 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtend.lib,
  org.eclipse.emf.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: blang.core,
- ca.ubc.stat.blang.services,
+Export-Package: ca.ubc.stat.blang.services,
  ca.ubc.stat.blang,
  ca.ubc.stat.blang.jvmmodel,
  ca.ubc.stat.blang.serializer,

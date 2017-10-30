@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature id="ca.ubc.stat.blang.feature"
-	label="Blang DSL"
-	version="3.8.2.qualifier">
+	label="Blang Feature "
+	version="1.0.0.qualifier">
 	<plugin
 			id="ca.ubc.stat.blang"
 			download-size="0"

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>ca.ubc.stat.blang</groupId>
 		<artifactId>ca.ubc.stat.blang.parent</artifactId>
-		<version>3.8.2-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>ca.ubc.stat.blang</artifactId>
 	<packaging>eclipse-plugin</packaging>
@@ -27,7 +27,7 @@
 				<configuration>
 					<mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
 					<arguments>
-						<argument>/${project.basedir}/src/ca/ubc/stat/blang/GenerateBlangDsl.mwe2</argument>
+						<argument>/${project.basedir}/src/ca/ubc/stat/blang/GenerateBlang.mwe2</argument>
 						<argument>-p</argument>
 						<argument>rootPath=/${project.basedir}/..</argument>
 					</arguments>
@@ -39,7 +39,12 @@
 					<dependency>
 						<groupId>org.eclipse.emf</groupId>
 						<artifactId>org.eclipse.emf.mwe2.launch</artifactId>
-						<version>2.8.3</version>
+						<version>2.9.0.201605261059</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>org.eclipse.xtext.common.types</artifactId>
+						<version>${xtextVersion}</version>
 					</dependency>
 					<dependency>
 						<groupId>org.eclipse.xtext</groupId>
@@ -50,6 +55,11 @@
 						<groupId>org.eclipse.xtext</groupId>
 						<artifactId>org.eclipse.xtext.xbase</artifactId>
 						<version>${xtextVersion}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>xtext-antlr-generator</artifactId>
+						<version>[2.1.1, 3)</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -70,12 +80,6 @@
 							</includes>
 						</fileset>
 						<fileset>
-							<directory>${basedir}/../ca.ubc.stat.blang.tests/src-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
 							<directory>${basedir}/../ca.ubc.stat.blang.ide/src-gen/</directory>
 							<includes>
 								<include>**/*</include>
@@ -88,13 +92,7 @@
 							</includes>
 						</fileset>
 						<fileset>
-							<directory>${basedir}/../ca.ubc.stat.blang.ui.tests/src-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/../ca.ubc.stat.blang.ui.web/src-gen/</directory>
+							<directory>${basedir}/../ca.ubc.stat.blang.web/src-gen/</directory>
 							<includes>
 								<include>**/*</include>
 							</includes>
