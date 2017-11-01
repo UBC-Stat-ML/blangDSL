@@ -8,7 +8,7 @@ buildscript {
 }
 
 subprojects {
-	ext.xtextVersion = '2.12.0'
+	ext.xtextVersion = '2.13.0.RC1'
 	repositories {
 		jcenter()
 		maven {
@@ -27,7 +27,7 @@ subprojects {
 	apply plugin: 'idea'
 	
 	group = 'ca.ubc.stat.blang'
-	version = '3.19.1'
+	version = '3.19.2'
 	
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
