@@ -1,8 +1,7 @@
 package ca.ubc.stat.blang.compiler
 
-import org.eclipse.xtext.common.types.JvmIdentifiableElement
-import org.eclipse.xtext.common.types.JvmOperation
-import org.eclipse.xtext.xbase.XAbstractFeatureCall
+import blang.core.IntConstant
+import blang.core.RealConstant
 import org.eclipse.xtext.xbase.XExpression
 import org.eclipse.xtext.xbase.compiler.Later
 import org.eclipse.xtext.xbase.compiler.XbaseCompiler
@@ -27,12 +26,12 @@ class BlangXbaseCompiler extends XbaseCompiler {
             
         'double' 
         -> newHashMap(
-            'blang.core.RealVar' -> box()),                  // test 7        
+            'blang.core.RealVar' -> boxReal()),                  // test 7        
             // Note do not add IntVar here for same reason as above Note
             
         'java.lang.Double' 
         -> newHashMap(
-            'blang.core.RealVar' -> box()),                  // test 8
+            'blang.core.RealVar' -> boxReal()),                  // test 8
             // Note do not add IntVar here for same reason as above Note
             
         'blang.core.IntVar' 
@@ -44,13 +43,13 @@ class BlangXbaseCompiler extends XbaseCompiler {
             
         'int' 
         -> newHashMap(
-            'blang.core.IntVar'  -> box(),   // test 9
-            'blang.core.RealVar' -> box()),  // test 10
+            'blang.core.IntVar'  -> boxInt(),   // test 9
+            'blang.core.RealVar' -> boxReal()),  // test 10
             
         'java.lang.Integer' 
         -> newHashMap(
-            'blang.core.IntVar'  -> box(),  // test 11
-            'blang.core.RealVar' -> box())  // test 12
+            'blang.core.IntVar'  -> boxInt(),  // test 11
+            'blang.core.RealVar' -> boxReal())  // test 12
             
     )
 
@@ -89,11 +88,19 @@ class BlangXbaseCompiler extends XbaseCompiler {
     /**
      * Helper that returns a lambda that compiles the boxing conversion to the lazy value.
      */
-    private static def box() {
+    private static def box(Class<?> boxer) {
         [ Later expression, ITreeAppendable appendable |
-            appendable.append("() -> (");
+            appendable.append("new " + boxer.canonicalName + "(");
             expression.exec(appendable);
             appendable.append(")");
         ]
+    }
+    
+    private static def boxInt() {
+      box(IntConstant)
+    }
+    
+    private static def boxReal() {
+      box(RealConstant)
     }
 }
