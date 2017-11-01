@@ -52,7 +52,8 @@ class BlangDslJvmModelInferrer extends AbstractModelInferrer {
    *            <code>true</code>.
    */
   def dispatch void infer(BlangModel model, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
-    acceptor.accept(model.toClass(model.name)) [
+    val name = if (model.package !== null) model.package+"."+model.name else model.name
+    acceptor.accept(model.toClass(name)) [
       val singleBlangModelInferrer = new SingleBlangModelInferrer(model, it, _typeBuilder, _annotationTypesBuilder, _typeReferenceBuilder, _irdProvider, qualNameConverter)
       singleBlangModelInferrer.infer()
     ]
