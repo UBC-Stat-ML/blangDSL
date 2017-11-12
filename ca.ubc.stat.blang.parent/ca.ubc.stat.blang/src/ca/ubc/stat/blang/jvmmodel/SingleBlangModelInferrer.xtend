@@ -135,12 +135,12 @@ class SingleBlangModelInferrer {
   }
   
   def private void setupClass() { 
-    if (model.package != null) {
+    if (model.package !== null) {
       output.packageName = model.package
     }
     for (annotation : model.annotations) {
-      output.annotations += annotationRef(annotation.type.qualifiedName, annotation.arguments)
-    }
+      output.addAnnotation(annotation) 
+    } 
     output.superTypes += typeRef(Model)
     if (uniqueRandomVariable.present) {
       output.superTypes += typeRef(UnivariateModel, uniqueRandomVariable.get.deboxedType)
@@ -204,7 +204,7 @@ class SingleBlangModelInferrer {
           '''
         ]
         // builder fields and setters
-        val boolean optional = varDeclComponent.getVarInitBlock() != null
+        val boolean optional = varDeclComponent.getVarInitBlock() !== null
         builderOutput.members += variableDeclaration.toField(blangVariable.deboxedName, optionalize(blangVariable.deboxedType, optional)) [
           visibility = JvmVisibility.PUBLIC
           annotations += annotationRef(Arg)
@@ -268,7 +268,7 @@ class SingleBlangModelInferrer {
       // For each optional type, either get the value, or evaluate the ?: expression
       «FOR variableDeclaration : model.variableDeclarations»
         «FOR varDeclComponent : variableDeclaration.components»
-          «IF varDeclComponent.getVarInitBlock() != null»
+          «IF varDeclComponent.getVarInitBlock() !== null»
             «variableDeclaration.getType()» «varDeclComponent.getName()»;
             if (this.«varDeclComponent.getName()» != null && this.«varDeclComponent.getName()».isPresent()) {
               «varDeclComponent.getName()» = this.«varDeclComponent.getName()».get();
@@ -432,7 +432,7 @@ class SingleBlangModelInferrer {
       }
     val scopeWithRandom = scope.child(new BlangVariable(typeRef(Random), model.generationRandom, false))
     return 
-      if (uniqueRandomVariable.isPresent && deboxedType != null) {
+      if (uniqueRandomVariable.isPresent && deboxedType !== null) {
         '''
           ((«typeRef(writableType)») «uniqueRandomVariable.get.deboxedName»).set(
             «xExpressions.process(model.generationAlgorithm, scopeWithRandom, typeRef(deboxedType))»
@@ -555,7 +555,7 @@ class SingleBlangModelInferrer {
   
   def private dispatch String fullyQualifiedName(BlangDist blangDist) {
     val String prefix = 
-      if (blangDist.distributionType.package == null) {
+      if (blangDist.distributionType.package === null) {
         ""
       } else {
         blangDist.distributionType.package + "."

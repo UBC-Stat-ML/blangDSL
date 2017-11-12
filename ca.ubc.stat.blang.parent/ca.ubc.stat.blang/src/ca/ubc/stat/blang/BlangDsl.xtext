@@ -1,27 +1,21 @@
-grammar ca.ubc.stat.blang.BlangDsl with org.eclipse.xtext.xbase.Xbase
+grammar ca.ubc.stat.blang.BlangDsl with org.eclipse.xtext.xbase.annotations.XbaseWithAnnotations
 
 generate blangDsl "http://www.ubc.ca/stat/blang/BlangDsl"
 
 import "http://www.eclipse.org/xtext/common/JavaVMTypes" as jvmTypes
+import "http://www.eclipse.org/Xtext/Xbase/XAnnotations" as xAnnotations
 
 BlangModel:
 	{BlangModel}
 	('package' package=QualifiedName)?
 	importSection=XImportSection?
-	(annotations += BlangAnnotation)*
+	(annotations += XAnnotation)*
 	'model' name=ID '{'
     (variableDeclarations += VariableDeclaration)*
     'laws' '{' (lawNodes += LawNode)* '}'
     ('generate' '(' generationRandom = ValidID ')' generationAlgorithm = XBlockExpression )?
     (variableDeclarations += VariableDeclaration)*
 	'}'
-;
-
-
-// note: we are avoiding XbaseWithAnnotation since it created a problem 
-// indirectly (see Issue #24 in blangSDK)
-BlangAnnotation:
-  '@' type=JvmTypeReference ('(' arguments += QualifiedName (',' arguments += QualifiedName)* ')')? 
 ;
 	
 VariableDeclaration:
