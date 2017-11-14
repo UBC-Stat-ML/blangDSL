@@ -19,7 +19,8 @@ BlangModel:
 ;
 	
 VariableDeclaration:
-	(variableType = VariableType) type=JvmTypeReference ( components += VariableDeclarationComponent) (',' components += VariableDeclarationComponent)*
+  (annotations += XAnnotation)*
+	(variableType = VariableType) type=JvmTypeReference (components += VariableDeclarationComponent) (',' components += VariableDeclarationComponent)*
 ;
 
 VariableDeclarationComponent:
@@ -32,7 +33,7 @@ enum VariableType:
 ;
 
 LawNode:
-  'for' ForLoop | 'indicator' IndicatorDeclaration | 'logf' LogScaleFactorDeclaration | (=> InstantiatedDistribution)
+  'for' ForLoop | 'indicator' IndicatorDeclaration |  'logf' LogScaleFactorDeclaration | (=> InstantiatedDistribution)
 ;
 
 IndicatorDeclaration:
@@ -69,15 +70,17 @@ InstantiatedDistribution:
 	// dependencies on other variables
 	('|' (dependencies += Dependency) (',' dependencies += Dependency)* )?  
 	// type of the distribution
-	'~' typeSpec = DistributionTypeSpecification //distributionType = [BlangModel|QualifiedName] 
+	typeSpec = DistributionTypeSpecification //distributionType = [BlangModel|QualifiedName] 
 	// arguments in the constructor of the distribution
-	'('
-	  ( (arguments += XExpression) ( ',' arguments += XExpression)* )?
-	')'
+	(=> explicitArguments ?=
+    	'('
+    	  ( (arguments += XExpression) ( ',' arguments += XExpression)* )?
+    	')'
+   )?
 ;
 
 DistributionTypeSpecification:
-  'new' JavaDist  |  BlangDist
+  'is' JavaDist  | '~' BlangDist
 ;
 
 BlangDist:
