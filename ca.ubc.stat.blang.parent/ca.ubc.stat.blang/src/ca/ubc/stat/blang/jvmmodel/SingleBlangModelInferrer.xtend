@@ -193,6 +193,9 @@ class SingleBlangModelInferrer {
         result += blangVariable
         // field
         output.members += variableDeclaration.toField(blangVariable.boxedName(), blangVariable.boxedType(_typeReferenceBuilder)) [
+          for (annotation : variableDeclaration.annotations) {
+            addAnnotation(annotation) 
+          } 
           final = true
           if (blangVariable.isParam)
             annotations += annotationRef(Param)

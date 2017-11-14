@@ -1,6 +1,6 @@
 package blang.core
 
-class ConstrainedFactor implements Factor {
+class Constrained implements Factor {
   public val Object object
   
   new(@DeboxedName("object") Object object) {
