@@ -40,7 +40,6 @@ import org.eclipse.xtend2.lib.StringConcatenationClient
 import org.eclipse.xtext.common.types.JvmDeclaredType
 import org.eclipse.xtext.common.types.JvmFormalParameter
 import org.eclipse.xtext.common.types.JvmGenericType
-import org.eclipse.xtext.common.types.JvmOperation
 import org.eclipse.xtext.common.types.JvmTypeReference
 import org.eclipse.xtext.common.types.JvmVisibility
 import org.eclipse.xtext.naming.IQualifiedNameConverter
@@ -69,6 +68,7 @@ import blang.core.IntDistributionAdaptor
 import blang.core.IntDistribution
 import blang.core.IntDistributionAdaptor.WritableIntVarImpl
 import ca.ubc.stat.blang.StaticUtils
+import blang.inits.DesignatedConstructor
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -158,8 +158,20 @@ class SingleBlangModelInferrer {
     val JvmGenericType builderOutput = model.toClass(BUILDER_NAME) [
       it.static = true
     ]
+    builderOutput.members += model.toField(IS_FROM_CMD_LINE_ARG, typeRef("boolean")) [
+      initializer = '''false'''
+    ]
     builderOutput.superTypes += typeRef(ModelBuilder)
     output.members += builderOutput
+    output.members += model.toMethod("builderFromCommandLine", typeRef(builderOutput)) [
+      static = true
+      annotations += annotationRef(DesignatedConstructor)
+      body = '''
+        «BUILDER_NAME» result = new «BUILDER_NAME»();
+        result.«IS_FROM_CMD_LINE_ARG» = true;
+        return result;
+      '''
+    ]
     return builderOutput
   }
   
@@ -215,6 +227,7 @@ class SingleBlangModelInferrer {
         if (!optional) {
           builderOutput.members += variableDeclaration.toField(isInitializedMethodName(blangVariable.deboxedName), typeRef("boolean")) [
             visibility = JvmVisibility.PRIVATE
+            initializer = '''false'''
           ]
         }
         builderOutput.members += variableDeclaration.toMethod(setterName(blangVariable.deboxedName), typeRef(builderOutput)) [
@@ -257,11 +270,10 @@ class SingleBlangModelInferrer {
   }
   
   def private void generateBuilder(BlangScope scope, JvmGenericType builderOutput) {
-    val JvmOperation method = model.toMethod(BUILDER_METHOD_NAME, typeRef(output)) [
+    builderOutput.members +=  model.toMethod(BUILDER_METHOD_NAME, typeRef(output)) [
       visibility = JvmVisibility.PUBLIC
       body = builderBody(scope)
     ]
-    builderOutput.members += method
   }
   
   def private StringConcatenationClient builderBody(BlangScope globalScope) {
@@ -279,7 +291,7 @@ class SingleBlangModelInferrer {
               «varDeclComponent.getName()» = «xExpressions.process(varDeclComponent.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
             }
           «ELSE»
-            if (!«isInitializedMethodName(varDeclComponent.getName())»)
+            if (!«IS_FROM_CMD_LINE_ARG» && !«isInitializedMethodName(varDeclComponent.getName())»)
               throw new RuntimeException("Not all fields were set in the builder, e.g. missing «varDeclComponent.getName()»");
           «ENDIF»
           final «variableDeclaration.getType()» «prefixForFinalVariable»«varDeclComponent.getName()» = «varDeclComponent.getName()»;
@@ -682,8 +694,9 @@ class SingleBlangModelInferrer {
   }
   
   val static final String FWD_SIM_METHOD_NAME = uniqueDeclaredMethod(ForwardSimulator) 
-  val static final String COMPONENTS_METHOD_NAME = uniqueDeclaredMethod(Model) // = "components", but robust to re-factoring
+  val static final String COMPONENTS_METHOD_NAME = uniqueDeclaredMethod(Model) 
   val public static final String COMPONENTS_LIST_NAME = "components"
   val public static final String BUILDER_NAME = "Builder"
   val static final String BUILDER_METHOD_NAME = uniqueDeclaredMethod(ModelBuilder)
+  private static final String IS_FROM_CMD_LINE_ARG = "fromCommandLine"
 }

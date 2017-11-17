@@ -1,6 +1,6 @@
 package blang.core
 
-@FunctionalInterface
+@FunctionalInterface // Use to ensure uniqueDeclaredMethod will work
 interface ModelBuilder {
   def Model build()
 }

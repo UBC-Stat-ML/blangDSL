@@ -9,7 +9,7 @@ import java.util.Collection;
  * @author Alexandre Bouchard (alexandre.bouchard@gmail.com)
  *
  */
-@FunctionalInterface
+@FunctionalInterface // Use to ensure uniqueDeclaredMethod will work
 public interface Model extends ModelComponent
 {
   public Collection<ModelComponent> components();
