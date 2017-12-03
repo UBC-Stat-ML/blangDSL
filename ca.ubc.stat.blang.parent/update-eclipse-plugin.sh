@@ -16,6 +16,7 @@ project_repo=`pwd`
 remote_repo='s2:~/public_html/maven/'
 
 destination=$artifact_repo/blang-eclipse-plugin-$1
+destination_latest=$artifact_repo/blang-eclipse-plugin-latest
 
 if [ -d $destination ]; then
     echo "Already published $destination"
@@ -33,7 +34,9 @@ then
 fi
 
 mvn install
+rm -r $destination_latest
 cp -r ca.ubc.stat.blang.repository/target/repository $destination
+cp -r ca.ubc.stat.blang.repository/target/repository $destination_latest
 
 echo "Sending changes to server"
 rsync -t --rsh=/usr/bin/ssh --recursive --perms --group $artifact_repo $remote_repo; echo "Finished pushing eclipse plug-in artifacts" &
