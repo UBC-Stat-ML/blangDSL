@@ -22,6 +22,7 @@ class BlangImplicitlyImportedFeatures extends ImplicitlyImportedFeatures {
     val List<JvmType> result = getTypes(classes, context)
     result.add(typeReferences.findDeclaredType("xlinear.MatrixExtensions", context))
     result.add(typeReferences.findDeclaredType("blang.types.ExtensionUtils", context))
+    result.add(typeReferences.findDeclaredType("blang.distributions.Generators", context))
     return result
   }
   
