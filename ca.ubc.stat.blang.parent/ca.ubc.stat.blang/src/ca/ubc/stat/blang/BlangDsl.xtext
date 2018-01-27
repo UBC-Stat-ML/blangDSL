@@ -59,7 +59,7 @@ ForLoop:
 
 // e.g.: indicator(variance) = variance.doubleValue > 0
 FactorDeclaration:
-  '(' ((dependencies += Dependency) (',' dependencies += Dependency)* )? ')' 
+  '(' ((dependencies += Dependency) ((','|';') dependencies += Dependency)* )? ')' 
   (factorBody = XBlockExpression)
 ;
 
