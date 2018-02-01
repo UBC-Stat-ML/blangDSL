@@ -184,7 +184,7 @@ class SingleBlangModelInferrer {
           if (result.isPresent) {
             return Optional.empty
           } else {
-            result = Optional.of(new BlangVariable(variableDeclaration.type, varDeclComponent.getName().getName(), false))
+            result = Optional.of(new BlangVariable(variableDeclaration.type, varDeclComponent.varName, false))
           }
         }  
       }
@@ -200,7 +200,7 @@ class SingleBlangModelInferrer {
     val BlangScope result = BlangScope::emptyScope
     for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
       for (VariableDeclarationComponent varDeclComponent : variableDeclaration.getComponents()) {
-        val String name = varDeclComponent.getName().getName()
+        val String name = varDeclComponent.varName
         val BlangVariable blangVariable = new BlangVariable(variableDeclaration.type, name, isParam(variableDeclaration.variableType))
         result += blangVariable
         // field
@@ -276,6 +276,14 @@ class SingleBlangModelInferrer {
     ]
   }
   
+  def String varName(VariableDeclarationComponent component) {
+    return component.name.name
+  }
+  
+  def String varName(ForLoop component) {
+    return component.name.name
+  }
+  
   def private StringConcatenationClient builderBody(BlangScope globalScope) {
     val String prefixForFinalVariable = "__"
     val BlangScope incrementalScope = BlangScope::emptyScope
@@ -284,18 +292,18 @@ class SingleBlangModelInferrer {
       «FOR variableDeclaration : model.variableDeclarations»
         «FOR varDeclComponent : variableDeclaration.components»
           «IF varDeclComponent.getVarInitBlock() !== null»
-            «variableDeclaration.getType()» «varDeclComponent.getName()»;
-            if (this.«varDeclComponent.getName()» != null && this.«varDeclComponent.getName()».isPresent()) {
-              «varDeclComponent.getName()» = this.«varDeclComponent.getName()».get();
+            «variableDeclaration.getType()» «varDeclComponent.varName»;
+            if (this.«varDeclComponent.varName» != null && this.«varDeclComponent.varName».isPresent()) {
+              «varDeclComponent.varName» = this.«varDeclComponent.varName».get();
             } else {
-              «varDeclComponent.getName()» = «xExpressions.process(varDeclComponent.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
+              «varDeclComponent.varName» = «xExpressions.process(varDeclComponent.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
             }
           «ELSE»
-            if (!«IS_FROM_CMD_LINE_ARG» && !«isInitializedMethodName(varDeclComponent.getName().getName())»)
-              throw new RuntimeException("Not all fields were set in the builder, e.g. missing «varDeclComponent.getName()»");
+            if (!«IS_FROM_CMD_LINE_ARG» && !«isInitializedMethodName(varDeclComponent.varName)»)
+              throw new RuntimeException("Not all fields were set in the builder, e.g. missing «varDeclComponent.varName»");
           «ENDIF»
-          final «variableDeclaration.getType()» «prefixForFinalVariable»«varDeclComponent.getName()» = «varDeclComponent.getName()»;
-          «incrementalScope += new BlangVariable(variableDeclaration.type, varDeclComponent.name.name, false)»
+          final «variableDeclaration.getType()» «prefixForFinalVariable»«varDeclComponent.varName» = «varDeclComponent.varName»;
+          «incrementalScope += new BlangVariable(variableDeclaration.type, varDeclComponent.varName, false)»
         «ENDFOR»
       «ENDFOR»
       // Build the instance after boxing params
@@ -490,10 +498,10 @@ class SingleBlangModelInferrer {
    */
 
   def private dispatch StringConcatenationClient componentsMethodBody(ForLoop forLoop, BlangScope scope) {
-    val BlangVariable iteratorVariable = new BlangVariable(forLoop.iteratorType, forLoop.name.name, false)
+    val BlangVariable iteratorVariable = new BlangVariable(forLoop.iteratorType, forLoop.varName, false)
     val BlangScope childScope = scope.child(iteratorVariable)
     return  '''
-      for («forLoop.iteratorType» «forLoop.name» : «xExpressions.process(forLoop.iteratorRange, scope, typeRef(Iterable,forLoop.iteratorType))») {
+      for («forLoop.iteratorType» «forLoop.varName» : «xExpressions.process(forLoop.iteratorRange, scope, typeRef(Iterable,forLoop.iteratorType))») {
         «FOR node : forLoop.loopBody»
         «componentsMethodBody(node, childScope)»
         «ENDFOR»
