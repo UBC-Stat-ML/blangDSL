@@ -184,7 +184,7 @@ class SingleBlangModelInferrer {
           if (result.isPresent) {
             return Optional.empty
           } else {
-            result = Optional.of(new BlangVariable(variableDeclaration.type, varDeclComponent.getName(), false))
+            result = Optional.of(new BlangVariable(variableDeclaration.type, varDeclComponent.getName().getName(), false))
           }
         }  
       }
@@ -200,7 +200,7 @@ class SingleBlangModelInferrer {
     val BlangScope result = BlangScope::emptyScope
     for (VariableDeclaration variableDeclaration : model.variableDeclarations) {
       for (VariableDeclarationComponent varDeclComponent : variableDeclaration.getComponents()) {
-        val String name = varDeclComponent.getName()
+        val String name = varDeclComponent.getName().getName()
         val BlangVariable blangVariable = new BlangVariable(variableDeclaration.type, name, isParam(variableDeclaration.variableType))
         result += blangVariable
         // field
@@ -291,11 +291,11 @@ class SingleBlangModelInferrer {
               «varDeclComponent.getName()» = «xExpressions.process(varDeclComponent.getVarInitBlock(), incrementalScope, variableDeclaration.type)»;
             }
           «ELSE»
-            if (!«IS_FROM_CMD_LINE_ARG» && !«isInitializedMethodName(varDeclComponent.getName())»)
+            if (!«IS_FROM_CMD_LINE_ARG» && !«isInitializedMethodName(varDeclComponent.getName().getName())»)
               throw new RuntimeException("Not all fields were set in the builder, e.g. missing «varDeclComponent.getName()»");
           «ENDIF»
           final «variableDeclaration.getType()» «prefixForFinalVariable»«varDeclComponent.getName()» = «varDeclComponent.getName()»;
-          «incrementalScope += new BlangVariable(variableDeclaration.type, varDeclComponent.name, false)»
+          «incrementalScope += new BlangVariable(variableDeclaration.type, varDeclComponent.name.name, false)»
         «ENDFOR»
       «ENDFOR»
       // Build the instance after boxing params
@@ -490,7 +490,7 @@ class SingleBlangModelInferrer {
    */
 
   def private dispatch StringConcatenationClient componentsMethodBody(ForLoop forLoop, BlangScope scope) {
-    val BlangVariable iteratorVariable = new BlangVariable(forLoop.iteratorType, forLoop.name, false)
+    val BlangVariable iteratorVariable = new BlangVariable(forLoop.iteratorType, forLoop.name.name, false)
     val BlangScope childScope = scope.child(iteratorVariable)
     return  '''
       for («forLoop.iteratorType» «forLoop.name» : «xExpressions.process(forLoop.iteratorRange, scope, typeRef(Iterable,forLoop.iteratorType))») {
@@ -535,7 +535,7 @@ class SingleBlangModelInferrer {
           node, 
           /* Enforces using only dependencies: */ 
           scope.restrict(dependencies), 
-          /* Outer scope still needed in arguments of distributions instantiations: */ 
+          /* Outer scope still needed in arguments of distributions instantiations (i.e. for LHS of ~ statements): */ 
           scope
         )»);
     }
