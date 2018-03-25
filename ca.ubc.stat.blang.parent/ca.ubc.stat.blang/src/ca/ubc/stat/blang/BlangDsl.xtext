@@ -84,7 +84,9 @@ InstantiatedDistribution:
 ;
 
 DistributionTypeSpecification:
-  'is' JavaDist  | '~' BlangDist
+  'is' JavaDist | 
+  '~' BlangDist | // UTF-8: 7E
+  '∼' BlangDist   // UTF-8: E2 88 BC (This caused problems in 302 assignments)
 ;
 
 BlangDist:
