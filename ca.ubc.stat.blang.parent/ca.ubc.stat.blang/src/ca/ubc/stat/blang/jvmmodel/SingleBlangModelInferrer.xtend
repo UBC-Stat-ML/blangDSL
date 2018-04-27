@@ -441,18 +441,20 @@ class SingleBlangModelInferrer {
   
   def private StringConcatenationClient forwardSimulationMethodBody(BlangScope scope) {
     val Optional<BlangVariable> uniqueRandomVariable = uniqueRandomVariable()
-    val deboxedType = 
-      switch uniqueRandomVariable.get.deboxedType.qualifiedName {
-        case RealVar.canonicalName : Double
-        case IntVar.canonicalName :  Integer
-        default : null
-      }
-    val writableType = 
-      switch uniqueRandomVariable.get.deboxedType.qualifiedName {
-        case RealVar.canonicalName : WritableRealVar
-        case IntVar.canonicalName :  WritableIntVar
-        default : null
-      }
+    val deboxedType = if (uniqueRandomVariable.present) {
+        switch uniqueRandomVariable.get.deboxedType.qualifiedName {
+          case RealVar.canonicalName : Double
+          case IntVar.canonicalName :  Integer
+          default : null
+        }
+      } else null
+    val writableType =  if (uniqueRandomVariable.present) {
+        switch uniqueRandomVariable.get.deboxedType.qualifiedName {
+          case RealVar.canonicalName : WritableRealVar
+          case IntVar.canonicalName :  WritableIntVar
+          default : null
+        }
+      } else null
     val scopeWithRandom = scope.child(new BlangVariable(typeRef(Random), model.generationRandom, false))
     return 
       if (uniqueRandomVariable.isPresent && deboxedType !== null) {
