@@ -3,12 +3,12 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath 'org.xtext:xtext-gradle-plugin:1.0.19'
+		classpath 'org.xtext:xtext-gradle-plugin:2.0.4'
 	}
 }
 
 subprojects {
-	ext.xtextVersion = '2.12.0' // This is Xtext version, not blang version!
+	ext.xtextVersion = '2.16.0' // This is Xtext version, not blang version!
 	repositories {
 		jcenter()
 		maven {
@@ -27,7 +27,7 @@ subprojects {
 	apply plugin: 'idea'
 	
 	group = 'ca.ubc.stat.blang'
-	version = '3.25.2'
+	version = '3.25.3'
 	
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
