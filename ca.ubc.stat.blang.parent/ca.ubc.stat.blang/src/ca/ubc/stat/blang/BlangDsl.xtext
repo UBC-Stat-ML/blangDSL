@@ -37,7 +37,7 @@ enum VariableType:
 ;
 
 LawNode:
-  'for' ForLoop | 'indicator' IndicatorDeclaration | 'logf' LogScaleFactorDeclaration | (=> InstantiatedDistribution)
+  'for' ForLoop | 'if' IfElse | 'indicator' IndicatorDeclaration | 'logf' LogScaleFactorDeclaration | (=> InstantiatedDistribution)
 ;
 
 IndicatorDeclaration:
@@ -59,6 +59,19 @@ ForLoop:
   ')' '{'
     (loopBody += LawNode)*
   '}'
+;
+
+IfElse:
+  '('
+    condition = XExpression
+  ')' '{'
+    (ifBody += LawNode)*
+  '}' 
+  (
+    'else' '{'
+      (elseBody += LawNode)*
+    '}'
+  )?
 ;
 
 // e.g.: indicator(variance) = variance.doubleValue > 0

@@ -69,6 +69,7 @@ import blang.core.IntDistribution
 import blang.core.IntDistributionAdaptor.WritableIntVarImpl
 import ca.ubc.stat.blang.StaticUtils
 import blang.inits.DesignatedConstructor
+import ca.ubc.stat.blang.blangDsl.IfElse
 
 /**
  * SingleBlangModelInferrer gets instantiated for each model being inferred.
@@ -511,6 +512,21 @@ class SingleBlangModelInferrer {
     '''
   }
   
+  def private dispatch StringConcatenationClient componentsMethodBody(IfElse ifElse, BlangScope scope) {
+    return  '''
+      if («xExpressions.process(ifElse.condition, scope, typeRef(Boolean))») {
+        «FOR node : ifElse.ifBody»
+        «componentsMethodBody(node, scope)»
+        «ENDFOR»
+      }
+      «IF !ifElse.elseBody.empty»
+        «FOR node : ifElse.elseBody»
+        «componentsMethodBody(node, scope)»
+        «ENDFOR»
+      «ENDIF»
+    '''
+  }
+  
   def private dispatch StringConcatenationClient componentsMethodBody(LogScaleFactorDeclaration factor, BlangScope scope) {
     return componentsMethodBody(factor, scope, factor.contents.dependencies)
   }
@@ -596,6 +612,7 @@ class SingleBlangModelInferrer {
     // TODO: check # args match!!!
     val List<ConstructorArgument> constructorArguments = constructorParameters(distribution.typeSpec)
     val int nRandomVariables = constructorArguments.filter[!param].size()  // TODO: exception here; this is null when reference type not found
+    
     return '''
       new «fullyQualifiedName(distribution.typeSpec)»(
         «FOR int index : 0 ..< constructorArguments.size() SEPARATOR ", "»
@@ -618,7 +635,11 @@ class SingleBlangModelInferrer {
    * which are random. The following deal with this aspect.
    */
   
-  def private dispatch List<ConstructorArgument> constructorParameters(BlangDist distribution) {
+  def dispatch List<ConstructorArgument> constructorParameters(BlangDist distribution) {
+    return blangConstructorParameters(distribution)
+  }
+  
+  def static List<ConstructorArgument> blangConstructorParameters(BlangDist distribution) {
     val BlangModel model = distribution.distributionType
     // infer constructor ordering
     val List<ConstructorArgument> result = new ArrayList
@@ -635,7 +656,7 @@ class SingleBlangModelInferrer {
     return result
   }
 
-  def private dispatch List<ConstructorArgument> constructorParameters(JavaDist distribution) {
+  def dispatch List<ConstructorArgument> constructorParameters(JavaDist distribution) {
     val Class<?> distributionClass = Class.forName(distribution.distributionType.identifier)
     val Constructor<?> constructor = {
       val Constructor<?>[] constructors = distributionClass.constructors
