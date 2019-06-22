@@ -1,5 +1,10 @@
 package ca.ubc.stat.blang.validation
 
+import org.eclipse.xtext.validation.Check
+import ca.ubc.stat.blang.blangDsl.InstantiatedDistribution
+import ca.ubc.stat.blang.jvmmodel.SingleBlangModelInferrer
+import ca.ubc.stat.blang.blangDsl.BlangDist
+import ca.ubc.stat.blang.blangDsl.BlangDslPackage
 
 /**
  * This class contains custom validation rules. 
@@ -7,16 +12,15 @@ package ca.ubc.stat.blang.validation
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 class BlangDslValidator extends AbstractBlangDslValidator {
-	
-//  public static val INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	def checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.name.charAt(0))) {
-//			warning('Name should start with a capital', 
-//					BlangDslPackage.Literals.GREETING__NAME,
-//					INVALID_NAME)
-//		}
-//	}
-	
+  
+  @Check
+  def void checkNameStartsWithCapital(InstantiatedDistribution distribution) {
+    if (!(distribution.typeSpec instanceof BlangDist)) { return ; }
+    val typeSpec = distribution.typeSpec as BlangDist
+    val expectedNumberOfArgs = SingleBlangModelInferrer::blangConstructorParameters(typeSpec).filter[param].size()
+    val actual = distribution.arguments.size
+    if (expectedNumberOfArgs !== actual)
+      error("Incorrect number of arguments: " + actual + " provided but " + typeSpec.distributionType.name + " expects " + expectedNumberOfArgs, BlangDslPackage.Literals::INSTANTIATED_DISTRIBUTION__ARGUMENTS)
+  }
+
 }
