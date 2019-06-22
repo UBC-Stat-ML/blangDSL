@@ -15,7 +15,6 @@ import ca.ubc.stat.blang.blangDsl.BlangDist
 import ca.ubc.stat.blang.blangDsl.BlangModel
 import ca.ubc.stat.blang.blangDsl.Dependency
 import ca.ubc.stat.blang.blangDsl.ForLoop
-import ca.ubc.stat.blang.blangDsl.IndicatorDeclaration
 import ca.ubc.stat.blang.blangDsl.InitializerDependency
 import ca.ubc.stat.blang.blangDsl.InstantiatedDistribution
 import ca.ubc.stat.blang.blangDsl.JavaDist
@@ -42,8 +41,6 @@ import org.eclipse.xtext.common.types.JvmFormalParameter
 import org.eclipse.xtext.common.types.JvmGenericType
 import org.eclipse.xtext.common.types.JvmTypeReference
 import org.eclipse.xtext.common.types.JvmVisibility
-import org.eclipse.xtext.naming.IQualifiedNameConverter
-import org.eclipse.xtext.resource.IResourceDescriptionsProvider
 import org.eclipse.xtext.xbase.jvmmodel.JvmAnnotationReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
@@ -77,22 +74,19 @@ import ca.ubc.stat.blang.blangDsl.IfElse
 class SingleBlangModelInferrer {
 
   // input: an AST for a single model
-  val private BlangModel model
+  val BlangModel model
 
   // output: a generated type
-  val private JvmDeclaredType output
+  val JvmDeclaredType output
   
   // used to work around some xText limitations when
   // working with XExpressions 
-  val private XExpressionProcessor xExpressions 
+  val XExpressionProcessor xExpressions 
 
   // extension facilities provided by xtext
-  val extension private JvmTypesBuilder _typeBuilder
-  val extension private JvmAnnotationReferenceBuilder _annotationTypesBuilder
-  val extension private JvmTypeReferenceBuilder _typeReferenceBuilder
-  val extension private IResourceDescriptionsProvider index
-  val IQualifiedNameConverter qualNameConverter
-  
+  val extension JvmTypesBuilder _typeBuilder
+  val extension JvmAnnotationReferenceBuilder _annotationTypesBuilder
+  val extension JvmTypeReferenceBuilder _typeReferenceBuilder
   
   def void infer() {
     setupClass()
@@ -531,16 +525,12 @@ class SingleBlangModelInferrer {
     return componentsMethodBody(factor, scope, factor.contents.dependencies)
   }
   
-  def private dispatch StringConcatenationClient componentsMethodBody(IndicatorDeclaration factor, BlangScope scope) {
-    return componentsMethodBody(factor, scope, factor.contents.dependencies)
-  }
-  
   def private dispatch StringConcatenationClient componentsMethodBody(InstantiatedDistribution instantiatedDist, BlangScope scope) {
     return componentsMethodBody(instantiatedDist, scope, instantiatedDist.dependencies)
   }
   
   /**
-   * Common behavior extracted for LogScaleFactorDeclaration, IndicatorDeclaration, InstantiatedDistribution:
+   * Common behavior extracted for LogScaleFactorDeclaration, InstantiatedDistribution:
    * - taking care of dependencies,
    * - creation of a scope restricted to dependencies,
    * - creating and adding factor to collection.
@@ -584,14 +574,6 @@ class SingleBlangModelInferrer {
     // 2. "static Double method2(..)": with body given by the XExpression
     // In the components(..) body, method1() is called inside the line "components.add(___);" 
     return '''«xExpressions.processLogScaleFactor(logScaleFactor.contents.factorBody, scope)»'''
-  }
-  
-  def private dispatch StringConcatenationClient instantiateFactor(IndicatorDeclaration indic, BlangScope scope, BlangScope parentScope) {
-    // The following creates two methods:
-    // 1. "static LogScaleFactor method1(..)": with body "return new IndicatorDeclaration(() -> method2(..))" (the fact that IndicatorDeclaration's constructor argument (Support) is a functional interface is exploited here)
-    // 2. "static Boolean method2(..)": with body given by the XExpression
-    // In the components(..) body, method1() is called inside the line "components.add(___);" 
-    return '''«xExpressions.processSupportFactor(indic.contents.factorBody, scope)»'''
   }
   
   def private dispatch String fullyQualifiedName(BlangDist blangDist) {
@@ -710,24 +692,20 @@ class SingleBlangModelInferrer {
     JvmDeclaredType output, 
     JvmTypesBuilder _typeBuilder, 
     JvmAnnotationReferenceBuilder _annotationTypesBuilder, 
-    JvmTypeReferenceBuilder _typeReferenceBuilder, 
-    IResourceDescriptionsProvider index,
-    IQualifiedNameConverter qualNameConverter
+    JvmTypeReferenceBuilder _typeReferenceBuilder
   ) {
     this.model = model
     this.output = output
     this._typeBuilder = _typeBuilder
     this._annotationTypesBuilder = _annotationTypesBuilder
     this._typeReferenceBuilder = _typeReferenceBuilder
-    this.index = index
     this.xExpressions = new XExpressionProcessor(output, _typeBuilder, _typeReferenceBuilder)
-    this.qualNameConverter = qualNameConverter
   }
   
-  val static final String FWD_SIM_METHOD_NAME = uniqueDeclaredMethod(ForwardSimulator) 
-  val static final String COMPONENTS_METHOD_NAME = uniqueDeclaredMethod(Model) 
-  val public static final String COMPONENTS_LIST_NAME = "components"
-  val public static final String BUILDER_NAME = "Builder"
-  val static final String BUILDER_METHOD_NAME = uniqueDeclaredMethod(ModelBuilder)
-  private static final String IS_FROM_CMD_LINE_ARG = "fromCommandLine"
+  val static String FWD_SIM_METHOD_NAME = uniqueDeclaredMethod(ForwardSimulator) 
+  val static String COMPONENTS_METHOD_NAME = uniqueDeclaredMethod(Model) 
+  val public static String COMPONENTS_LIST_NAME = "components"
+  val public static String BUILDER_NAME = "Builder"
+  val static String BUILDER_METHOD_NAME = uniqueDeclaredMethod(ModelBuilder)
+  static final String IS_FROM_CMD_LINE_ARG = "fromCommandLine"
 }

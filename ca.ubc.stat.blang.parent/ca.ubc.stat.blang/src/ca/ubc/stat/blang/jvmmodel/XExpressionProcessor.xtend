@@ -15,24 +15,22 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypeReferenceBuilder
 import org.eclipse.xtext.common.types.JvmGenericType
 import java.util.function.Supplier
 import blang.core.LogScaleFactor
-import blang.core.SupportFactor.Support
-import blang.core.SupportFactor
 
 @Data
 class XExpressionProcessor {
   
   val PhaseTracker phaseTracker = new PhaseTracker
   
-  val private JvmDeclaredType output
+  val JvmDeclaredType output
   
-  val extension private JvmTypesBuilder _typeBuilder
-  val extension private JvmTypeReferenceBuilder _typeReferenceBuilder
+  val extension JvmTypesBuilder _typeBuilder
+  val extension JvmTypeReferenceBuilder _typeReferenceBuilder
   
   def void endAuxiliaryMethodGenerationPhase() {
     phaseTracker.endMethodGenerationPhase()
   }
   
-  def public StringConcatenationClient process(
+  def StringConcatenationClient process(
     XExpression xExpression, 
     BlangScope scope, 
     JvmTypeReference xExpressionReturnType
@@ -63,12 +61,6 @@ class XExpressionProcessor {
   def StringConcatenationClient processLogScaleFactor(XExpression xExpression, BlangScope scope) {
     return processViaFunctionalInterfaceImplementation(xExpression, scope, typeRef(LogScaleFactor), StaticUtils::uniqueDeclaredMethod(LogScaleFactor), typeRef("double"))
   }
-  
-  def StringConcatenationClient processSupportFactor(XExpression xExpression, BlangScope scope) {
-    return '''
-      new «typeRef(SupportFactor)»(«processViaFunctionalInterfaceImplementation(xExpression, scope, typeRef(Support), StaticUtils::uniqueDeclaredMethod(Support), typeRef("boolean"))»)
-    '''
-  } 
   
   def private StringConcatenationClient processViaFunctionalInterfaceImplementation(
     XExpression xExpression, 
@@ -129,7 +121,7 @@ class XExpressionProcessor {
     }
   }
   
-  val private Map<Integer, Integer> _generatedIds = new LinkedHashMap
+  val Map<Integer, Integer> _generatedIds = new LinkedHashMap
   def String generatedMethodName(Object object) {
     val int hashCode = object.hashCode
     if (_generatedIds.containsKey(hashCode))

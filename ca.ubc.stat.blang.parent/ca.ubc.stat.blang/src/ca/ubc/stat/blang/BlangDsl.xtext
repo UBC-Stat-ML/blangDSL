@@ -37,12 +37,7 @@ enum VariableType:
 ;
 
 LawNode:
-  'for' ForLoop | 'if' IfElse | 'indicator' IndicatorDeclaration | 'logf' LogScaleFactorDeclaration | (=> InstantiatedDistribution)
-;
-
-IndicatorDeclaration:
-  {IndicatorDeclaration}
-  contents=FactorDeclaration
+  'for' ForLoop | 'if' IfElse | 'logf' LogScaleFactorDeclaration | (=> InstantiatedDistribution)
 ;
 
 LogScaleFactorDeclaration:
@@ -74,7 +69,6 @@ IfElse:
   )?
 ;
 
-// e.g.: indicator(variance) = variance.doubleValue > 0
 FactorDeclaration:
   '(' ((dependencies += Dependency) ((','|';') dependencies += Dependency)* )? ')' 
   (factorBody = XBlockExpression)
@@ -85,7 +79,7 @@ InstantiatedDistribution:
   // random variables generated
 	( generatedVariables += XExpression  (',' generatedVariables += XExpression)* )?
 	// dependencies on other variables
-	('|' (dependencies += Dependency) (',' dependencies += Dependency)* )?  
+	('|' (dependencies += Dependency) ((','|';') dependencies += Dependency)* )?  
 	// type of the distribution
 	typeSpec = DistributionTypeSpecification //distributionType = [BlangModel|QualifiedName] 
 	// arguments in the constructor of the distribution
