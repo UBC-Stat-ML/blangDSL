@@ -2,5 +2,6 @@ language: java
 script:
    - ./gradlew check -i --stacktrace
 jdk:
-  - oraclejdk8
+  - openjdk8
+  - openjdk11
 install: cd ca.ubc.stat.blang.parent && ./gradlew assemble -i --stacktrace
