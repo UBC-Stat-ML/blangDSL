@@ -514,9 +514,11 @@ class SingleBlangModelInferrer {
         «ENDFOR»
       }
       «IF !ifElse.elseBody.empty»
+        else {
         «FOR node : ifElse.elseBody»
         «componentsMethodBody(node, scope)»
         «ENDFOR»
+        }
       «ENDIF»
     '''
   }
