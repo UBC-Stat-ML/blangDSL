@@ -10,13 +10,12 @@ buildscript {
 subprojects {
 	ext.xtextVersion = '2.16.0' // This is Xtext version, not blang version!
 	repositories {
-		jcenter()
-		maven {
-      url "https://www.stat.ubc.ca/~bouchard/maven/"
-    }
-    maven {
-      url "https://ubc-stat-ml.github.io/artifacts/"
-    }
+    mavenCentral()
+    jcenter()
+    maven { url "file:///${System.properties['user.home']}/artifacts/" }
+    maven { url 'https://jitpack.io' }
+    maven { url "https://ubc-stat-ml.github.io/artifacts/" }
+    maven { url "https://www.stat.ubc.ca/~bouchard/maven/" }
 	}
 	
 	apply plugin: 'java'
@@ -26,7 +25,7 @@ subprojects {
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 	
-	group = 'ca.ubc.stat.blang'
+	group = 'com.github.UBC-Stat-ML'
 	version = '4.0.1'
 	
 	sourceCompatibility = '1.8'

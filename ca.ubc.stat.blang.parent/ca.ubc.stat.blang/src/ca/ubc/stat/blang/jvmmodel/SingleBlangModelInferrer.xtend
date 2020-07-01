@@ -593,7 +593,6 @@ class SingleBlangModelInferrer {
   }
   
   def private dispatch StringConcatenationClient instantiateFactor(InstantiatedDistribution distribution, BlangScope scope, BlangScope parentScope) {
-    // TODO: check # args match!!!
     val List<ConstructorArgument> constructorArguments = constructorParameters(distribution.typeSpec)
     val int nRandomVariables = constructorArguments.filter[!param].size()  // TODO: exception here; this is null when reference type not found
     
