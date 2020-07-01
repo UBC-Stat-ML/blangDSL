@@ -25,7 +25,7 @@ subprojects {
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 	
-	group = 'com.github.UBC-Stat-ML'
+	group = 'com.github.UBC-Stat-ML.blangDSL'
 	version = '4.0.1'
 	
 	sourceCompatibility = '1.8'
