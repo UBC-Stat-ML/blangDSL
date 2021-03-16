@@ -33,7 +33,7 @@ then
   exit 1
 fi
 
-mvn install
+mvn clean install -U
 rm -r $destination_latest
 cp -r ca.ubc.stat.blang.repository/target/repository $destination
 cp -r ca.ubc.stat.blang.repository/target/repository $destination_latest
