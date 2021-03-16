@@ -1,5 +1,6 @@
 buildscript {
 	repositories {
+	  mavenCentral()
 		jcenter()
 	}
 	dependencies {
@@ -8,7 +9,7 @@ buildscript {
 }
 
 subprojects {
-	ext.xtextVersion = '2.17.0' // This is Xtext version, not blang version!
+	ext.xtextVersion = '2.25.0' // This is Xtext version, not blang version!
 	repositories {
     mavenCentral()
     jcenter()
