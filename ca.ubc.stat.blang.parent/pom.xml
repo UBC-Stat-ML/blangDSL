@@ -1,27 +1,45 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.github.UBC-Stat-ML.blangDSL</groupId>
+	<groupId>ca.ubc.stat.blang</groupId>
 	<version>1.0.0-SNAPSHOT</version>
 	<artifactId>ca.ubc.stat.blang.parent</artifactId>
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>1.0.0</tycho-version>
-		<xtextVersion>2.25.0</xtextVersion>
+		<xtextVersion>2.24.0</xtextVersion>
+		<mwe2Version>2.12.0</mwe2Version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- Tycho settings -->
+		<tycho-version>1.7.0</tycho-version>
+		<!-- Define overridable properties for tycho-surefire-plugin -->
+		<platformSystemProperties></platformSystemProperties>
+		<moduleProperties></moduleProperties>
+		<systemProperties></systemProperties>
+		<additionalTestArguments></additionalTestArguments>
 	</properties>
 	<modules>
 		<module>ca.ubc.stat.blang</module>
 		<module>ca.ubc.stat.blang.ide</module>
 		<module>ca.ubc.stat.blang.ui</module>
-		<module>ca.ubc.stat.blang.web</module>
 		<module>ca.ubc.stat.blang.target</module>
 		<module>ca.ubc.stat.blang.feature</module>
 		<module>ca.ubc.stat.blang.repository</module>
+		<module>ca.ubc.stat.blang.ui.tests</module>
 	</modules>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.eclipse.xtext</groupId>
+				<artifactId>xtext-dev-bom</artifactId>
+				<version>${xtextVersion}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<build>
 		<plugins>
 			<plugin>
@@ -100,6 +118,23 @@
 							<arch>x86_64</arch>
 						</environment>
 					</environments>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.xtext.logging</id>
+								<versionRange>1.2.15</versionRange>
+							</requirement>
+							<!-- to get the org.eclipse.osgi.compatibility.state plugin if the target 
+								platform is Luna or later. (backward compatible with kepler and previous 
+								versions) see https://bugs.eclipse.org/bugs/show_bug.cgi?id=492149 -->
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.rcp</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -127,14 +162,10 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.5</version>
+					<version>3.1.0</version>
 					<configuration>
 						<filesets>
 							<fileset>
-								<directory>${basedir}/xtend-gen</directory>
-								<includes>
-									<include>**/*</include>
-								</includes>
 								<directory>${basedir}/xtend-gen</directory>
 								<includes>
 									<include>**/*</include>
@@ -150,26 +181,6 @@
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-resources-plugin
-										</artifactId>
-										<versionRange>
-											[2.4.3,)
-										</versionRange>
-										<goals>
-											<goal>resources</goal>
-											<goal>testResources</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>
@@ -247,6 +258,22 @@
 					<version>${tycho-version}</version>
 					<configuration>
 						<compilerArgument>-err:-forbidden</compilerArgument>
+						<useProjectSettings>false</useProjectSettings>
+					</configuration>
+				</plugin>
+				<!-- to skip running (and compiling) tests use commandline flag: -Dmaven.test.skip
+					To skip tests, but still compile them, use: -DskipTests
+					To allow all tests in a pom to pass/fail, use commandline flag: -fae (fail
+					at end) -->
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<!-- THE FOLLOWING LINE MUST NOT BE BROKEN BY AUTOFORMATTING -->
+						<argLine>${platformSystemProperties} ${systemProperties} ${moduleProperties} ${additionalTestArguments}</argLine>
+						<failIfNoTests>false</failIfNoTests>
+						<useUIHarness>false</useUIHarness>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -278,6 +305,29 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+	<profiles>
+		<profile>
+			<id>macos</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<!-- THE FOLLOWING LINE MUST NOT BE BROKEN BY AUTOFORMATTING -->
+				<platformSystemProperties>-XstartOnFirstThread</platformSystemProperties>
+			</properties>
+		</profile>
+		<profile>
+			<id>jdk9-or-newer</id>
+			<activation>
+				<jdk>[9,)</jdk>
+			</activation>
+			<properties>
+				<moduleProperties>--add-modules=ALL-SYSTEM</moduleProperties>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 	</dependencies>

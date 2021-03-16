@@ -4,49 +4,48 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
 			extensions="bl"
-			id="ca.ubc.stat.blang.BlangDsl"
-			matchingStrategy="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.xbase.ui.editor.JavaEditorInputMatcher"
-			name="BlangDsl Editor">
+			id="ca.ubc.stat.blang.BlangDSL"
+			name="BlangDSL Editor">
 		</editor>
 	</extension>
 	<extension
 		point="org.eclipse.ui.handlers">
 		<handler
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
 			commandId="org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclaration">
 			<activeWhen>
 				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
+					definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
 		<handler
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
-			commandId="ca.ubc.stat.blang.BlangDsl.validate">
-		<activeWhen>
-			<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-			</reference>
-		</activeWhen>
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
+			commandId="ca.ubc.stat.blang.BlangDSL.validate">
+			<activeWhen>
+				<reference
+					definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened">
+				</reference>
+			</activeWhen>
 		</handler>
 		<!-- copy qualified name -->
 		<handler
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedNameHandler"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedNameHandler"
 			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName">
 			<activeWhen>
-				<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened" />
+				<reference definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened" />
 			</activeWhen>
 		</handler>
 		<handler
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedNameHandler"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedNameHandler"
 			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName">
 			<activeWhen>
 				<and>
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.XtextEditor.opened" />
+					<reference definitionId="ca.ubc.stat.blang.BlangDSL.XtextEditor.opened" />
 					<iterate>
 						<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
 					</iterate>
@@ -55,22 +54,22 @@
 		</handler>
 	</extension>
 	<extension point="org.eclipse.core.expressions.definitions">
-		<definition id="ca.ubc.stat.blang.BlangDsl.Editor.opened">
+		<definition id="ca.ubc.stat.blang.BlangDSL.Editor.opened">
 			<and>
 				<reference definitionId="isActiveEditorAnInstanceOfXtextEditor"/>
 				<with variable="activeEditor">
 					<test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
-						value="ca.ubc.stat.blang.BlangDsl"
+						value="ca.ubc.stat.blang.BlangDSL"
 						forcePluginActivation="true"/>
 				</with>
 			</and>
 		</definition>
-		<definition id="ca.ubc.stat.blang.BlangDsl.XtextEditor.opened">
+		<definition id="ca.ubc.stat.blang.BlangDSL.XtextEditor.opened">
 			<and>
 				<reference definitionId="isXtextEditorActive"/>
 				<with variable="activeEditor">
 					<test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
-						value="ca.ubc.stat.blang.BlangDsl"
+						value="ca.ubc.stat.blang.BlangDSL"
 						forcePluginActivation="true"/>
 				</with>
 			</and>
@@ -79,33 +78,33 @@
 	<extension
 			point="org.eclipse.ui.preferencePages">
 		<page
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
-			id="ca.ubc.stat.blang.BlangDsl"
-			name="BlangDsl">
-			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDsl"/>
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+			id="ca.ubc.stat.blang.BlangDSL"
+			name="BlangDSL">
+			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDSL"/>
 		</page>
 		<page
-			category="ca.ubc.stat.blang.BlangDsl"
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
-			id="ca.ubc.stat.blang.BlangDsl.coloring"
+			category="ca.ubc.stat.blang.BlangDSL"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
+			id="ca.ubc.stat.blang.BlangDSL.coloring"
 			name="Syntax Coloring">
-			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDsl"/>
+			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDSL"/>
 		</page>
 		<page
-			category="ca.ubc.stat.blang.BlangDsl"
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
-			id="ca.ubc.stat.blang.BlangDsl.templates"
+			category="ca.ubc.stat.blang.BlangDSL"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
+			id="ca.ubc.stat.blang.BlangDSL.templates"
 			name="Templates">
-			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDsl"/>
+			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDSL"/>
 		</page>
 	</extension>
 	<extension
 			point="org.eclipse.ui.propertyPages">
 		<page
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
-			id="ca.ubc.stat.blang.BlangDsl"
-			name="BlangDsl">
-			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDsl"/>
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+			id="ca.ubc.stat.blang.BlangDSL"
+			name="BlangDSL">
+			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDSL"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
 			</enabledWhen>
@@ -115,50 +114,50 @@
 	<extension
 		point="org.eclipse.ui.keywords">
 		<keyword
-			id="ca.ubc.stat.blang.ui.keyword_BlangDsl"
-			label="BlangDsl"/>
+			id="ca.ubc.stat.blang.ui.keyword_BlangDSL"
+			label="BlangDSL"/>
 	</extension>
 	<extension
 		point="org.eclipse.ui.commands">
-	<command
+		<command
 			description="Trigger expensive validation"
-			id="ca.ubc.stat.blang.BlangDsl.validate"
+			id="ca.ubc.stat.blang.BlangDSL.validate"
 			name="Validate">
-	</command>
-	<!-- copy qualified name -->
-	<command
+		</command>
+		<!-- copy qualified name -->
+		<command
 			id="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
 			categoryId="org.eclipse.ui.category.edit"
 			description="Copy the qualified name for the selected element"
 			name="Copy Qualified Name">
-	</command>
-	<command
+		</command>
+		<command
 			id="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName"
 			categoryId="org.eclipse.ui.category.edit"
 			description="Copy the qualified name for the selected element"
 			name="Copy Qualified Name">
-	</command>
+		</command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
 			locationURI="popup:#TextEditorContext?after=group.edit">
-			 <command
-				 commandId="ca.ubc.stat.blang.BlangDsl.validate"
-				 style="push"
-				 tooltip="Trigger expensive validation">
-			<visibleWhen checkEnabled="false">
-				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-				</reference>
-			</visibleWhen>
-		</command>
+			<command
+				commandId="ca.ubc.stat.blang.BlangDSL.validate"
+				style="push"
+				tooltip="Trigger expensive validation">
+				<visibleWhen checkEnabled="false">
+					<reference
+						definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened">
+					</reference>
+				</visibleWhen>
+			</command>
 		</menuContribution>
 		<!-- copy qualified name -->
 		<menuContribution locationURI="popup:#TextEditorContext?after=copy">
 			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened" />
+					<reference definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
@@ -166,7 +165,7 @@
 			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened" />
+					<reference definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
@@ -175,7 +174,7 @@
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
 					<and>
-						<reference definitionId="ca.ubc.stat.blang.BlangDsl.XtextEditor.opened" />
+						<reference definitionId="ca.ubc.stat.blang.BlangDSL.XtextEditor.opened" />
 						<iterate>
 							<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
 						</iterate>
@@ -188,7 +187,7 @@
 		<menuContribution locationURI="popup:#TextEditorContext?endof=group.find">
 			<command commandId="org.eclipse.xtext.ui.editor.FindReferences">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
+					<reference definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened">
 					</reference>
 				</visibleWhen>
 			</command>
@@ -196,72 +195,90 @@
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
 			commandId="org.eclipse.xtext.ui.editor.FindReferences">
 			<activeWhen>
 				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
+					definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
+	</extension>
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type
+			base-type="org.eclipse.core.runtime.text"
+			file-extensions="bl"
+			id="ca.ubc.stat.blang.BlangDSL.contenttype"
+			name="BlangDSL File"
+			priority="normal">
+		</content-type>
 	</extension>
 	<!-- adding resource factories -->
 	<extension
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
 			type="bl">
 		</parser>
 	</extension>
 	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
 		<resourceServiceProvider
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
 			uriExtension="bl">
 		</resourceServiceProvider>
 	</extension>
-	<!-- marker definitions for ca.ubc.stat.blang.BlangDsl -->
+	<!-- marker definitions for ca.ubc.stat.blang.BlangDSL -->
 	<extension
 			id="blangdsl.check.fast"
-			name="BlangDsl Problem"
+			name="BlangDSL Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.fast"/>
 		<persistent value="true"/>
 	</extension>
 	<extension
 			id="blangdsl.check.normal"
-			name="BlangDsl Problem"
+			name="BlangDSL Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.normal"/>
 		<persistent value="true"/>
 	</extension>
 	<extension
 			id="blangdsl.check.expensive"
-			name="BlangDsl Problem"
+			name="BlangDSL Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.expensive"/>
 		<persistent value="true"/>
 	</extension>
+	<extension point="org.eclipse.ui.preferencePages">
+		<page
+			category="ca.ubc.stat.blang.BlangDSL"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.validation.ValidatorPreferencePage"
+			id="ca.ubc.stat.blang.BlangDSL.validator.preferencePage"
+			name="Errors/Warnings">
+			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDSL"/>
+		</page>
+	</extension>
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
 			fileExtensions="bl"/>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			category="ca.ubc.stat.blang.BlangDsl"
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="ca.ubc.stat.blang.BlangDsl.compiler.preferencePage"
+			category="ca.ubc.stat.blang.BlangDSL"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
+			id="ca.ubc.stat.blang.BlangDSL.compiler.preferencePage"
 			name="Compiler">
-			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDsl"/>
+			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDSL"/>
 		</page>
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
-			category="ca.ubc.stat.blang.BlangDsl"
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="ca.ubc.stat.blang.BlangDsl.compiler.propertyPage"
+			category="ca.ubc.stat.blang.BlangDSL"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
+			id="ca.ubc.stat.blang.BlangDSL.compiler.propertyPage"
 			name="Compiler">
-			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDsl"/>
+			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDSL"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
 			</enabledWhen>
@@ -272,32 +289,32 @@
 		<menuContribution locationURI="popup:#TextEditorContext?after=xtext.ui.openDeclaration">
 			<command
 				commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand"
-				id="ca.ubc.stat.blang.BlangDsl.OpenGeneratedCode"
+				id="ca.ubc.stat.blang.BlangDSL.OpenGeneratedCode"
 				style="push">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened" />
+					<reference definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.generator.trace.OpenGeneratedFileHandler"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.generator.trace.OpenGeneratedFileHandler"
 			commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand">
 			<activeWhen>
-				<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened" />
+				<reference definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened" />
 			</activeWhen>
 		</handler>
 	</extension>
 	<!-- Quick Outline -->
 	<extension
 		point="org.eclipse.ui.handlers">
-		<handler 
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
+		<handler
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
 			commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline">
 			<activeWhen>
 				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
+					definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
@@ -317,16 +334,16 @@
 				style="push"
 				tooltip="Open Quick Outline">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened"/>
+					<reference definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened"/>
 				</visibleWhen>
 			</command>
 		</menuContribution>
 	</extension>
-	<!-- quickfix marker resolution generator for ca.ubc.stat.blang.BlangDsl -->
+	<!-- quickfix marker resolution generator for ca.ubc.stat.blang.BlangDSL -->
 	<extension
 			point="org.eclipse.ui.ide.markerResolution">
 		<markerResolutionGenerator
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
 			markerType="ca.ubc.stat.blang.ui.blangdsl.check.fast">
 			<attribute
 				name="FIXABLE_KEY"
@@ -334,7 +351,7 @@
 			</attribute>
 		</markerResolutionGenerator>
 		<markerResolutionGenerator
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
 			markerType="ca.ubc.stat.blang.ui.blangdsl.check.normal">
 			<attribute
 				name="FIXABLE_KEY"
@@ -342,7 +359,7 @@
 			</attribute>
 		</markerResolutionGenerator>
 		<markerResolutionGenerator
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
 			markerType="ca.ubc.stat.blang.ui.blangdsl.check.expensive">
 			<attribute
 				name="FIXABLE_KEY"
@@ -352,12 +369,12 @@
 	</extension>
 	<!-- Rename Refactoring -->
 	<extension point="org.eclipse.ui.handlers">
-		<handler 
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
+		<handler
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
 				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
+					definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
@@ -369,7 +386,7 @@
 				style="push">
 				<visibleWhen checkEnabled="false">
 					<reference
-						definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
+						definitionId="ca.ubc.stat.blang.BlangDSL.Editor.opened">
 					</reference>
 				</visibleWhen>
 			</command>
@@ -377,208 +394,34 @@
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			category="ca.ubc.stat.blang.BlangDsl"
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
-			id="ca.ubc.stat.blang.BlangDsl.refactoring"
+			category="ca.ubc.stat.blang.BlangDSL"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
+			id="ca.ubc.stat.blang.BlangDSL.refactoring"
 			name="Refactoring">
-			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDsl"/>
+			<keywordReference id="ca.ubc.stat.blang.ui.keyword_BlangDSL"/>
 		</page>
 	</extension>
-	<!-- Type Hierarchy  -->
-	<extension point="org.eclipse.ui.handlers">
-		<handler 
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.xbase.ui.hierarchy.OpenTypeHierarchyHandler"
-			commandId="org.eclipse.xtext.xbase.ui.hierarchy.OpenTypeHierarchy">
-			<activeWhen>
-				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-				</reference>
-			</activeWhen>
-		</handler>
-		<handler 
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.xbase.ui.hierarchy.QuickTypeHierarchyHandler"
-			commandId="org.eclipse.jdt.ui.edit.text.java.open.hierarchy">
-			<activeWhen>
-				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-				</reference>
-			</activeWhen>
-		</handler>
-		<handler
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.xbase.ui.imports.OrganizeImportsHandler"
-			commandId="org.eclipse.xtext.xbase.ui.organizeImports">
-			<activeWhen>
-				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-				</reference>
-			</activeWhen>
-		</handler>
-	</extension>
-	<extension point="org.eclipse.ui.menus">
-		<menuContribution
-			locationURI="popup:#TextEditorContext?after=group.edit">
-			 <command
-				 commandId="org.eclipse.xtext.xbase.ui.organizeImports"
-				 style="push"
-				 tooltip="Organize Imports">
-				<visibleWhen checkEnabled="false">
-					<reference
-						definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-					</reference>
-				</visibleWhen>
-			</command>
-		</menuContribution>
-		<menuContribution
-			locationURI="popup:#TextEditorContext?after=group.open">
-			<command commandId="org.eclipse.xtext.xbase.ui.hierarchy.OpenTypeHierarchy"
-				style="push"
-				tooltip="Open Type Hierarchy">
-				<visibleWhen checkEnabled="false">
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened"/>
-				</visibleWhen>
-			</command>
-		</menuContribution>
-		<menuContribution
-			locationURI="popup:#TextEditorContext?after=group.open">
-			<command commandId="org.eclipse.jdt.ui.edit.text.java.open.hierarchy"
-				style="push"
-				tooltip="Quick Type Hierarchy">
-				<visibleWhen checkEnabled="false">
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened"/>
-				</visibleWhen>
-			</command>
-		</menuContribution>
-	</extension>
-	<!-- Call Hierachy -->
-	<extension point="org.eclipse.ui.handlers">
-		<handler 
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.xbase.ui.hierarchy.OpenCallHierachyHandler"
-			commandId="org.eclipse.xtext.xbase.ui.hierarchy.OpenCallHierarchy">
-			<activeWhen>
-				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-				</reference>
-			</activeWhen>
-		</handler>
-	</extension>
-	<extension point="org.eclipse.ui.menus">
-		<menuContribution
-			locationURI="popup:#TextEditorContext?after=group.open">
-			<command commandId="org.eclipse.xtext.xbase.ui.hierarchy.OpenCallHierarchy"
-				style="push"
-				tooltip="Open Call Hierarchy">
-				<visibleWhen checkEnabled="false">
-					<reference definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened"/>
-				</visibleWhen>
-			</command>
-		</menuContribution>
-	</extension>
-	<extension point="org.eclipse.core.runtime.adapters">
-		<factory class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.builder.smap.StratumBreakpointAdapterFactory"
-			adaptableType="org.eclipse.xtext.ui.editor.XtextEditor">
-			<adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
-		</factory> 
-	</extension>
-	<extension point="org.eclipse.ui.editorActions">
-		<editorContribution targetID="ca.ubc.stat.blang.BlangDsl" 
-			id="ca.ubc.stat.blang.BlangDsl.rulerActions">
-			<action
-				label="Not Used"
-	 			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-				style="push"
-				actionID="RulerDoubleClick"
-				id="ca.ubc.stat.blang.BlangDsl.doubleClickBreakpointAction"/>
-		</editorContribution>
-	</extension>
-	<extension point="org.eclipse.ui.popupMenus">
-		<viewerContribution
-			targetID="ca.ubc.stat.blang.BlangDsl.RulerContext"
-			id="ca.ubc.stat.blang.BlangDsl.RulerPopupActions">
-			<action
-				label="Toggle Breakpoint"
-				class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-				menubarPath="debug"
-				id="ca.ubc.stat.blang.BlangDsl.rulerContextMenu.toggleBreakpointAction">
-			</action>
-			<action
-				label="Not used"
-				class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
-				menubarPath="debug"
-				id="ca.ubc.stat.blang.BlangDsl.rulerContextMenu.enableDisableBreakpointAction">
-			</action>
-			<action
-				label="Breakpoint Properties"
-				helpContextId="breakpoint_properties_action_context"
-				class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.jdt.debug.ui.actions.JavaBreakpointPropertiesRulerActionDelegate"
-				menubarPath="group.properties"
-				id="ca.ubc.stat.blang.BlangDsl.rulerContextMenu.openBreapointPropertiesAction">
-			</action>
-		</viewerContribution>
-	</extension>
-	<!-- Introduce Local Variable Refactoring -->
-	<extension point="org.eclipse.ui.handlers">
-		<handler 
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.xbase.ui.refactoring.ExtractVariableHandler"
-			commandId="org.eclipse.xtext.xbase.ui.refactoring.ExtractLocalVariable">
-			<activeWhen>
-				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-				</reference>
-			</activeWhen>
-		</handler>
-	</extension>
-	<extension point="org.eclipse.ui.menus">
-		<menuContribution
-			locationURI="popup:#TextEditorContext?after=group.edit">
-			<command commandId="org.eclipse.xtext.xbase.ui.refactoring.ExtractLocalVariable"
-				style="push">
-				<visibleWhen checkEnabled="false">
-					<reference
-						definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-					</reference>
-				</visibleWhen>
-			</command>
-		</menuContribution>
-	</extension>
-	<!-- Open implementation -->
-	<extension point="org.eclipse.ui.handlers">
-		<handler
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.xbase.ui.navigation.OpenImplementationHandler"
-			commandId="org.eclipse.xtext.xbase.ui.OpenImplementationCommand">
-			<activeWhen>
-				<reference
-					definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-				</reference>
-			</activeWhen>
-		</handler>
-	</extension>
-	<extension point="org.eclipse.ui.menus">
-		<menuContribution
-			locationURI="menu:navigate?after=open.ext4">
-			<command commandId="org.eclipse.xtext.xbase.ui.OpenImplementationCommand">
-				<visibleWhen checkEnabled="false">
-					<reference
-						definitionId="ca.ubc.stat.blang.BlangDsl.Editor.opened">
-					</reference>
-				</visibleWhen>
-			</command>
-		</menuContribution>
-	</extension>
 	<extension point="org.eclipse.compare.contentViewers">
-		<viewer id="ca.ubc.stat.blang.BlangDsl.compare.contentViewers"
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+		<viewer id="ca.ubc.stat.blang.BlangDSL.compare.contentViewers"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
 			extensions="bl">
 		</viewer>
+		<contentTypeBinding
+			contentTypeId="ca.ubc.stat.blang.BlangDSL.contenttype"
+			contentViewerId="ca.ubc.stat.blang.BlangDSL.compare.contentViewers" />
 	</extension>
 	<extension point="org.eclipse.compare.contentMergeViewers">
-		<viewer id="ca.ubc.stat.blang.BlangDsl.compare.contentMergeViewers"
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="bl" label="BlangDsl Compare">
+		<viewer id="ca.ubc.stat.blang.BlangDSL.compare.contentMergeViewers"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="bl" label="BlangDSL Compare">
 		</viewer>
+		<contentTypeBinding
+			contentTypeId="ca.ubc.stat.blang.BlangDSL.contenttype"
+			contentMergeViewerId="ca.ubc.stat.blang.BlangDSL.compare.contentMergeViewers" />
 	</extension>
 	<extension point="org.eclipse.ui.editors.documentProviders">
-		<provider id="ca.ubc.stat.blang.BlangDsl.editors.documentProviders"
-			class="ca.ubc.stat.blang.ui.BlangDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
+		<provider id="ca.ubc.stat.blang.BlangDSL.editors.documentProviders"
+			class="ca.ubc.stat.blang.ui.BlangDSLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
 			extensions="bl">
 		</provider>
 	</extension>

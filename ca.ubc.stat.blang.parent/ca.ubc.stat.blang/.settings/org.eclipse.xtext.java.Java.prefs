@@ -1,9 +1,9 @@
-#Thu Mar 11 16:28:55 PST 2021
-generateGeneratedAnnotation=false
+#Tue Mar 16 00:53:11 PDT 2021
 includeDateInGenerated=false
-useJavaCompilerCompliance=false
-eclipse.preferences.version=1
-generateSuppressWarnings=true
 BuilderConfiguration.is_project_specific=true
+eclipse.preferences.version=1
+generateGeneratedAnnotation=false
+useJavaCompilerCompliance=false
+generateSuppressWarnings=true
 ValidatorConfiguration.is_project_specific=true
 targetJavaVersion=Java8

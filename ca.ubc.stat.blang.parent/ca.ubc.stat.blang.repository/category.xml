@@ -6,6 +6,6 @@
 	<feature id="ca.ubc.stat.blang.feature.source" version="0.0.0">
 		<category name="main.source"/>
 	</feature>
-	<category-def name="main" label="Blang"/>
-	<category-def name="main.source" label="Blang (Sources)"/>
+	<category-def name="main" label="BlangDSL"/>
+	<category-def name="main.source" label="BlangDSL (Sources)"/>
 </site>

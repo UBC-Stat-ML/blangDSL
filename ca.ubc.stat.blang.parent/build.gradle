@@ -1,6 +1,6 @@
 buildscript {
 	repositories {
-		jcenter()
+		mavenCentral()
 	}
 	dependencies {
 		classpath 'org.xtext:xtext-gradle-plugin:2.0.8'
@@ -8,35 +8,27 @@ buildscript {
 }
 
 subprojects {
-	ext.xtextVersion = '2.25.0' // This is Xtext version, not blang version!
+	ext.xtextVersion = '2.24.0'
 	repositories {
-    mavenCentral()
-    jcenter()
-    maven { url "file:///${System.properties['user.home']}/artifacts/" }
-    maven { url 'https://jitpack.io' }
-    maven { url "https://ubc-stat-ml.github.io/artifacts/" }
-    maven { url "https://www.stat.ubc.ca/~bouchard/maven/" }
+		mavenCentral()
 	}
 	
 	apply plugin: 'java'
+	dependencies {
+		compile platform("org.eclipse.xtext:xtext-dev-bom:${xtextVersion}")
+	}
+
 	apply plugin: 'org.xtext.xtend'
 	apply from: "${rootDir}/gradle/source-layout.gradle"
-	apply from: "${rootDir}/gradle/maven-deployment.gradle"
 	apply plugin: 'eclipse'
-	apply plugin: 'idea'
 	
 	group = 'com.github.UBC-Stat-ML.blangDSL'
-	version = '4.0.9'
+	version = '4.1.0'
 	
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
 	
 	configurations.all {
 		exclude group: 'asm'
-	}
-	
-	dependencies {
-  	compile "javax.servlet:servlet-api:2.5"
-  	compile "org.eclipse.jdt:org.eclipse.jdt.core:3.10.0"
 	}
 }

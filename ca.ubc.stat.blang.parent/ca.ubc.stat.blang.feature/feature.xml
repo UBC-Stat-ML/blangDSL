@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature id="ca.ubc.stat.blang.feature"
-	label="Blang Feature "
+	label="BlangDSL Feature "
 	version="1.0.0.qualifier">
 	<plugin
 			id="ca.ubc.stat.blang"

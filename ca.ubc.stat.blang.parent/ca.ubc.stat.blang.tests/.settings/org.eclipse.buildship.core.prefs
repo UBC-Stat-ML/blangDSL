@@ -5,4 +5,4 @@ connection.java.home=null
 connection.jvm.arguments=
 connection.project.dir=..
 eclipse.preferences.version=1
-project.path=\:ca.ubc.stat.blang
+project.path=\:ca.ubc.stat.blang.tests

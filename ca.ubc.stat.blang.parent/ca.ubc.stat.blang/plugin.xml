@@ -2,9 +2,9 @@
 <?eclipse version="3.0"?>
 <plugin>
 	<extension point="org.eclipse.emf.ecore.generated_package">
-		<package 
-			uri = "http://www.ubc.ca/stat/blang/BlangDsl"
-			class = "ca.ubc.stat.blang.blangDsl.BlangDslPackage"
-			genModel = "model/generated/BlangDsl.genmodel" />
+		<package
+			uri = "http://www.ubc.ca/stat/blang/BlangDSL"
+			class = "ca.ubc.stat.blang.blangDSL.BlangDSLPackage"
+			genModel = "model/generated/BlangDSL.genmodel" />
 	</extension>
 </plugin>

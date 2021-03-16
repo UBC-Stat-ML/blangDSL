@@ -6,10 +6,10 @@
 		<wb-resource deploy-path="/WEB-INF/classes" source-path="src-gen"/>
 		<wb-resource deploy-path="/WEB-INF/classes" source-path="xtend-gen"/>
 		<wb-resource deploy-path="/" source-path="WebRoot"/>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ca.ubc.stat.blang/ca.ubc.stat.blang">
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ca.ubc.stat.blang.ide/ca.ubc.stat.blang.ide">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ca.ubc.stat.blang.ide/ca.ubc.stat.blang.ide">
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ca.ubc.stat.blang/ca.ubc.stat.blang">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 	</wb-module>

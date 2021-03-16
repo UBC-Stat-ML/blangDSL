@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Automatic-Module-Name: ca.ubc.stat.blang.ide
 Bundle-ManifestVersion: 2
 Bundle-Name: ca.ubc.stat.blang.ide
 Bundle-Vendor: My Company
