@@ -27,7 +27,7 @@ subprojects {
 	apply plugin: 'idea'
 	
 	group = 'com.github.UBC-Stat-ML.blangDSL'
-	version = '4.0.8'
+	version = '4.0.9'
 	
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
