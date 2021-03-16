@@ -24,7 +24,7 @@ subprojects {
 	apply plugin: 'eclipse'
 	
 	group = 'com.github.UBC-Stat-ML.blangDSL'
-	version = '4.1.0'
+	version = '4.1.1'
 	
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
